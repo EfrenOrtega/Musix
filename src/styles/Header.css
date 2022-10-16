@@ -1,0 +1,109 @@
+:root {
+  --main: #0B0C1C;
+  --second: #0E1026;
+  --third: #171929;
+  --extra: #333937;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+header {
+  position: relative;
+  background-image: url('../../assets/images/header-backgroud.jpg');
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: cover;
+
+  height: 20rem;
+  padding: 1.5rem 2rem;
+}
+
+header::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+
+  background: rgba(0, 0, 0, .30);
+}
+
+header .section-top {
+  position: relative;
+  z-index: 1;
+
+  display: flex;
+  justify-content: space-between;
+
+  height: 50%;
+}
+
+header .user figure {
+  height: 4.3rem;
+  width: 4.3rem;
+  overflow: hidden;
+  border-radius: 50%;
+}
+
+header .user img {
+  height: inherit;
+  width: inherit;
+  object-fit: cover;
+}
+
+header .section-top .search {
+  position: relative;
+  display: flex;
+  align-items: center;
+
+  height: 2rem;
+  border-radius: 2rem;
+
+  overflow: hidden;
+}
+
+header .section-top .search input {
+  position: relative;
+  border-radius: 5rem;
+  background: rgba(0, 0, 0, .63);
+  outline: none;
+  border: 1px solid white;
+  width: 29rem;
+  height: inherit;
+  padding-left: 1rem;
+  color: white;
+}
+
+header .section-top .search img {
+  position: absolute;
+  z-index: 1;
+  right: 0.5rem;
+  height: 80%;
+}
+
+
+header .section-bottom {
+  position: relative;
+  z-index: 1;
+
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  height: 50%;
+  padding: 0 4rem;
+}
+
+header .section-bottom h1 {
+  font-size: 3rem;
+}
+
+header .section-bottom .title {
+  font-size: 1.2rem;
+  margin-bottom: 0.3rem;
+}

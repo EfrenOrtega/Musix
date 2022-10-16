@@ -22,7 +22,7 @@ body {
   color: white;
   height: 100vh;
   background-color: var(--main);
-  font-family: sans-serif;
+  font-family: 'Roboto', sans-serif;
   width: 100%;
   min-width: 65rem;
 }
@@ -62,9 +62,42 @@ a:hover {
   text-decoration: none;
 }
 
-.Hello {
+#root {
+  height: calc(100% - 6rem);
+  overflow: auto;
+}
+
+/*================================================*/
+
+.playlist {
   display: flex;
-  justify-content: center;
-  align-items: center;
-  margin: 20px 0;
+}
+
+.section-playlist .music-box .cover figure img {
+  width: 8rem;
+  height: 8rem;
+}
+
+.section-playlist .music-box {
+  margin-right: 1.25rem;
+}
+
+main {
+  padding: 1.5rem 2rem;
+}
+
+::-webkit-scrollbar {
+  -webkit-appearance: none;
+}
+
+::-webkit-scrollbar:vertical {
+  width: 15px;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: var(--extra);
+}
+
+::-webkit-scrollbar-track {
+  border-radius: 10px;
 }
