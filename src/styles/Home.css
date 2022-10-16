@@ -23,3 +23,73 @@
   height: 1.2rem;
   width: 1.4rem;
 }
+
+main .container-section-1 {
+  justify-content: space-between;
+  display: flex;
+}
+
+
+/*
+  Section Your "Playlists"
+*/
+.section-playlist {
+  position: relative;
+  width: 55rem;
+  min-width: 60%;
+}
+
+.section-playlist .playlist {
+  display: flex;
+  align-items: center;
+  overflow-x: scroll;
+}
+
+.section-playlist .music-box .cover figure img {
+  width: 8rem;
+  height: 8rem;
+}
+
+.section-playlist .music-box {
+  margin-right: 1.25rem;
+}
+
+.playlist::-webkit-scrollbar:horizontal {
+  height: 4px;
+}
+
+.playlist::-webkit-scrollbar-thumb {
+  border-radius: 1rem;
+}
+
+
+/*
+  Section "Recently Played"
+*/
+.section-recently {
+  padding-left: 4rem;
+  margin-right: 3rem;
+  width: fit-content;
+}
+
+.section-recently .songs {
+  margin-bottom: 0.5rem;
+}
+
+main .song-box {
+  font-size: 11px;
+}
+
+@media only screen and (max-width: 820px) {
+  html {
+    font-size: 12px;
+  }
+
+  #root .song-box {
+    font-size: 10px;
+  }
+
+  #root .section-recently {
+    padding-left: 0.5rem;
+  }
+}

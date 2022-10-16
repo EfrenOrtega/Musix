@@ -13,19 +13,23 @@
   box-sizing: border-box;
 }
 
+
 .player {
+  font-size: 13px;
+
   background-color: var(--second);
-  position: fixed;
-  height: 6rem;
+  position: absolute;
+  height: 6em;
   bottom: 0;
   left: 0;
   right: 0;
   width: 100%;
-  min-width: 65rem;
+  min-width: 50rem;
+  z-index: 9999;
 
   font-family: 'Roboto', sans-serif;
 
-  padding: 0.5rem;
+  padding: 0.5em;
 }
 
 .player-container {
@@ -43,12 +47,12 @@
   height: inherit;
 
   width: fit-content;
-  min-width: 16rem;
+  font-size: 0.9em;
 }
 
 .player .song figure {
   height: inherit;
-  margin-right: 0.7rem;
+  margin-right: 0.7em;
 }
 
 .player .song figure img {
@@ -56,7 +60,7 @@
 }
 
 .player #artist {
-  margin-top: 0.2rem;
+  margin-top: 0.2em;
 }
 
 .player .controls {
@@ -64,25 +68,25 @@
   justify-content: center;
 
   position: relative;
-  width: 25%;
 }
 
 .player .controls img {
-  height: 1.81rem;
-  margin: 1rem;
+  height: 1.81em;
+  margin: 1em;
 }
 
 .player .time-line {
-  margin-right: 1rem;
-  margin-left: 1rem;
-  width: 30%;
+  margin-right: 1em;
+  margin-left: 1em;
+
+  width: 40%;
 }
 
 #progress {
   -webkit-appearance: none;
   display: flex;
   align-items: center;
-  margin-bottom: 0.188rem;
+  margin-bottom: 0.188em;
 
   min-width: 100%;
   height: 5px;
@@ -90,12 +94,12 @@
 
 #progress::-webkit-progress-bar {
   background-color: var(--extra);
-  border-radius: 1rem;
+  border-radius: 1em;
 }
 
 #progress::-webkit-progress-value {
   background-color: white;
-  border-radius: 1rem;
+  border-radius: 1em;
 }
 
 #progress::-webkit-progress-inner-element {
@@ -106,21 +110,20 @@
 .time-line .values-time {
   display: flex;
   justify-content: space-between;
-  font-size: 0.8rem;
+  font-size: 0.8em;
   font-weight: 300;
 
-  letter-spacing: 0.05rem;
+  letter-spacing: 0.05em;
 }
 
 .player .btn-options {
   display: flex;
   align-items: center;
   justify-content: center;
-
-  width: 20%;
+  margin-right: 2em;
 }
 
 .player .btn-options img {
-  height: 1.81rem;
-  margin: 1.5rem;
+  height: 1.81em;
+  margin: 1em;
 }

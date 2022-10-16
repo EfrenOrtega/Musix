@@ -7,70 +7,121 @@ import SongBox from 'components/SongBox'
 
 export default function Home(){
   return (
-    <>
+    <div className='main-container'>
       <Header />
       <main>
-        <section className='section-playlist'>
-          <div className='title-section'>
-            <h2>Your Playlists</h2>
-            <img src={require('../../assets/icons/icon-arrow-right.png')} alt="" />
-          </div>
+        <div className='container-section-1'>
+          <section className='section-playlist'>
+            <div className='title-section'>
+              <h2>Your Playlists</h2>
+              <img src={require('../../assets/icons/icon-arrow-right.png')} alt="" />
+            </div>
 
-          <div className='playlist'>
-            <MusicBox
-              cover='caratula.png'
-              songInfo={
-                {
-                  name:"Chill 😎",
+            <div className='playlist'>
+              <MusicBox
+                cover='caratula.png'
+                songInfo={
+                  {
+                    name:"Chill 😎",
+                  }
                 }
-              }
-            />
+              />
 
-            <MusicBox
-              cover='willOfThePeople.png'
-              songInfo={
-                {
-                  name:"Chill",
+              <MusicBox
+                cover='caratula.png'
+                songInfo={
+                  {
+                    name:"Chill 😎",
+                  }
                 }
-              }
-            />
+              />
 
-            <MusicBox
-              cover='caratula.png'
-              songInfo={
-                {
-                  name:"Chill 🤘",
+
+              <MusicBox
+                cover='caratula.png'
+                songInfo={
+                  {
+                    name:"Chill 😎",
+                  }
                 }
-              }
-            />
+              />
 
-            <MusicBox
-              cover='willOfThePeople.png'
-              songInfo={
-                {
-                  name:"Chill",
+              <MusicBox
+                cover='caratula.png'
+                songInfo={
+                  {
+                    name:"Chill 😎",
+                  }
                 }
-              }
-            />
+              />                            
 
-            <MusicBox
-              cover='caratula.png'
-              songInfo={
-                {
-                  name:"Chill",
+              <MusicBox
+                cover='willOfThePeople.png'
+                songInfo={
+                  {
+                    name:"Chill",
+                  }
                 }
-              }
-            />                            
+              />
 
-          </div>
-        </section>
+              <MusicBox
+                cover='willOfThePeople.png'
+                songInfo={
+                  {
+                    name:"Chill",
+                  }
+                }
+              />
 
-        <section className='section-recently'>
-          <div className='title-section'>
-            <h2>Recently Played</h2>
-          </div>
+              <MusicBox
+                cover='caratula.png'
+                songInfo={
+                  {
+                    name:"Chill 🤘",
+                  }
+                }
+              />
 
-          <div className='songs'>
+              <MusicBox
+                cover='willOfThePeople.png'
+                songInfo={
+                  {
+                    name:"Chill",
+                  }
+                }
+              />
+
+              <MusicBox
+                cover='caratula.png'
+                songInfo={
+                  {
+                    name:"Chill",
+                  }
+                }
+              />                            
+
+            </div>
+          </section>
+
+          <section className='section-recently'>
+            <div className='title-section'>
+              <h2>Recently Played</h2>
+            </div>
+
+            <div className='songs'>
+                <SongBox
+                  cover="willOfThePeople.png"
+                  songInfo = {
+                    {
+                      name : "Will of The People",
+                      artist : "Muse",
+                      duration : "02:30"
+                    }
+                  }
+                />
+            </div>
+
+            <div className='songs'>
               <SongBox
                 cover="willOfThePeople.png"
                 songInfo = {
@@ -81,20 +132,23 @@ export default function Home(){
                   }
                 }
               />
-          </div>
-        </section>
-      </main>
+            </div>
 
-      <Player
-        cover="willOfThePeople.png"
-        songInfo={
-          {
-            name:"Will Of The People",
-            artist:"Muse",
-            duration:"02:30"
-          }
-        }
-      />
-   </>
+            <div className='songs'>
+              <SongBox
+                cover="willOfThePeople.png"
+                songInfo = {
+                  {
+                    name : "Will of The People",
+                    artist : "Muse",
+                    duration : "02:30"
+                  }
+                }
+              />
+            </div>
+          </section>
+        </div>
+      </main>
+   </div>
   )
 }

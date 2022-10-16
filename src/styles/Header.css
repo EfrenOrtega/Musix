@@ -17,6 +17,7 @@ header {
   background-repeat: no-repeat;
   background-position: center;
   background-size: cover;
+  overflow: hidden;
 
   height: 20rem;
   padding: 1.5rem 2rem;
@@ -39,8 +40,9 @@ header .section-top {
 
   display: flex;
   justify-content: space-between;
+  align-items: center;
 
-  height: 50%;
+  height: fit-content;
 }
 
 header .user figure {
@@ -94,6 +96,9 @@ header .section-bottom {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  flex-wrap: wrap;
+
+  margin-top: 3rem;
 
   height: 50%;
   padding: 0 4rem;

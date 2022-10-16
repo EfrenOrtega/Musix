@@ -6,6 +6,7 @@ import SongBox from "./SongBox"
 export default function Header(){
   return(
     <header>
+
       <div className="section-top">
         <div className="search">
           <img src={require('../../assets/icons/icon-search.png')} alt="" />

@@ -1,0 +1,84 @@
+:root {
+  --main: #0B0C1C;
+  --second: #0E1026;
+  --third: #171929;
+  --extra: #333937;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+.menu {
+  position: relative;
+
+  background-color: var(--second);
+  max-width: 13rem;
+  text-align: center;
+
+  font-size: 16px !important;
+  height: calc(100% - 4.8em);
+
+  overflow-y: auto;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.menu::-webkit-scrollbar:vertical {
+  display: none;
+}
+
+.menu ul {
+  text-align: left !important;
+  margin-left: 2.2rem;
+}
+
+.menu li {
+  margin: 2.5rem 0;
+  display: flex;
+  align-items: center;
+  transition: all 0.3s ease-in;
+}
+
+
+.menu li img {
+  width: 1.5rem;
+  margin-right: 0.5rem;
+}
+
+nav a {
+  color: rgba(255, 255, 255, 0.75);
+  font-size: 1.1rem;
+  font-weight: 400;
+  margin: 0;
+}
+
+.menu a:hover {
+  color: white;
+}
+
+nav img {
+  width: 100%;
+}
+
+nav .logo-name-app {
+  margin: 3.5rem auto;
+  width: 50%;
+}
+
+nav .logo-name-app img:nth-child(1) {
+  width: 50%;
+}
+
+.developer {
+  min-width: 100%;
+  font-weight: 100;
+  font-size: 0.7rem;
+  letter-spacing: 0.05re m;
+
+  margin-bottom: 1rem;
+}

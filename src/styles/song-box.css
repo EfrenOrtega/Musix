@@ -14,23 +14,26 @@
 }
 
 .song-box {
+  font-size: 14.5px;
+
   position: relative;
 
   display: flex;
   align-items: center;
 
-  height: 5rem;
+  height: 5em;
   background-color: var(--third);
-  border-radius: 0.5rem;
-  padding: 0.5rem;
+  border-radius: 0.5em;
+  padding: 0.5em;
   font-family: 'Roboto', sans-serif;
 
   overflow: hidden;
+  width: 24em;
 }
 
 .song-box figure {
   display: block;
-  height: 4.5rem;
+  height: 4.5em;
 }
 
 .song-box img {
@@ -38,8 +41,8 @@
 }
 
 .song-box div:nth-child(3) {
-  margin-left: 3rem;
-  margin-right: 1rem;
+  margin-left: 5em;
+  margin-right: 1em;
 
   font-weight: 300;
 }
@@ -53,7 +56,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  margin-right: 0.7rem;
+  margin-right: 1em;
 }
 
 .cover span {
@@ -63,5 +66,5 @@
 
 .cover .play-icon {
   position: absolute;
-  width: 1.6rem;
+  width: 1.6em;
 }
