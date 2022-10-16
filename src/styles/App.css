@@ -2,6 +2,7 @@
  * @NOTE: Prepend a `~` to css file paths that are in your node_modules
  *        See https://github.com/webpack-contrib/sass-loader#imports
  */
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@100;300;400;700&display=swap');
 
 :root {
   --main: #0B0C1C;
@@ -10,16 +11,20 @@
   --extra: #333937;
 }
 
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
 body {
   position: relative;
   color: white;
   height: 100vh;
   background-color: var(--main);
   font-family: sans-serif;
-  overflow-y: hidden;
-  display: flex;
-  justify-content: center;
-  align-items: center;
+  width: 100%;
+  min-width: 65rem;
 }
 
 button {

@@ -1,0 +1,29 @@
+* {
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+}
+
+.music-box {
+  width: fit-content;
+  text-align: center;
+  overflow: hidden;
+}
+
+.music-box .cover {
+  position: relative;
+  width: fit-content;
+  overflow: hidden;
+
+  margin: 0;
+}
+
+.music-box .cover span img {
+  position: absolute;
+  right: 1.2rem;
+  bottom: 1.2rem;
+}
+
+.music-box p {
+  margin: 0.2rem 0;
+}
