@@ -13,7 +13,7 @@
 
 header {
   position: relative;
-  background-image: url('../../assets/images/header-backgroud.jpg');
+  background-image: url('/images/header-backgroud.jpg');
   background-repeat: no-repeat;
   background-position: center;
   background-size: cover;

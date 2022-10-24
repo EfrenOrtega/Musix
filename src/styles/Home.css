@@ -51,6 +51,7 @@ main .container-section-1 {
 }
 
 .section-playlist .music-box {
+  font-size: 14px;
   margin-right: 1.25rem;
 }
 
@@ -79,6 +80,23 @@ main .container-section-1 {
 main .song-box {
   font-size: 11px;
 }
+
+
+
+/*
+  Section "Recently Added"
+*/
+.recently-added {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.recently-added .music-box {
+  font-size: 12px;
+  margin: 0 0.5rem;
+}
+
 
 @media only screen and (max-width: 820px) {
   html {

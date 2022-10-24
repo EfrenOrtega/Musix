@@ -1,8 +1,8 @@
 import SongBox from '../components/SongBox';
-import MusicBox from 'components/MusicBox';
-import Genres from 'components/Genres';
-import Artist from 'components/Artist';
-import Player from 'components/Player';
+import MusicBox from '../components/MusicBox';
+import Genres from '../components/Genres';
+import Artist from '../components/Artist';
+import Player from '../components/Player';
 
 export default function TestComponents() {
   return (
@@ -31,7 +31,7 @@ export default function TestComponents() {
         cover="caratula.png"
         songInfo={{
           name: 'Will of The People',
-          artist:'Muse'
+          artist: 'Muse'
         }}
       />
 
@@ -42,7 +42,7 @@ export default function TestComponents() {
       <br />
       <Genres
         cover="willOfThePeople.png"
-        genre= "Rock"
+        genre="Rock"
       />
 
       <br />
@@ -50,16 +50,16 @@ export default function TestComponents() {
 
       <h2>Artist Box</h2>
       <br />
-      <Artist 
-        cover = "muse.jpg"
-        artist= "Muse"
+      <Artist
+        cover="muse.jpg"
+        artist="Muse"
       />
 
       <br />
       <br />
       <hr />
       <Player
-        cover = "willOfThePeople.png"
+        cover="willOfThePeople.png"
         songInfo={{
           name: 'The Will of The People',
           artist: 'Muse',

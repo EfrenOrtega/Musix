@@ -1,11 +1,94 @@
 import '../styles/Home.css'
 
-import Header from "components/Header"
-import MusicBox from "components/MusicBox"
-import Player from "components/Player"
-import SongBox from 'components/SongBox'
+import Header from "../components/Header"
+import MusicBox from "../components/MusicBox"
+import SongBox from '../components/SongBox'
 
-export default function Home(){
+import responsiveBoxes from '../helpers/responsiveBoxes'
+import { useEffect, useState } from 'react'
+
+
+const Songs = [
+  <MusicBox
+    cover="willOfThePeople.png"
+    songInfo={
+      {
+        name: "Will of The People",
+        artist: "Muse"
+      }
+    }
+  />,
+  <MusicBox
+    cover="willOfThePeople.png"
+    songInfo={
+      {
+        name: "Will of The People",
+        artist: "Muse"
+      }
+    }
+  />,
+  <MusicBox
+    cover="willOfThePeople.png"
+    songInfo={
+      {
+        name: "Will of The People",
+        artist: "Muse"
+      }
+    }
+  />,
+  <MusicBox
+    cover="willOfThePeople.png"
+    songInfo={
+      {
+        name: "Will of The People",
+        artist: "Muse"
+      }
+    }
+  />,
+  <MusicBox
+    cover="willOfThePeople.png"
+    songInfo={
+      {
+        name: "Will of The People",
+        artist: "Muse"
+      }
+    }
+  />,
+  <MusicBox
+    cover="willOfThePeople.png"
+    songInfo={
+      {
+        name: "Will of The People",
+        artist: "Muse"
+      }
+    }
+  />,
+  <MusicBox
+    cover="willOfThePeople.png"
+    songInfo={
+      {
+        name: "Will of The People",
+        artist: "Muse"
+      }
+    }
+  />
+]
+
+
+
+export default function Home() {
+
+  const [quantity, setQuantity] = useState(0)
+
+  useEffect(() => {
+    window.addEventListener('resize', handleResize)
+  }, [])
+
+
+  const handleResize = () => {
+    setQuantity(responsiveBoxes())
+  }
+
   return (
     <div className='main-container'>
       <Header />
@@ -14,7 +97,7 @@ export default function Home(){
           <section className='section-playlist'>
             <div className='title-section'>
               <h2>Your Playlists</h2>
-              <img src={require('../../assets/icons/icon-arrow-right.png')} alt="" />
+              <img src="/icons/icon-arrow-right.png" alt="" />
             </div>
 
             <div className='playlist'>
@@ -22,7 +105,7 @@ export default function Home(){
                 cover='caratula.png'
                 songInfo={
                   {
-                    name:"Chill 😎",
+                    name: "Chill 😎",
                   }
                 }
               />
@@ -31,7 +114,7 @@ export default function Home(){
                 cover='caratula.png'
                 songInfo={
                   {
-                    name:"Chill 😎",
+                    name: "Chill 😎",
                   }
                 }
               />
@@ -41,7 +124,7 @@ export default function Home(){
                 cover='caratula.png'
                 songInfo={
                   {
-                    name:"Chill 😎",
+                    name: "Chill 😎",
                   }
                 }
               />
@@ -50,16 +133,7 @@ export default function Home(){
                 cover='caratula.png'
                 songInfo={
                   {
-                    name:"Chill 😎",
-                  }
-                }
-              />                            
-
-              <MusicBox
-                cover='willOfThePeople.png'
-                songInfo={
-                  {
-                    name:"Chill",
+                    name: "Chill 😎",
                   }
                 }
               />
@@ -68,16 +142,7 @@ export default function Home(){
                 cover='willOfThePeople.png'
                 songInfo={
                   {
-                    name:"Chill",
-                  }
-                }
-              />
-
-              <MusicBox
-                cover='caratula.png'
-                songInfo={
-                  {
-                    name:"Chill 🤘",
+                    name: "Chill",
                   }
                 }
               />
@@ -86,7 +151,7 @@ export default function Home(){
                 cover='willOfThePeople.png'
                 songInfo={
                   {
-                    name:"Chill",
+                    name: "Chill",
                   }
                 }
               />
@@ -95,10 +160,28 @@ export default function Home(){
                 cover='caratula.png'
                 songInfo={
                   {
-                    name:"Chill",
+                    name: "Chill 🤘",
                   }
                 }
-              />                            
+              />
+
+              <MusicBox
+                cover='willOfThePeople.png'
+                songInfo={
+                  {
+                    name: "Chill",
+                  }
+                }
+              />
+
+              <MusicBox
+                cover='caratula.png'
+                songInfo={
+                  {
+                    name: "Chill",
+                  }
+                }
+              />
 
             </div>
           </section>
@@ -109,26 +192,13 @@ export default function Home(){
             </div>
 
             <div className='songs'>
-                <SongBox
-                  cover="willOfThePeople.png"
-                  songInfo = {
-                    {
-                      name : "Will of The People",
-                      artist : "Muse",
-                      duration : "02:30"
-                    }
-                  }
-                />
-            </div>
-
-            <div className='songs'>
               <SongBox
                 cover="willOfThePeople.png"
-                songInfo = {
+                songInfo={
                   {
-                    name : "Will of The People",
-                    artist : "Muse",
-                    duration : "02:30"
+                    name: "Will of The People",
+                    artist: "Muse",
+                    duration: "02:30"
                   }
                 }
               />
@@ -137,18 +207,53 @@ export default function Home(){
             <div className='songs'>
               <SongBox
                 cover="willOfThePeople.png"
-                songInfo = {
+                songInfo={
                   {
-                    name : "Will of The People",
-                    artist : "Muse",
-                    duration : "02:30"
+                    name: "Will of The People",
+                    artist: "Muse",
+                    duration: "02:30"
+                  }
+                }
+              />
+            </div>
+
+            <div className='songs'>
+              <SongBox
+                cover="willOfThePeople.png"
+                songInfo={
+                  {
+                    name: "Will of The People",
+                    artist: "Muse",
+                    duration: "02:30"
                   }
                 }
               />
             </div>
           </section>
+
         </div>
+
+        <section className='section-recently-added'>
+          <div className='title-section'>
+            <h2>Recently Added</h2>
+            <img src="/icons/icon-arrow-right.png" alt="" />
+          </div>
+
+          <div className='recently-added'>
+            {
+
+              Songs.map((el, index) => {
+                if (index < quantity) {
+                  return el
+                }
+              })
+
+            }
+
+
+          </div>
+        </section>
       </main>
-   </div>
+    </div>
   )
 }

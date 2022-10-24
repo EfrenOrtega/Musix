@@ -1,8 +1,8 @@
 import '../styles/song-box.css';
 
 //  songInfo contain -> Song Name, Artist and Duration
-export default function SongBox({cover, songInfo}) {
-  const {name, artist, duration} = songInfo;
+export default function SongBox({ cover, songInfo }) {
+  const { name, artist, duration } = songInfo;
 
   return (
     <div className="song-box">
@@ -10,13 +10,13 @@ export default function SongBox({cover, songInfo}) {
         <span>
           <img
             className="play-icon"
-            src={require('../../assets/icons/play-icon.png')}
+            src={'/icons/play-icon.png'}
             alt="Play"
           />
         </span>
 
         <figure>
-          <img src={require(`../../assets/images/${cover}`)} alt={name} />
+          <img src={`/images/${cover}`} alt={name} />
         </figure>
       </div>
 

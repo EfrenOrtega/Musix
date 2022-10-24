@@ -1,25 +1,30 @@
 import '../styles/music-box.css'
+import { Link } from 'react-router-dom';
 
-export default function MusicBox({cover, songInfo}) {
 
-  const {name, artist} = songInfo
+export default function MusicBox({ cover, songInfo }) {
+
+  const { name, artist } = songInfo
 
   return (
     <div className="music-box">
 
       <div className="cover">
+
         <span>
-          <img className='play-icon' src={require("../../assets/icons/play-icon.png")} alt="Play" />
+          <Link to="/playlist/01">
+            <img className='play-icon' src={"/icons/play-icon.png"} alt="Play" />
+          </Link>
         </span>
 
         <figure>
-          <img src={require(`../../assets/images/${cover}`)} alt="" />
+          <img src={`/images/${cover}`} alt="" />
         </figure>
       </div>
-      
+
       <p><strong>{name}</strong></p>
 
-      {artist && 
+      {artist &&
         <p>{artist}</p>
       }
 

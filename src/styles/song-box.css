@@ -51,20 +51,24 @@
   font-weight: 300;
 }
 
-.cover {
-  position: relative;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+.section-playlist .music-box {
   margin-right: 1em;
 }
 
-.cover span {
+.song-box .cover {
+  position: relative;
+  margin-right: 0.5rem;
+}
+
+.song-box .cover span {
   display: contents;
   cursor: pointer;
 }
 
-.cover .play-icon {
+.song-box .cover .play-icon {
   position: absolute;
-  width: 1.6em;
+  width: 1.5em;
+
+  bottom: 0.2rem;
+  right: 0.3rem;
 }

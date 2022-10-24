@@ -7,6 +7,7 @@
 .music-box {
   width: fit-content;
   min-width: fit-content;
+
   text-align: center;
   overflow: hidden;
 }
@@ -15,16 +16,36 @@
   position: relative;
   width: fit-content;
   overflow: hidden;
-
-  margin: 0;
+  width: 100%;
 }
 
-.music-box .cover span img {
+.music-box .cover span a {
   position: absolute;
-  right: 1.2rem;
-  bottom: 1.2rem;
+  right: 0rem;
+  bottom: 0rem;
+
+  height: 1.5rem;
+  width: 1.4rem;
+}
+
+.music-box .cover span a img {
+  position: relative;
+  height: inherit;
+  width: inherit;
 }
 
 .music-box p {
-  margin: 0.2rem 0;
+  margin: 0.2em 0;
+}
+
+.music-box .cover figure img {
+  width: 8rem;
+  height: 8rem;
+}
+
+.music-box .cover figure {
+  width: 100%;
+  height: 100%;
+
+  overflow: hidden;
 }
