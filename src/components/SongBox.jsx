@@ -6,6 +6,7 @@ export default function SongBox({ cover, songInfo }) {
 
   return (
     <div className="song-box">
+
       <div className="cover">
         <span>
           <img
@@ -19,7 +20,6 @@ export default function SongBox({ cover, songInfo }) {
           <img src={`/images/${cover}`} alt={name} />
         </figure>
       </div>
-
 
       <div>
         <p id='name'><strong>{name}</strong></p>

@@ -1,8 +1,6 @@
 import './styles/App.css';
 import { MemoryRouter as Router, Routes, Route } from 'react-router-dom';
 
-//  Import TestComponents
-import TestComponents from './pages/TestComponents';
 import Home from './pages/Home';
 import Menu from "./components/Menu"
 import Player from "./components/Player"

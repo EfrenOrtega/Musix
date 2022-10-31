@@ -75,3 +75,75 @@
   bottom: 0.2rem;
   right: 0.3rem;
 }
+
+
+
+/*Song Box Large*/
+.song-box.large {
+  width: 100%;
+  height: 2.9rem;
+  justify-content: space-between;
+  font-size: 0.8rem;
+
+  margin-bottom: 0.3rem;
+}
+
+.song-box.large div:nth-child(2) {
+  width: 15%;
+}
+
+.song-box.large div:nth-child(2) p {
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+}
+
+.song-box.large div:nth-child(3) {
+  width: 5%;
+  margin: 0;
+}
+
+
+.song-box.large .cover {
+  font-size: 0.57rem;
+  border-radius: 0.15rem;
+  overflow: hidden;
+}
+
+.song-box.large .container-cover-data .data {
+  width: 10rem;
+  overflow: hidden;
+}
+
+.song-box.large .container-cover-data {
+  display: flex;
+}
+
+.song-box.large .container-cover-data .data p {
+  height: 1.1rem;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+}
+
+.song-box.large .btn-options {
+
+  display: flex;
+  align-items: center;
+
+  height: inherit;
+
+}
+
+.song-box.large .btn-options img {
+  height: 1.8rem;
+  width: auto;
+  cursor: pointer;
+}
+
+.song-box.large .btn-options img:last-child {
+  height: 1.5rem;
+  width: auto;
+  margin-right: 1rem;
+  margin-left: 0.5rem;
+}

@@ -13,14 +13,19 @@
 
 header {
   position: relative;
-  background-image: url('/images/header-backgroud.jpg');
-  background-repeat: no-repeat;
-  background-position: center;
-  background-size: cover;
   overflow: hidden;
 
   height: 20rem;
   padding: 1.5rem 2rem;
+}
+
+header .background {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: inherit;
+  object-fit: cover;
 }
 
 header::after {
@@ -50,8 +55,8 @@ header .section-top {
 }
 
 header .user figure {
-  height: 4.3rem;
-  width: 4.3rem;
+  height: 4rem;
+  width: 4rem;
   overflow: hidden;
   border-radius: 50%;
 }
@@ -115,4 +120,15 @@ header .section-bottom h1 {
 header .section-bottom .title {
   font-size: 1.2rem;
   margin-bottom: 0.3rem;
+}
+
+
+/*Header Bottom Playlist*/
+header .bottom-playlist h1 {
+  margin: 0.7rem 0;
+}
+
+header .bottom-playlist p:last-child {
+  text-align: right;
+  font-weight: 600;
 }

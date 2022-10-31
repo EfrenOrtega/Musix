@@ -3,11 +3,12 @@ import '../styles/Header.css'
 import Artist from "./Artist"
 import SongBox from "./SongBox"
 import SettingsUser from './SettingsUser'
+import HeaderBottomPlaylist from './micro/HeaderBottomPlaylist'
+import HeaderBottomHome from './micro/HeaderBottomHome'
 
 import { useState } from 'react'
 
-export default function Header() {
-
+export default function Header({ type, data, background }) {
 
   //Line 12 - 21 is to Display and Hide the user options
   const [displayOptions, setDisplayOptions] = useState(false);
@@ -22,6 +23,8 @@ export default function Header() {
 
   return (
     <header>
+
+      <img className='background' src={`./images/${background}`} alt="" />
 
       <div className="section-top">
         <div className="search">
@@ -40,19 +43,16 @@ export default function Header() {
       </div>
 
       <div className="section-bottom">
-        <h1>No Music No Life</h1>
 
-        <div>
-          <p className='title'><strong>Daily Recomendation</strong></p>
-          <SongBox
-            cover="willOfThePeople.png"
-            songInfo={{
-              name: "Will Of The People",
-              artist: "Muse",
-              duration: "03:00",
-            }}
-          />
-        </div>
+        {
+          type == "home"
+            ? <HeaderBottomHome />
+            :
+            type == "playlist"
+              ? <HeaderBottomPlaylist data={data} />
+              : undefined
+        }
+
 
       </div>
     </header>

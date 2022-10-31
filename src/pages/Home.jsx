@@ -21,7 +21,7 @@ const SongsAdded = [
     }
   />,
   <MusicBox
-    cover="museLaw.jpg"
+    cover="The 2nd Law - Muse.jpg"
     songInfo={
       {
         name: "Liquid State",
@@ -162,7 +162,15 @@ export default function Home() {
 
   return (
     <div className='main-container'>
-      <Header />
+      <Header
+        type="home"
+        background='header-backgroud.jpg'
+        data={{
+          title: "No Music No Life",
+          creator: "Created by name user",
+          created: "15/10/2022"
+        }}
+      />
       <main>
         <div className='container-section-1'>
           <section className='section-playlist'>

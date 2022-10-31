@@ -107,4 +107,5 @@ main {
   position: relative;
   overflow-x: hidden;
   height: calc(100% - 4.8em);
+  width: 100vw;
 }
