@@ -1,0 +1,78 @@
+:root {
+  --main: #0B0C1C;
+  --second: #0E1026;
+  --third: #171929;
+  --extra: #333937;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+}
+
+.settings-user {
+  position: absolute;
+  right: 0;
+  margin-top: 0.4rem;
+  background-color: var(--second);
+
+  border-radius: 0.2rem;
+  width: 16rem;
+  min-height: 11.5rem;
+
+  overflow: hidden;
+
+  z-index: 9999;
+}
+
+.subtitle {
+  color: rgb(255, 255, 255);
+  font-weight: 400;
+  margin-top: 0.5rem;
+  padding: 0 0.5rem;
+}
+
+.user .user-info figure {
+  position: relative;
+  width: 3rem;
+  height: 3rem;
+  margin-right: 0.3rem;
+}
+
+.user .user-info figure img {
+  width: inherit;
+  height: inherit;
+  object-fit: cover;
+}
+
+.user .user-info {
+  display: flex;
+  padding: 0 0.5rem;
+}
+
+.user .settings-user .user-info span {
+  font-size: 0.85rem;
+}
+
+.user .settings-user .line {
+  display: block;
+  width: 100%;
+  height: 0.005rem;
+  background-color: #44465f;
+
+  margin-bottom: 0.5rem;
+}
+
+.user .settings-user .options-settings-user {
+  margin-top: 0.5rem;
+}
+
+.user .settings-user .options-settings-user li {
+  display: block;
+  padding: 0.5rem 0;
+  padding-left: 0.5rem;
+}
+
+.user .settings-user .options-settings-user li:hover {
+  background-color: var(--main);
+}

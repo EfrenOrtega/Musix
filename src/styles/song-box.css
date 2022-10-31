@@ -34,10 +34,13 @@
 .song-box figure {
   display: block;
   height: 4.5em;
+  width: 4.5em;
+  overflow: hidden;
 }
 
 .song-box img {
   height: inherit;
+  width: inherit;
 }
 
 .song-box div:nth-child(3) {

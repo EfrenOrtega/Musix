@@ -98,6 +98,53 @@ main .song-box {
 }
 
 
+/*
+  Section "Your Likes"
+*/
+.your-likes {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.your-likes .music-box {
+  font-size: 12px;
+  margin: 0 0.5rem;
+}
+
+.your-likes .music-box .cover figure img {
+  width: 10rem;
+  height: 10rem;
+}
+
+/*
+  Section Genres
+*/
+.section-genres .genres {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+
+
+/*
+  Section Artist
+*/
+.section-artist .artist {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 3rem;
+}
+
+section {
+  margin-top: 3rem;
+}
+
+
 @media only screen and (max-width: 820px) {
   html {
     font-size: 12px;

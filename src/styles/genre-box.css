@@ -10,7 +10,7 @@
   height: 4.5rem;
   overflow: hidden;
 
-  width: fit-content;
+  width: 12.5rem;
 
   display: flex;
   align-items: center;
@@ -20,4 +20,14 @@
 .genres-box p {
   position: absolute;
   font-size: 1.5rem;
+}
+
+.genres-box figure {
+  width: 100%;
+  height: 100%;
+}
+
+.genres-box img {
+  width: inherit;
+  height: auto;
 }

@@ -3,63 +3,132 @@ import '../styles/Home.css'
 import Header from "../components/Header"
 import MusicBox from "../components/MusicBox"
 import SongBox from '../components/SongBox'
+import Genres from '../components/Genres'
+import Artist from '../components/Artist'
 
 import responsiveBoxes from '../helpers/responsiveBoxes'
 import { useEffect, useState } from 'react'
 
 
-const Songs = [
+const SongsAdded = [
   <MusicBox
-    cover="willOfThePeople.png"
+    cover="blondeRedhead.jpg"
     songInfo={
       {
-        name: "Will of The People",
+        name: "In Particular",
+        artist: "Blonde Redhead"
+      }
+    }
+  />,
+  <MusicBox
+    cover="museLaw.jpg"
+    songInfo={
+      {
+        name: "Liquid State",
         artist: "Muse"
       }
     }
   />,
   <MusicBox
-    cover="willOfThePeople.png"
+    cover="vacationsVibes.jpg"
     songInfo={
       {
-        name: "Will of The People",
-        artist: "Muse"
+        name: "Young",
+        artist: "Vacations"
       }
     }
   />,
   <MusicBox
-    cover="willOfThePeople.png"
+    cover="radioheadHail.jpg"
     songInfo={
       {
-        name: "Will of The People",
-        artist: "Muse"
+        name: "A wolf At the Door",
+        artist: "Radiohead"
       }
     }
   />,
   <MusicBox
-    cover="willOfThePeople.png"
+    cover="billieEilishWhenWe.jpg"
     songInfo={
       {
-        name: "Will of The People",
-        artist: "Muse"
+        name: "You should see me in a cry",
+        artist: "Billie Eilish"
       }
     }
   />,
   <MusicBox
-    cover="willOfThePeople.png"
+    cover="BonesUnrendered.jpg"
     songInfo={
       {
-        name: "Will of The People",
-        artist: "Muse"
+        name: "CtrlAltDelete",
+        artist: "Bones"
       }
     }
   />,
   <MusicBox
-    cover="willOfThePeople.png"
+    cover="BonesNoReddemingQualities.jpg"
     songInfo={
       {
-        name: "Will of The People",
-        artist: "Muse"
+        name: "Oxygen",
+        artist: "Bones"
+      }
+    }
+  />
+]
+
+
+const SongsLikes = [
+  <MusicBox
+    cover="jesseTabish.jpg"
+    songInfo={
+      {
+        name: "Dread Harp Blues",
+        artist: "Jesse Tabish"
+      }
+    }
+  />,
+  <MusicBox
+    cover="marilynManson.jpg"
+    songInfo={
+      {
+        name: "Killing Strangers",
+        artist: "Marilyn Manson"
+      }
+    }
+  />,
+  <MusicBox
+    cover="aurora.jpg"
+    songInfo={
+      {
+        name: "The Seed",
+        artist: "Aurora"
+      }
+    }
+  />,
+  <MusicBox
+    cover="massive attack.jpg"
+    songInfo={
+      {
+        name: "Angel",
+        artist: "Massive Attack"
+      }
+    }
+  />,
+  <MusicBox
+    cover="placebo.jpg"
+    songInfo={
+      {
+        name: "Battle for the Sun",
+        artist: "Placebo"
+      }
+    }
+  />,
+  <MusicBox
+    cover="goldKey.jpg"
+    songInfo={
+      {
+        name: "Creep in Slowly",
+        artist: "Gold Key"
       }
     }
   />,
@@ -75,19 +144,21 @@ const Songs = [
 ]
 
 
-
 export default function Home() {
 
-  const [quantity, setQuantity] = useState(0)
+  const [quantity, setQuantity] = useState(null)
+
+  const handleResize = () => {
+    setQuantity(responsiveBoxes(elementos))
+  }
 
   useEffect(() => {
+    handleResize()
     window.addEventListener('resize', handleResize)
   }, [])
 
+  let elementos = ['.recently-added .music-box', '.your-likes .music-box']
 
-  const handleResize = () => {
-    setQuantity(responsiveBoxes())
-  }
 
   return (
     <div className='main-container'>
@@ -193,11 +264,11 @@ export default function Home() {
 
             <div className='songs'>
               <SongBox
-                cover="willOfThePeople.png"
+                cover="jesseTabish.jpg"
                 songInfo={
                   {
-                    name: "Will of The People",
-                    artist: "Muse",
+                    name: "Dread Harp Blues",
+                    artist: "Jesse Tabish",
                     duration: "02:30"
                   }
                 }
@@ -206,11 +277,11 @@ export default function Home() {
 
             <div className='songs'>
               <SongBox
-                cover="willOfThePeople.png"
+                cover="marilynManson.jpg"
                 songInfo={
                   {
-                    name: "Will of The People",
-                    artist: "Muse",
+                    name: "Killing Strangers",
+                    artist: "Marilyn Manson",
                     duration: "02:30"
                   }
                 }
@@ -219,11 +290,11 @@ export default function Home() {
 
             <div className='songs'>
               <SongBox
-                cover="willOfThePeople.png"
+                cover="HeroesDelSilencio.jpg"
                 songInfo={
                   {
-                    name: "Will of The People",
-                    artist: "Muse",
+                    name: "Maldito Duende",
+                    artist: "Héroes del Silencio",
                     duration: "02:30"
                   }
                 }
@@ -240,11 +311,19 @@ export default function Home() {
           </div>
 
           <div className='recently-added'>
-            {
-
-              Songs.map((el, index) => {
-                if (index < quantity) {
-                  return el
+            <MusicBox
+              cover="willOfThePeople.png"
+              songInfo={
+                {
+                  name: "Will of The People",
+                  artist: "Muse"
+                }
+              }
+            />
+            {quantity &&
+              SongsAdded.map((el, index) => {
+                if (index < quantity[0]) {
+                  return SongsAdded[index - 1]
                 }
               })
 
@@ -253,6 +332,117 @@ export default function Home() {
 
           </div>
         </section>
+
+        <section className='section-your-likes'>
+          <div className='title-section'>
+            <h2>Your Likes</h2>
+            <img src="/icons/icon-arrow-right.png" alt="" />
+          </div>
+
+          <div className='your-likes'>
+            <MusicBox
+              cover="willOfThePeople.png"
+              songInfo={
+                {
+                  name: "Will of The People",
+                  artist: "Muse"
+                }
+              }
+            />
+            {quantity &&
+              SongsLikes.map((el, index) => {
+                if (index < quantity[1]) {
+                  return SongsLikes[index - 1]
+                }
+              })
+
+            }
+          </div>
+
+        </section>
+
+        <section className='section-genres'>
+          <div className='title-section'>
+            <h2>Genres</h2>
+            <img src="/icons/icon-arrow-right.png" alt="" />
+          </div>
+
+          <div className='genres'>
+            <Genres
+              cover="willOfThePeople.png"
+              genre="Rock"
+            />
+
+            <Genres
+              cover="willOfThePeople.png"
+              genre="Pop"
+            />
+
+            <Genres
+              cover="badBunny.jpg"
+              genre="Reggaeton"
+            />
+
+            <Genres
+              cover="willOfThePeople.png"
+              genre="Pop"
+            />
+
+            <Genres
+              cover="twentyOnePilots.jpg"
+              genre="Pop"
+            />
+
+          </div>
+
+
+        </section>
+
+        <section className='section-artist'>
+          <div className='title-section'>
+            <h2>Artist</h2>
+            <img src="/icons/icon-arrow-right.png" alt="" />
+          </div>
+
+          <div className='artist'>
+            <Artist
+              cover="muse.jpg"
+              artist="Muse"
+            />
+
+            <Artist
+              cover="twentyOnePilots.jpeg"
+              artist="Twenty One Pilots"
+            />
+
+            <Artist
+              cover="radioHead.jpeg"
+              artist="RadioHead"
+            />
+
+            <Artist
+              cover="theStrokes.jpeg"
+              artist="The Strokes"
+            />
+
+            <Artist
+              cover="BlondeRedheadArtist.jpg"
+              artist="Blonde Redhead"
+            />
+
+            <Artist
+              cover="AC-DC.jpeg"
+              artist="AC/DC"
+            />
+
+            <Artist
+              cover="interpol.jpeg"
+              artist="Interpol"
+            />
+          </div>
+
+        </section>
+
       </main>
     </div>
   )

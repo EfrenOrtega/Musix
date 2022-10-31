@@ -2,8 +2,24 @@ import '../styles/Header.css'
 
 import Artist from "./Artist"
 import SongBox from "./SongBox"
+import SettingsUser from './SettingsUser'
+
+import { useState } from 'react'
 
 export default function Header() {
+
+
+  //Line 12 - 21 is to Display and Hide the user options
+  const [displayOptions, setDisplayOptions] = useState(false);
+
+  const handleClick = (e) => {
+    if (displayOptions) {
+      setDisplayOptions(false)
+    } else {
+      setDisplayOptions(true)
+    }
+  }
+
   return (
     <header>
 
@@ -13,10 +29,13 @@ export default function Header() {
           <input type="text" placeholder="Search" />
         </div>
 
-        <div className="user">
+        <div className="user" onClick={(e) => handleClick(e)}>
           <figure>
             <img src={'/images/user01.jpg'} alt="User Avatar" />
           </figure>
+
+          {displayOptions && <SettingsUser />}
+
         </div>
       </div>
 

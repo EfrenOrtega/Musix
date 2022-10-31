@@ -1,21 +1,29 @@
 
-export default function responsiveBoxes() {
+
+export default function responsiveBoxes(CHILDREN) {
+
   const $CONTAINER = document.querySelector('.recently-added')
-  const $MUSICBOX = document.querySelector('.recently-added .music-box')
 
-  let wContainer = null
-  let wMusicBox = null
-  let quantity = null
-  let marginMusicBox = null
+  let quantityArray = [];
 
-  let style = window.getComputedStyle($MUSICBOX)
+  CHILDREN.forEach(child => {
+    const $CHILDREN = document.querySelector(child)
+
+    let wContainer = null
+    let wChild = null
+    let marginChild = null
+    let quantity = null
+    let style = window.getComputedStyle($CHILDREN)
 
 
-  wContainer = $CONTAINER.getBoundingClientRect().width
-  wMusicBox = $MUSICBOX.offsetWidth
-  marginMusicBox = parseFloat(style.marginLeft) + parseFloat(style.marginRight)
+    wContainer = $CONTAINER.getBoundingClientRect().width
+    wChild = $CHILDREN.offsetWidth
+    marginChild = parseFloat(style.marginLeft) + parseFloat(style.marginRight)
 
-  quantity = Math.floor(wContainer / (wMusicBox + marginMusicBox))
+    quantity = Math.floor(wContainer / (wChild + marginChild))
 
-  return quantity
+    quantityArray.push(quantity);
+  });
+
+  return quantityArray;
 }
