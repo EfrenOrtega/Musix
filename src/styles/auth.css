@@ -1,0 +1,151 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@100;300;400;700&display=swap');
+
+:root {
+  --main: #0B0C1C;
+  --second: #0E1026;
+  --third: #171929;
+  --extra: #333937;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+.auth {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  min-height: 40rem;
+
+  background-image: url('/public/images/background-login.png');
+  background-position: top;
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-attachment: fixed;
+
+  display: flex;
+
+  font-family: 'Roboto', sans-serif;
+}
+
+.auth .left {
+  position: relative;
+  width: 50%;
+  height: 100%;
+  background-color: var(--main);
+
+  padding: 1.5rem 4.5rem;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+
+  transition: all 0.3s ease-in-out;
+
+  min-height: 40rem;
+}
+
+.auth .left .signup {
+  display: hidden;
+}
+
+.auth .left .login {
+  display: hidden;
+}
+
+.auth .left input {
+  margin-top: 1.6rem;
+  border-bottom: 1px solid white;
+
+  background-color: rgba(14, 16, 38, 40);
+}
+
+.auth .left .signup-span {
+  text-align: center;
+  font-size: 1rem;
+  margin-top: 2.4rem;
+}
+
+.auth .left .signup-span a {
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.auth button {
+  margin: 0 auto;
+  background-color: white;
+  color: black;
+  font-weight: bold;
+  width: 45%;
+  border-radius: 10rem;
+
+  border: none;
+  outline: none;
+
+  margin-top: 2rem;
+}
+
+.auth .left h1 {
+  width: 100%;
+  text-align: left !important;
+  font-weight: 400;
+  font-size: 2.2rem;
+  margin-bottom: 1rem;
+}
+
+.auth .left span {
+  text-align: right;
+  margin-top: 0.3rem;
+  font-size: 0.8rem;
+}
+
+.auth .left a {
+  color: white;
+}
+
+.auth .right {
+
+  position: fixed;
+  left: 49%;
+
+  width: 50%;
+  height: 100%;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  transition: all 0.3s ease-in-out;
+}
+
+.auth .right p {
+  margin-top: 2rem;
+  font-weight: bold;
+  font-size: 4rem;
+}
+
+
+/*Animation to Display and Hide login/signup*/
+.auth .left.true {
+  transform: translate(100%);
+}
+
+.auth .left .login.false {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.auth .left .signup.true {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.auth .right.true {
+  transform: translate(-100%);
+  left: 50%;
+}

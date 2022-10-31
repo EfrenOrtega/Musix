@@ -1,6 +1,12 @@
 import '../styles/settings-user.css'
 
 export default function SettingsUser() {
+
+  const logOut = () => {
+    localStorage.setItem('login', false)
+    location.reload()
+  }
+
   return (
     <div className="settings-user">
 
@@ -19,7 +25,7 @@ export default function SettingsUser() {
 
         <ul className='options-settings-user'>
           <li>Profile</li>
-          <li>Log Out</li>
+          <li onClick={(e) => logOut(e)}>Log Out</li>
         </ul>
 
       </div>
