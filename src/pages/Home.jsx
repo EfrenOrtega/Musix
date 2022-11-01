@@ -82,51 +82,62 @@ const SongsLikes = [
     cover="jesseTabish.jpg"
     songInfo={
       {
+        id: 8,
         name: "Dread Harp Blues",
         artist: "Jesse Tabish"
       }
     }
+    pathSong='content/audio_test.mp3'
   />,
   <MusicBox
     cover="marilynManson.jpg"
     songInfo={
       {
+        id: 9,
         name: "Killing Strangers",
         artist: "Marilyn Manson"
       }
     }
+    pathSong='content/audio_test_2.mp3'
   />,
   <MusicBox
     cover="aurora.jpg"
     songInfo={
       {
+        id: 10,
         name: "The Seed",
         artist: "Aurora"
       }
     }
+    pathSong='content/audio_test.mp3'
   />,
   <MusicBox
     cover="massive attack.jpg"
     songInfo={
       {
+        id: 20,
         name: "Angel",
         artist: "Massive Attack"
       }
     }
+    pathSong='content/audio_test_2.mp3'
   />,
   <MusicBox
     cover="placebo.jpg"
     songInfo={
       {
+        id: 30,
         name: "Battle for the Sun",
         artist: "Placebo"
       }
     }
+    pathSong='content/audio_test.mp3'
   />,
   <MusicBox
     cover="goldKey.jpg"
     songInfo={
       {
+        id: 40,
         name: "Creep in Slowly",
         artist: "Gold Key"
       }
@@ -136,6 +147,7 @@ const SongsLikes = [
     cover="willOfThePeople.png"
     songInfo={
       {
+        id: 50,
         name: "Will of The People",
         artist: "Muse"
       }

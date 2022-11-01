@@ -26,6 +26,8 @@
 
   height: 1.5rem;
   width: 1.4rem;
+
+  cursor: pointer;
 }
 
 .music-box .cover span a img {
