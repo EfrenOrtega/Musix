@@ -82,28 +82,52 @@
   width: 40%;
 }
 
-#progress {
-  -webkit-appearance: none;
+.container-progress {
   display: flex;
   align-items: center;
-  margin-bottom: 0.188em;
 
-  min-width: 100%;
-  height: 5px;
-}
-
-#progress::-webkit-progress-bar {
+  position: relative;
   background-color: var(--extra);
-  border-radius: 1em;
+  margin-bottom: 0.188em;
+  min-width: 100%;
+  height: 0.3rem;
+  border-radius: 1rem;
 }
 
-#progress::-webkit-progress-value {
+
+#slider {
+  -webkit-appearance: none;
+  background: rgba(0, 0, 0, 0);
+
+  width: calc(100% + 12px);
+  height: inherit;
+
+  padding: 0;
+  margin: 0;
+
+  position: absolute;
+  left: -6px;
+
+  box-shadow: none;
+  cursor: pointer;
+}
+
+
+.slider-bar {
+  position: absolute;
+  left: 0;
+  width: 0%;
+  height: inherit;
+  background: linear-gradient(1deg, #d32f2f 13%, #f6693c);
+}
+
+input[type=range]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+
+  height: 0.85rem;
+  width: 0.85rem;
+  border-radius: 100%;
   background-color: white;
-  border-radius: 1em;
-}
-
-#progress::-webkit-progress-inner-element {
-  display: flex;
 }
 
 
@@ -114,6 +138,11 @@
   font-weight: 300;
 
   letter-spacing: 0.05em;
+
+}
+
+.time-line .values-time p::selection {
+  user-select: none;
 }
 
 .player .btn-options {

@@ -1,11 +1,12 @@
 import { useState, useRef, useEffect } from 'react'
 import PlayerContext from '../context/PlayerContext'
+import { Slider } from './micro/Slider'
 
 import '../styles/player.css'
 import { useContext } from 'react'
 
 
-export default function Player({ cover, songInfo }) {
+const Player = ({ cover, songInfo }) => {
 
   let { name, artist, duration } = songInfo
 
@@ -21,7 +22,7 @@ export default function Player({ cover, songInfo }) {
     HandlePrev,
     audio_ref,
     dataSong,
-    setDataSong
+    setDataSong,
   } = useContext(PlayerContext)
 
 
@@ -30,17 +31,21 @@ export default function Player({ cover, songInfo }) {
   duration = dataSong.duration || duration;
   cover = dataSong.cover || cover;
 
-  const progress_ref = useRef(null)
+
+  const [running, setRunning] = useState(false)
 
   useEffect(() => {
+
     console.log(dataSong)
+
   }, [dataSong])
+
 
 
   return (
     <div className="player">
 
-      <audio ref={audio_ref} src=''></audio>
+      <audio onPlaying={(e) => setRunning(true)} ref={audio_ref} src=''></audio>
 
       <div className='player-container'>
         <div className="song">
@@ -62,7 +67,8 @@ export default function Player({ cover, songInfo }) {
               audio_ref,
               setPrevIsDisabled,
               setNextIsDisabled,
-              setDataSong
+              setDataSong,
+              setRunning
             )}
 
             src={!prevIsDisabled
@@ -79,7 +85,8 @@ export default function Player({ cover, songInfo }) {
               audio_ref,
               setNextIsDisabled,
               setPrevIsDisabled,
-              setDataSong
+              setDataSong,
+              setRunning
             )}
 
             src={!playPause
@@ -95,7 +102,8 @@ export default function Player({ cover, songInfo }) {
               audio_ref,
               setNextIsDisabled,
               setPrevIsDisabled,
-              setDataSong
+              setDataSong,
+              setRunning
             )}
 
             src={!nextIsDisabled
@@ -106,13 +114,7 @@ export default function Player({ cover, songInfo }) {
 
         </div>
 
-        <div className="time-line">
-          <progress ref={progress_ref} id="progress" value="10" max="100"></progress>
-          <div className='values-time'>
-            <p>00:30</p>
-            <p>{duration}</p>
-          </div>
-        </div>
+        <Slider running={running} setRunning={setRunning} playPause={playPause} />
 
         <div className="btn-options">
           <img src={'/icons/icon-favorite.png'} alt="" />
@@ -123,3 +125,6 @@ export default function Player({ cover, songInfo }) {
     </div>
   )
 }
+
+
+export default Player

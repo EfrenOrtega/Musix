@@ -3,7 +3,11 @@ import {
   HandlePlayPause,
   HandleNext,
   HandlePrev,
-  content
+  content,
+  HandleProgress,
+  durationMils,
+  durationSec,
+  durationMin
 } from '../helpers/playerFunctions'
 
 const PlayerContext = createContext();
@@ -19,6 +23,7 @@ const PlayerProvider = ({ children }) => {
   )
 
   const audio_ref = useRef(null);
+  const progress_ref = useRef(null)
 
 
   let data = {
@@ -34,7 +39,10 @@ const PlayerProvider = ({ children }) => {
     audio_ref,
     dataSong,
     setDataSong,
-    content
+    content,
+    progress_ref,
+    HandleProgress,
+    durationMils
   }
 
   return (

@@ -2,6 +2,13 @@
 const content = [
   {
     id: 1,
+    name: "Dread Harp Blues",
+    artist: "Jesse Tabish",
+    cover: "jesseTabish.jpg",
+    src: 'content/audio_test_3.mp3'
+  },
+  {
+    id: 1,
     name: "Dust It Off",
     artist: "The Dø",
     cover: "Both Ways Open Jaws - The Do.jpg",
@@ -26,21 +33,24 @@ const content = [
     name: "In Particular",
     artist: "Blonde Redhead",
     cover: "blondeRedhead.jpg",
-    src: 'content/audio_test.mp3'
+    src: 'content/audio_test_3.mp3'
   }
 ]
 
 let currentIdSong = 0;
 let flag = true;
+
+let durationMils = 0
 let durationMin = 0
 let durationSec = 0
 let duration = ""
+let counter = null;
 
-const play = (audio, setNextIsDisabled, setPrevIsDisabled, setDataSong) => {
+const play = (audio, setNextIsDisabled, setPrevIsDisabled, setDataSong, setRunning) => {
 
   if (flag) {
     flag = false;
-    nextAutomatically(audio, setNextIsDisabled, setPrevIsDisabled, setDataSong)
+    nextAutomatically(audio, setNextIsDisabled, setPrevIsDisabled, setDataSong, setRunning)
   }
 
   if (audio.current.src == 'http://localhost:1420/') {
@@ -53,6 +63,7 @@ const play = (audio, setNextIsDisabled, setPrevIsDisabled, setDataSong) => {
   }
 
   setTimeout(() => {
+    durationMils = audio.current.duration;
     durationMin = parseInt(audio.current.duration / 60)
     durationSec = Math.floor((audio.current.duration / 60 - durationMin) * 60)
 
@@ -74,25 +85,28 @@ const play = (audio, setNextIsDisabled, setPrevIsDisabled, setDataSong) => {
       duration: duration,
       cover: content[currentIdSong].cover
     })
-  }, 100)
-
+  }, 400)
 
 }
+
 
 const pause = (audio) => {
   audio.current.pause()
 }
 
-const nextAutomatically = (audio, setNextIsDisabled, setPrevIsDisabled, setDataSong) => {
-  console.log("Start")
+const nextAutomatically = (audio, setNextIsDisabled, setPrevIsDisabled, setDataSong, setRunning) => {
   audio.current.addEventListener('ended', e => {
-    console.log("End")
-    next(audio, setNextIsDisabled, setPrevIsDisabled, setDataSong)
+
+    setRunning(false)
+    next(audio, setNextIsDisabled, setPrevIsDisabled, setDataSong, setRunning)
+
   })
 }
 
 
-const next = (audio, setNextIsDisabled, setPrevIsDisabled, setDataSong) => {
+const next = (audio, setNextIsDisabled, setPrevIsDisabled, setDataSong, setRunning) => {
+
+
 
   if ((currentIdSong + 2) == content.length) {
     setNextIsDisabled(true)
@@ -108,7 +122,7 @@ const next = (audio, setNextIsDisabled, setPrevIsDisabled, setDataSong) => {
   currentIdSong++
 
   audio.current.src = content[currentIdSong].src
-  play(audio, setNextIsDisabled, setPrevIsDisabled, setDataSong)
+  play(audio, setNextIsDisabled, setPrevIsDisabled, setDataSong, setRunning)
 }
 
 const prev = (audio, setPrevIsDisabled, setNextIsDisabled, setDataSong) => {
@@ -129,6 +143,7 @@ const prev = (audio, setPrevIsDisabled, setNextIsDisabled, setDataSong) => {
   play(audio, setNextIsDisabled, setPrevIsDisabled, setDataSong)
 }
 
+
 /*Handle Controls*/
 
 const HandlePlayPause = (
@@ -138,7 +153,8 @@ const HandlePlayPause = (
   audio_ref,
   setNextIsDisabled,
   setPrevIsDisabled,
-  setDataSong
+  setDataSong,
+  setRunning
 ) => {
 
   if (e.target.matches('a') || e.target.matches('span *')) {
@@ -146,15 +162,17 @@ const HandlePlayPause = (
     currentIdSong = 0;
     audio_ref.current.src = content[currentIdSong].src
 
-    play(audio_ref, setNextIsDisabled, setPrevIsDisabled, setDataSong)
+    play(audio_ref, setNextIsDisabled, setPrevIsDisabled, setDataSong, setRunning)
     setPlayPause(true)
 
   } else {
     if (playPause) {
       pause(audio_ref)
+      setRunning(false)
       setPlayPause(false)
+
     } else {
-      play(audio_ref, setNextIsDisabled, setPrevIsDisabled, setDataSong)
+      play(audio_ref, setNextIsDisabled, setPrevIsDisabled, setDataSong, setRunning)
       setPlayPause(true)
     }
   }
@@ -168,11 +186,17 @@ const HandleNext = (
   audio_ref,
   setNextIsDisabled,
   setPrevIsDisabled,
-  setDataSong
+  setDataSong,
+  setRunning
 ) => {
 
-  next(audio_ref, setNextIsDisabled, setPrevIsDisabled, setDataSong)
+  setRunning(false)
+
+  next(audio_ref, setNextIsDisabled, setPrevIsDisabled, setDataSong, setRunning)
   setPlayPause(true)
+
+
+
 }
 
 const HandlePrev = (
@@ -181,11 +205,60 @@ const HandlePrev = (
   audio_ref,
   setPrevIsDisabled,
   setNextIsDisabled,
-  setDataSong
+  setDataSong,
+  setRunning
 ) => {
 
+  setRunning(false)
   prev(audio_ref, setPrevIsDisabled, setNextIsDisabled, setDataSong)
   setPlayPause(true)
 }
 
-export { HandlePlayPause, HandleNext, HandlePrev, content }
+const HandleProgress = (e, slider_ref, duration, setRange, range) => {
+
+  let sec = 0;
+  let min = 0;
+
+  let timerState = range;
+
+  let timer = "";
+
+  if (durationMin == min && durationSec == sec) {
+    console.log(durationMin, '=', min, ' y ', durationSec, '=', sec)
+    window.clearInterval(counter)
+    setRange(0)
+  } else {
+    timerState = timerState + 1;
+
+    setRange(timerState.toString())
+
+    if (sec.toString().length != 1) {
+      if (min.toString().length != 1) {
+        timer = `${min}:${sec++}`
+        console.log(timer)
+      } else {
+        timer = `0${min}:${sec++}`
+        console.log(timer)
+      }
+    } else {
+      if (min.toString().length != 1) {
+        timer = `${min}:0${sec++}`
+        console.log(timer)
+      } else {
+        timer = `0${min}:0${sec++}`
+        console.log(timer)
+      }
+    }
+
+    if (sec == 60) {
+      sec = 0;
+      min++
+    }
+
+    slider_ref.current.style.width = `${timerState * (100 / durationMils)}%`;
+  }
+
+
+}
+
+export { HandlePlayPause, HandleNext, HandlePrev, content, HandleProgress, durationMils, durationSec, durationMin }
