@@ -46,7 +46,84 @@ let durationSec = 0
 let duration = ""
 let counter = null;
 
-const play = (audio, setNextIsDisabled, setPrevIsDisabled, setDataSong, setRunning) => {
+
+const loadMetadata = (dataSong) => {
+
+  const { name, artist, album, cover } = dataSong
+
+  if ("mediaSession" in navigator) {
+    navigator.mediaSession.metadata = new MediaMetadata({
+      title: name,
+      artist: artist,
+      album: album,
+      artwork: [{ src: cover, sizes: '96x96', type: 'image/png' }]
+    });
+  }
+}
+
+const keysFunctions = (
+  e,
+  setPlayPause,
+  audio_ref,
+  setNextIsDisabled,
+  setPrevIsDisabled,
+  setDataSong,
+  setRunning
+) => {
+
+  if ('mediaSession' in navigator) {
+
+    navigator.mediaSession.setActionHandler('play', () => {
+      loadMetadata(content[currentIdSong])
+      HandlePlayPause(e,
+        false,
+        setPlayPause,
+        audio_ref,
+        setNextIsDisabled,
+        setPrevIsDisabled,
+        setDataSong,
+        setRunning)
+    })
+
+    navigator.mediaSession.setActionHandler('pause', () => {
+      HandlePlayPause(e,
+        true,
+        setPlayPause,
+        audio_ref,
+        setNextIsDisabled,
+        setPrevIsDisabled,
+        setDataSong,
+        setRunning)
+    })
+
+    navigator.mediaSession.setActionHandler('nexttrack', () => {
+      HandleNext(
+        e,
+        setPlayPause,
+        audio_ref,
+        setNextIsDisabled,
+        setPrevIsDisabled,
+        setDataSong,
+        setRunning
+      )
+    })
+
+    navigator.mediaSession.setActionHandler('previoustrack', () => {
+      HandlePrev(
+        e,
+        setPlayPause,
+        audio_ref,
+        setPrevIsDisabled,
+        setNextIsDisabled,
+        setDataSong,
+        setRunning
+      )
+    })
+
+  }
+}
+
+const play = async (audio, setNextIsDisabled, setPrevIsDisabled, setDataSong, setRunning) => {
 
   if (flag) {
     flag = false;
@@ -55,11 +132,14 @@ const play = (audio, setNextIsDisabled, setPrevIsDisabled, setDataSong, setRunni
 
   if (audio.current.src == 'http://localhost:1420/') {
     //The song doesn't exist
+
     audio.current.src = content[currentIdSong].src
-    audio.current.play()
+    await audio.current.play()
+    loadMetadata(content[currentIdSong])
   } else {
     //The song exist
-    audio.current.play()
+    await audio.current.play()
+    loadMetadata(content[currentIdSong])
   }
 
   setTimeout(() => {
@@ -105,8 +185,6 @@ const nextAutomatically = (audio, setNextIsDisabled, setPrevIsDisabled, setDataS
 
 
 const next = (audio, setNextIsDisabled, setPrevIsDisabled, setDataSong, setRunning) => {
-
-
 
   if ((currentIdSong + 2) == content.length) {
     setNextIsDisabled(true)
@@ -157,7 +235,7 @@ const HandlePlayPause = (
   setRunning
 ) => {
 
-  if (e.target.matches('a') || e.target.matches('span *')) {
+  if (e && (e.target.matches('a') || e.target.matches('span *'))) {
     e.preventDefault();
     currentIdSong = 0;
     audio_ref.current.src = content[currentIdSong].src
@@ -194,8 +272,6 @@ const HandleNext = (
 
   next(audio_ref, setNextIsDisabled, setPrevIsDisabled, setDataSong, setRunning)
   setPlayPause(true)
-
-
 
 }
 
@@ -261,4 +337,14 @@ const HandleProgress = (e, slider_ref, duration, setRange, range) => {
 
 }
 
-export { HandlePlayPause, HandleNext, HandlePrev, content, HandleProgress, durationMils, durationSec, durationMin }
+export {
+  HandlePlayPause,
+  HandleNext,
+  HandlePrev,
+  content,
+  HandleProgress,
+  durationMils,
+  durationSec,
+  durationMin,
+  keysFunctions
+}

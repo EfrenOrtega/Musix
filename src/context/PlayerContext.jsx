@@ -7,7 +7,8 @@ import {
   HandleProgress,
   durationMils,
   durationSec,
-  durationMin
+  durationMin,
+  keysFunctions
 } from '../helpers/playerFunctions'
 
 const PlayerContext = createContext();
@@ -42,7 +43,8 @@ const PlayerProvider = ({ children }) => {
     content,
     progress_ref,
     HandleProgress,
-    durationMils
+    durationMils,
+    keysFunctions
   }
 
   return (

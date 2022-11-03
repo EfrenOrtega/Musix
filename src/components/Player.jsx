@@ -23,6 +23,7 @@ const Player = ({ cover, songInfo }) => {
     audio_ref,
     dataSong,
     setDataSong,
+    keysFunctions
   } = useContext(PlayerContext)
 
 
@@ -36,8 +37,14 @@ const Player = ({ cover, songInfo }) => {
 
   useEffect(() => {
 
-    console.log(dataSong)
-
+    keysFunctions(
+      undefined,
+      setPlayPause,
+      audio_ref,
+      setNextIsDisabled,
+      setPrevIsDisabled,
+      setDataSong,
+      setRunning)
   }, [dataSong])
 
 
