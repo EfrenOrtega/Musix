@@ -7,13 +7,14 @@ let counter
 let durationSongMils = 0;
 let sec = null;
 let min = null;
+let timerState = null;
 
-export const Slider = ({ running, setRunning, playPause }) => {
+export const Slider = ({ running, setRunning, playPause, loop }) => {
 
   const {
     audio_ref,
     dataSong,
-    HandleProgress
+    loadSongs
   } = useContext(PlayerContext)
 
   const [range, setRange] = useState(0)
@@ -25,9 +26,40 @@ export const Slider = ({ running, setRunning, playPause }) => {
   const handleChange = (e) => {
     if (!running) return;
     setRange(e.target.value)
+    timerState = range
+
+    if (range > 60) {
+      min = Math.floor(range / 60)
+      sec = range - (min * 60)
+    } else {
+      sec = range;
+    }
+
+
+    audio_ref.current.pause()
+
+    let src = (audio_ref.current.src).split('.mp3')
+
+    if (src.length > 1) {
+      audio_ref.current.src = ""
+      src.pop()
+      audio_ref.current.src = src + `.mp3#t=${range}`
+    } else {
+      src = (audio_ref.current.src).split("#t=")
+      audio_ref.current.src = src[0] + `#t=${range}`
+    }
+    audio_ref.current.play()
   }
 
   useEffect(() => {
+
+    if (loop == 1) {
+      audio_ref.current.loop = true;
+    } else if (loop == 0) {
+      audio_ref.current.loop = false
+    } else if (loop == null) {
+      loadSongs(null, 0)
+    }
 
     if (!running) {
 
@@ -46,7 +78,7 @@ export const Slider = ({ running, setRunning, playPause }) => {
           min = 0;
         }
 
-        let timerState = range;
+        timerState = range;
 
         let durationSong = new Promise((resolve, reject) => {
 
@@ -62,6 +94,7 @@ export const Slider = ({ running, setRunning, playPause }) => {
             let durationSec = Math.floor((durationSongMils / 60 - durationMin) * 60)
 
             counter = setInterval(() => {
+
               if (durationMin == min && durationSec == sec) {
                 setRunning(false)
               } else {

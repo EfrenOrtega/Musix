@@ -12,17 +12,13 @@ export default function MusicBox({ cover, songInfo, pathSong }) {
   const {
     playPause,
     setPlayPause,
-    nextIsDisabled,
     setNextIsDisabled,
-    prevIsDisabled,
     setPrevIsDisabled,
     HandlePlayPause,
-    HandleNext,
-    HandlePrev,
     audio_ref,
-    dataSong,
     setDataSong,
-    content
+    content,
+    setRunning
   } = useContext(PlayerContext)
 
 
@@ -34,11 +30,11 @@ export default function MusicBox({ cover, songInfo, pathSong }) {
       id,
       name,
       artist,
-      cover: cover,
+      cover: `images/${cover}`,
       src: pathSong
     })
 
-    console.log(content)
+    setRunning(false)
 
     HandlePlayPause(
       e,
@@ -47,7 +43,8 @@ export default function MusicBox({ cover, songInfo, pathSong }) {
       audio_ref,
       setNextIsDisabled,
       setPrevIsDisabled,
-      setDataSong
+      setDataSong,
+      setRunning
     )
   }
 
@@ -71,7 +68,7 @@ export default function MusicBox({ cover, songInfo, pathSong }) {
         </span>
 
         <figure>
-          <img src={`/images/${cover}`} alt="" />
+          <img src={`/images/${cover}`} alt="Song" />
         </figure>
       </div>
 

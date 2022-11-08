@@ -46,6 +46,21 @@ let durationSec = 0
 let duration = ""
 let counter = null;
 
+let loopFlag = false;
+let isLoop = false;
+
+
+const loadSongs = (songs, counter) => {
+  if ((currentIdSong + 1) == content.length) {
+    //currentIdSong = counter;
+    isLoop = true;
+    console.log("Id song restored", currentIdSong)
+  } else {
+    console.log("Id Song don't restored", currentIdSong)
+  }
+
+}
+
 
 const loadMetadata = (dataSong) => {
 
@@ -186,8 +201,13 @@ const nextAutomatically = (audio, setNextIsDisabled, setPrevIsDisabled, setDataS
 
 const next = (audio, setNextIsDisabled, setPrevIsDisabled, setDataSong, setRunning) => {
 
-  if ((currentIdSong + 2) == content.length) {
+
+  if (((currentIdSong + 2) == content.length) && !loopFlag) {
     setNextIsDisabled(true)
+  } else if (isLoop) {
+    setNextIsDisabled(false)
+    currentIdSong = -1;
+    isLoop = false;
   }
 
   //No more songs :(
@@ -197,6 +217,7 @@ const next = (audio, setNextIsDisabled, setPrevIsDisabled, setDataSong, setRunni
   }
 
   setPrevIsDisabled(false)
+
   currentIdSong++
 
   audio.current.src = content[currentIdSong].src
@@ -337,6 +358,40 @@ const HandleProgress = (e, slider_ref, duration, setRange, range) => {
 
 }
 
+
+const HandleLoop = (e, loop, setLoop) => {
+  switch (loop) {
+
+    //Loop Enabled
+    case 0:
+      loopFlag = true;
+      setLoop(null) //Set Loop Actived
+
+      break;
+
+    //Loop 1
+    case 1:
+      loopFlag = false;
+      setLoop(0) //Set Loop Enabled
+      break;
+
+    //Loop Actived
+    default:
+      setLoop(1) //Set Loop 1
+      break;
+  }
+}
+
+
+const HandleVolumeApp = (e, setDisplayVolume, displayVolume) => {
+  if (displayVolume) {
+    setDisplayVolume(false)
+  } else {
+    setDisplayVolume(true)
+  }
+  console.log("Volume")
+}
+
 export {
   HandlePlayPause,
   HandleNext,
@@ -346,5 +401,8 @@ export {
   durationMils,
   durationSec,
   durationMin,
-  keysFunctions
+  keysFunctions,
+  HandleLoop,
+  loadSongs,
+  HandleVolumeApp
 }

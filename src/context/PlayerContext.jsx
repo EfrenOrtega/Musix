@@ -6,9 +6,10 @@ import {
   content,
   HandleProgress,
   durationMils,
-  durationSec,
-  durationMin,
-  keysFunctions
+  keysFunctions,
+  HandleLoop,
+  loadSongs,
+  HandleVolumeApp
 } from '../helpers/playerFunctions'
 
 const PlayerContext = createContext();
@@ -18,6 +19,8 @@ const PlayerProvider = ({ children }) => {
   const [playPause, setPlayPause] = useState(false)
   const [nextIsDisabled, setNextIsDisabled] = useState(false)
   const [prevIsDisabled, setPrevIsDisabled] = useState(false)
+  const [running, setRunning] = useState(false)
+
 
   const [dataSong, setDataSong] = useState(
     { name: "", artist: "", duration: "", cover: "" }
@@ -44,7 +47,12 @@ const PlayerProvider = ({ children }) => {
     progress_ref,
     HandleProgress,
     durationMils,
-    keysFunctions
+    keysFunctions,
+    HandleLoop,
+    loadSongs,
+    HandleVolumeApp,
+    running,
+    setRunning
   }
 
   return (
