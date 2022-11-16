@@ -11,7 +11,7 @@ export default function Login({ active, displayHideLogin }) {
   const login = (e) => {
     e.preventDefault()
     fetchAJAX({
-      url: 'http://127.0.0.1:5000/auth',
+      url: `http://${location.hostname}:5000/auth`,
       settings: {
         method: 'POST',
         headers: {
@@ -22,6 +22,7 @@ export default function Login({ active, displayHideLogin }) {
       resSuccess: (res) => {
         if (res.status) {
           window.localStorage.setItem('login', true)
+          window.localStorage.setItem('id', res.idUser)
           location.reload()
         } else {
           console.log(res.message)

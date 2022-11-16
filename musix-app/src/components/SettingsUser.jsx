@@ -1,6 +1,6 @@
 import '../styles/settings-user.css'
 
-export default function SettingsUser() {
+export default function SettingsUser({ dataUser }) {
 
   const logOut = () => {
     localStorage.setItem('login', false)
@@ -15,11 +15,11 @@ export default function SettingsUser() {
         <span className='line'></span>
         <div className='user-info'>
           <figure>
-            <img src={'/images/user01.jpg'} alt="User Avatar" />
+            <img src={dataUser.avatar} alt="User Avatar" />
           </figure>
           <div className='data'>
-            <span>Name User</span><br />
-            <span>email@email.com</span>
+            <span>{dataUser.name}</span><br />
+            <span>{dataUser.email}</span>
           </div>
         </div>
 

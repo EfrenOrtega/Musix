@@ -6,6 +6,8 @@ import HeaderBottomHome from './micro/HeaderBottomHome'
 
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom';
+import { useEffect } from 'react'
+import fetchAJAX from '../helpers/fetch'
 
 export default function Header({ type, data, background, cover }) {
 
@@ -13,6 +15,32 @@ export default function Header({ type, data, background, cover }) {
 
   //Line 12 - 21 is to Display and Hide the user options
   const [displayOptions, setDisplayOptions] = useState(false);
+  const [dataUser, setDataUser] = useState()
+
+  useEffect(() => {
+    fetchAJAX({
+      url: `http://${location.hostname}:5000/finduser/${localStorage.getItem('id')}`,
+      settings: {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+      },
+      resSuccess: (res) => {
+        if (res.status) {
+          console.log(res)
+          setDataUser(res.data)
+        } else {
+          console.log(res.message)
+        }
+
+      },
+      resError: (err) => {
+        console.log(err)
+      }
+    }
+    )
+  }, [])
 
   const handleClick = (e) => {
     if (displayOptions) {
@@ -62,10 +90,13 @@ export default function Header({ type, data, background, cover }) {
 
         <div className="user" onClick={(e) => handleClick(e)}>
           <figure>
-            <img src={'/images/user01.jpg'} alt="User Avatar" />
+            {dataUser &&
+              <img src={dataUser.avatar} alt="User Avatar" />
+            }
+
           </figure>
 
-          {displayOptions && <SettingsUser />}
+          {displayOptions && <SettingsUser dataUser={dataUser} />}
 
         </div>
       </div>

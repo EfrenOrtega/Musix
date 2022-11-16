@@ -10,3 +10,8 @@ def upload_file():
 
 def auth_user():
   return mUsers.auth_user()
+
+
+def find_user(id):
+  mUsers.id = id
+  return mUsers.find_user()

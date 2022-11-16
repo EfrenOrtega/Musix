@@ -20,7 +20,7 @@ class ModelUsers():
 
   id=""
   urlImage = None
-  nameImage = 'IMG-20200405-WA0000.jpg'
+  nameImage = 'avatar.jpg'
 
   def __init__(self):
     pass
@@ -37,6 +37,8 @@ class ModelUsers():
     data = json.loads(json.dumps(request.json))
     
     if(data.get('name') and data.get('last') and data.get('email') and data.get('password') and data.get('age') and self.nameImage):
+
+      self.upload_to_filebase()
 
       res = self.cUsers.insert_one({
         'name':request.json['name'],
@@ -132,8 +134,6 @@ class ModelUsers():
   #       User Authentication
   #==================================
   def auth_user(self):
-    print("QJDD")
-    print(request.json['username'])
     user = self.cAccount.find_one({'username':request.json['username']})
 
     if(user):
@@ -144,3 +144,16 @@ class ModelUsers():
 
     return jsonify({'status':False, 'message':'User or Password Incorrect'})
   
+
+  def find_user(self):
+    user = self.cUsers.find_one({'_id': ObjectId(self.id)})
+    return jsonify({'status':True, 'message':'User Found', 
+      'data': {
+        '_id':str(ObjectId(user['_id'])),
+        'name':user['name'],
+        'last':user['last'],
+        'email':user['email'],
+        'age':user['age'],
+        'avatar':user['avatar']
+      }
+    })
