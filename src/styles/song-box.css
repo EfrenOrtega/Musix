@@ -43,8 +43,12 @@
   width: inherit;
 }
 
+.song-box div:nth-child(2) {
+  width: 80%;
+}
+
 .song-box div:nth-child(3) {
-  margin-left: 5em;
+  margin-left: 1em;
   margin-right: 1em;
 
   font-weight: 300;

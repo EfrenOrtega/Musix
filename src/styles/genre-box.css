@@ -5,21 +5,24 @@
 }
 
 .genres-box {
+  font-size: 14px;
+
   position: relative;
-  border-radius: 0.5rem;
-  height: 4.5rem;
+  border-radius: 0.5em;
+  height: 4.5em;
   overflow: hidden;
 
-  width: 12.5rem;
+  width: 12.5em;
 
   display: flex;
   align-items: center;
   justify-content: center;
+
 }
 
 .genres-box p {
   position: absolute;
-  font-size: 1.5rem;
+  font-size: 1.4em;
 }
 
 .genres-box figure {

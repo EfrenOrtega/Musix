@@ -4,8 +4,7 @@ import '../styles/music-box.css'
 import { Link } from 'react-router-dom';
 import PlayerContext from '../context/PlayerContext';
 
-
-export default function MusicBox({ cover, songInfo, pathSong }) {
+export default function MusicBox({ cover, songInfo, pathSong, }) {
 
   const { id, name, artist } = songInfo
 
@@ -48,28 +47,33 @@ export default function MusicBox({ cover, songInfo, pathSong }) {
     )
   }
 
-
   return (
+
     <div className="music-box">
 
       <div className="cover">
 
-        {/*<span>
-          <Link to="/playlist/01">
-            <img className='play-icon' src={"/icons/play-icon.png"} alt="Play" />
-          </Link>
-          </span>
-        */}
-
         <span>
-          <a onClick={(e) => playSong(e, content)}>
+          <div onClick={(e) => playSong(e, content)}>
             <img className='play-icon' src={"/icons/play-icon.png"} alt="Play" />
-          </a>
+          </div>
         </span>
 
-        <figure>
-          <img src={`/images/${cover}`} alt="Song" />
-        </figure>
+
+        {typeof cover == "object" ?
+          <div className='generate-cover'>
+            <img src={`/images/${cover[0]}`} alt="Song" />
+            <img src={`/images/${cover[1]}`} alt="Song" />
+            <img src={`/images/${cover[2]}`} alt="Song" />
+            <img src={`/images/${cover[3]}`} alt="Song" />
+          </div>
+          :
+          <div className='cover-img'>
+            <img src={`/images/${cover}`} alt="Song" />
+          </div>
+        }
+
+
       </div>
 
       <p><strong>{name}</strong></p>
@@ -79,5 +83,6 @@ export default function MusicBox({ cover, songInfo, pathSong }) {
       }
 
     </div>
+
   )
 }

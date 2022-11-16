@@ -5,7 +5,7 @@ import SongBox from "../SongBox"
 export default function HeaderBottomHome() {
   return (
     <>
-      <h1>Playlist Name</h1>
+      <h1>No Music No Life</h1>
 
       <div>
         <p className='title'><strong>Daily Recomendation</strong></p>

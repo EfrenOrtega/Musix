@@ -17,6 +17,9 @@ header {
 
   height: 20rem;
   padding: 1.5rem 2rem;
+
+  background: linear-gradient(rgba(95, 58, 120, .7) 10%, var(--second) 100%);
+
 }
 
 header .background {
@@ -124,6 +127,11 @@ header .section-bottom .title {
 
 
 /*Header Bottom Playlist*/
+header .bottom-playlist {
+  display: flex;
+  gap: 2rem;
+}
+
 header .bottom-playlist h1 {
   margin: 0.7rem 0;
 }
@@ -131,4 +139,49 @@ header .bottom-playlist h1 {
 header .bottom-playlist p:last-child {
   text-align: right;
   font-weight: 600;
+}
+
+.nav-controls-search {
+  display: flex;
+  align-items: center;
+  gap: 1.8rem;
+}
+
+.nav-controls img {
+  width: 1.5rem;
+  cursor: pointer;
+}
+
+.nav-controls img:first-child {
+  width: 1.5rem;
+  margin-right: 1.2rem;
+}
+
+header .bottom-playlist .generate-cover {
+  font-size: 20.6px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  border-radius: 0.3em;
+  width: fit-content;
+  overflow: hidden;
+
+}
+
+header .bottom-playlist .generate-cover img {
+  width: 4em;
+  height: 4em;
+}
+
+
+header .bottom-playlist .cover {
+  font-size: 20.6px;
+  border-radius: 0.3em;
+  width: fit-content;
+  overflow: hidden;
+
+}
+
+header .bottom-playlist .cover img {
+  width: 8em;
+  height: 8em;
 }

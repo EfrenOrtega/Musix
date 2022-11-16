@@ -1,8 +1,50 @@
 import '../styles/song-box.css';
 
+import { useContext } from 'react';
+import PlayerContext from '../context/PlayerContext';
+
+
 export default function SongBoxLarge({ data }) {
 
-  const { cover, name, artist, duration, album, created } = data
+  const { id, cover, name, artist, duration, album, created, pathSong } = data
+
+  const {
+    playPause,
+    setPlayPause,
+    setNextIsDisabled,
+    setPrevIsDisabled,
+    HandlePlayPause,
+    audio_ref,
+    setDataSong,
+    content,
+    setRunning
+  } = useContext(PlayerContext)
+
+  const playSong = (e, content) => {
+
+    if (content[0].id == id) return
+
+    content.unshift({
+      id,
+      name,
+      artist,
+      cover: `images/${cover}`,
+      src: pathSong
+    })
+
+    setRunning(false)
+
+    HandlePlayPause(
+      e,
+      playPause,
+      setPlayPause,
+      audio_ref,
+      setNextIsDisabled,
+      setPrevIsDisabled,
+      setDataSong,
+      setRunning
+    )
+  }
 
   return (
     <div className="song-box large">
@@ -11,6 +53,7 @@ export default function SongBoxLarge({ data }) {
         <div className="cover">
           <span>
             <img
+              onClick={(e) => playSong(e, content)}
               className="play-icon"
               src={'/icons/play-icon.png'}
               alt="Play"

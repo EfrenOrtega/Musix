@@ -8,6 +8,8 @@ import Artist from '../components/Artist'
 
 import responsiveBoxes from '../helpers/responsiveBoxes'
 import { useEffect, useState } from 'react'
+import { Link } from 'react-router-dom';
+
 
 
 const SongsAdded = [
@@ -76,7 +78,6 @@ const SongsAdded = [
   />
 ]
 
-
 const SongsLikes = [
   <MusicBox
     cover="jesseTabish.jpg"
@@ -98,7 +99,7 @@ const SongsLikes = [
         artist: "Marilyn Manson"
       }
     }
-    pathSong='content/audio_test_2.mp3'
+    pathSong=''
   />,
   <MusicBox
     cover="aurora.jpg"
@@ -109,7 +110,7 @@ const SongsLikes = [
         artist: "Aurora"
       }
     }
-    pathSong='content/audio_test.mp3'
+    pathSong=''
   />,
   <MusicBox
     cover="massive attack.jpg"
@@ -120,7 +121,7 @@ const SongsLikes = [
         artist: "Massive Attack"
       }
     }
-    pathSong='content/audio_test_2.mp3'
+    pathSong=''
   />,
   <MusicBox
     cover="placebo.jpg"
@@ -131,7 +132,7 @@ const SongsLikes = [
         artist: "Placebo"
       }
     }
-    pathSong='content/audio_test.mp3'
+    pathSong=''
   />,
   <MusicBox
     cover="goldKey.jpg"
@@ -155,6 +156,103 @@ const SongsLikes = [
   />
 ]
 
+const Playlists = [
+  <MusicBox
+    cover={[
+      'muse - drones.jpg',
+      'Showbiz - Muse.jpg',
+      'Simulation Theory - Muse.jpg',
+      'The 2nd Law - Muse.jpg'
+    ]}
+    songInfo={
+      {
+        id: 1,
+        name: "Playlist 02 😎",
+      }
+    }
+  />,
+
+  <MusicBox
+    cover='natural.jpg'
+    songInfo={
+      {
+        id: 2,
+        name: "🌧️ Playlist 03",
+      }
+    }
+  />,
+
+
+  <MusicBox
+    cover='rails.jpg'
+    songInfo={
+      {
+        id: 3,
+        name: "❄️ Playlist 04 ❄️",
+      }
+    }
+  />,
+
+  <MusicBox
+    cover='caratula.png'
+    songInfo={
+      {
+        id: 4,
+        name: "Playlist 05 🤘",
+      }
+    }
+  />,
+
+  <MusicBox
+    cover='willOfThePeople.png'
+    songInfo={
+      {
+        id: 5,
+        name: "Playlist 06 😎",
+      }
+    }
+  />,
+
+  <MusicBox
+    cover='willOfThePeople.png'
+    songInfo={
+      {
+        id: 6,
+        name: "Playlist 07 😎",
+      }
+    }
+  />,
+
+  <MusicBox
+    cover='caratula.png'
+    songInfo={
+      {
+        id: 7,
+        name: "Playlist 08 😎",
+      }
+    }
+  />,
+
+  <MusicBox
+    cover='willOfThePeople.png'
+    songInfo={
+      {
+        id: 8,
+        name: "Playlist 09 😎",
+      }
+    }
+  />,
+
+  <MusicBox
+    cover='caratula.png'
+    songInfo={
+      {
+        id: 9,
+        name: "Playlist 10 😎",
+      }
+    }
+  />
+]
 
 export default function Home() {
 
@@ -169,14 +267,17 @@ export default function Home() {
     window.addEventListener('resize', handleResize)
   }, [])
 
-  let elementos = ['.recently-added .music-box', '.your-likes .music-box']
-
+  let elementos = [
+    '.recently-added .music-box',
+    '.your-likes .music-box',
+    '.section-playlist .playlist .music-box'
+  ]
 
   return (
     <div className='main-container'>
       <Header
         type="home"
-        background='header-backgroud.jpg'
+        background='background-header-2.jpg'
         data={{
           title: "No Music No Life",
           creator: "Created by name user",
@@ -192,87 +293,35 @@ export default function Home() {
             </div>
 
             <div className='playlist'>
-              <MusicBox
-                cover='caratula.png'
-                songInfo={
-                  {
-                    name: "Chill 😎",
+              <Link to="/playlist/0">
+                <MusicBox
+                  cover={[
+                    'badbunny - verano sin tí.jpg',
+                    'LosBunkers - Velocidad de la Luz.jpg',
+                    'LosDaniels - A casa.jpg',
+                    'provenza-karol G.jpg'
+                  ]}
+                  songInfo={
+                    {
+                      name: "Playlist 01 🎉🎉",
+                    }
                   }
-                }
-              />
+                  playlist={true}
+                />
+              </Link>
 
-              <MusicBox
-                cover='caratula.png'
-                songInfo={
-                  {
-                    name: "Chill 😎",
+              {quantity &&
+                Playlists.map((el, index) => {
+                  if (index < quantity[2]) {
+                    return (
+                      <Link to={`/playlist/${index}`}>
+                        {Playlists[index - 1]}
+                      </Link>
+                    )
                   }
-                }
-              />
+                })
 
-
-              <MusicBox
-                cover='caratula.png'
-                songInfo={
-                  {
-                    name: "Chill 😎",
-                  }
-                }
-              />
-
-              <MusicBox
-                cover='caratula.png'
-                songInfo={
-                  {
-                    name: "Chill 😎",
-                  }
-                }
-              />
-
-              <MusicBox
-                cover='willOfThePeople.png'
-                songInfo={
-                  {
-                    name: "Chill",
-                  }
-                }
-              />
-
-              <MusicBox
-                cover='willOfThePeople.png'
-                songInfo={
-                  {
-                    name: "Chill",
-                  }
-                }
-              />
-
-              <MusicBox
-                cover='caratula.png'
-                songInfo={
-                  {
-                    name: "Chill 🤘",
-                  }
-                }
-              />
-
-              <MusicBox
-                cover='willOfThePeople.png'
-                songInfo={
-                  {
-                    name: "Chill",
-                  }
-                }
-              />
-
-              <MusicBox
-                cover='caratula.png'
-                songInfo={
-                  {
-                    name: "Chill",
-                  }
-                }
-              />
+              }
 
             </div>
           </section>

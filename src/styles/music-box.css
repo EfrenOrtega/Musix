@@ -17,12 +17,29 @@
   width: fit-content;
   overflow: hidden;
   width: 100%;
+
+  border-radius: 0.3rem;
 }
 
-.music-box .cover span a {
+.music-box .cover .generate-cover {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+}
+
+.music-box .cover .generate-cover img {
+  width: 4rem;
+  height: 4rem;
+}
+
+.cover-img {
+  display: grid;
+  grid-template-columns: 1fr;
+}
+
+.music-box .cover span div {
   position: absolute;
-  right: 0rem;
-  bottom: 0rem;
+  right: 0.5rem;
+  bottom: 0.5rem;
 
   height: 1.5rem;
   width: 1.4rem;
@@ -30,7 +47,7 @@
   cursor: pointer;
 }
 
-.music-box .cover span a img {
+.music-box .cover span div img {
   position: relative;
   height: inherit;
   width: inherit;
@@ -40,7 +57,7 @@
   margin: 0.2em 0;
 }
 
-.music-box .cover figure img {
+.music-box .cover .cover-img img {
   width: 8rem;
   height: 8rem;
 }
