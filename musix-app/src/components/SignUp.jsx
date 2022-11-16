@@ -1,19 +1,116 @@
 import '../styles/auth.css'
 import Input from "../components/micro/Input"
+import fetchAJAX from '../helpers/fetch'
+import { useState } from 'react'
 
 
 export default function SignUp({ active, displayHideLogin }) {
+
+  const [dataForm, setDataForm] = useState(
+    {
+      username: '',
+      name: '',
+      last: '',
+      email: '',
+      password: '',
+      repeatPassword: '',
+      age: ''
+    }
+  )
+
+  const handleSubmit = (e) => {
+    e.preventDefault()
+    fetchAJAX({
+      url: `http://${location.hostname}:5000/createaccount`,
+      settings: {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(dataForm)
+      },
+      resSuccess: (res) => {
+        if (res.status) {
+          location.reload()
+        } else {
+          console.log(res.message)
+        }
+
+      },
+      resError: (err) => {
+        console.log(err)
+      }
+    }
+    )
+  }
+
+  const handleChange = (e) => {
+    setDataForm({
+      ...dataForm,
+      [e.target.name]: e.target.value
+    })
+  }
+
   return (
     <form className={`signup ${active}`}>
       <h1>Sign Up</h1>
-      <Input placeholder="Name" type="text" />
-      <Input placeholder="Last" type="text" />
-      <Input placeholder="Email" type="email" />
-      <Input placeholder="Password" type="password" />
-      <Input placeholder="Repeat Password" type="password" />
-      <Input placeholder="Age" type="number" />
+      <Input
+        placeholder="Username"
+        type="text"
+        name='username'
+        handleChange={handleChange}
+        value={dataForm.username}
+      />
 
-      <button>Enter</button>
+      <Input
+        placeholder="Name"
+        type="text"
+        name='name'
+        handleChange={handleChange}
+        value={dataForm.name}
+      />
+
+      <Input
+        placeholder="Last"
+        type="text"
+        name='last'
+        handleChange={handleChange}
+        value={dataForm.last}
+      />
+
+      <Input
+        placeholder="Email"
+        type="email"
+        name="email"
+        handleChange={handleChange}
+        value={dataForm.email}
+      />
+
+      <Input
+        placeholder="Password"
+        type="password"
+        name="password"
+        handleChange={handleChange}
+        value={dataForm.password}
+      />
+
+      <Input
+        placeholder="Repeat Password"
+        type="password"
+        name="repeatPassword"
+        handleChange={handleChange}
+        value={dataForm.repeatPassword}
+      />
+
+      <Input
+        placeholder="Age"
+        type="number"
+        name="age"
+        handleChange={handleChange}
+        value={dataForm.age}
+      />
+
+      <button onClick={(e) => handleSubmit(e)}>Enter</button>
 
       <span className='signup-span'>I already have an account
         <a onClick={(e) => displayHideLogin(e)}>Login</a>

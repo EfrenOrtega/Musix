@@ -62,8 +62,8 @@ class ModelUsers():
       'password':request.json['password'],
       'user_id':self.id
     })
-
-    return jsonify({'id_account':str(res.inserted_id)})
+  
+    return jsonify({'status':True, 'id_account':str(res.inserted_id)})
 
 
   #=======================================
