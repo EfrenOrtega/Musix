@@ -1,10 +1,9 @@
 import { useContext } from 'react';
 
 import '../styles/music-box.css'
-import { Link } from 'react-router-dom';
 import PlayerContext from '../context/PlayerContext';
 
-export default function MusicBox({ cover, songInfo, pathSong, }) {
+export default function MusicBox({ cover, songInfo, pathSong, nameClass }) {
 
   const { id, name, artist } = songInfo
 
@@ -23,14 +22,14 @@ export default function MusicBox({ cover, songInfo, pathSong, }) {
 
   const playSong = (e, content) => {
 
-    if (content[0].id == id) return
+    if (content[0]._id == id) return
 
     content.unshift({
-      id,
+      _id: id,
       name,
       artist,
-      cover: `images/${cover}`,
-      src: pathSong
+      cover: `${cover}`,
+      url: pathSong
     })
 
     setRunning(false)
@@ -49,7 +48,7 @@ export default function MusicBox({ cover, songInfo, pathSong, }) {
 
   return (
 
-    <div className="music-box">
+    <div className={!nameClass ? "music-box" : `music-box ${nameClass}`}>
 
       <div className="cover">
 
@@ -69,7 +68,12 @@ export default function MusicBox({ cover, songInfo, pathSong, }) {
           </div>
           :
           <div className='cover-img'>
-            <img src={`/images/${cover}`} alt="Song" />
+            {cover.includes('http') ?
+              <img src={`${cover}`} alt="Song" />
+              :
+              <img src={`/images/${cover}`} alt="Song" />
+            }
+
           </div>
         }
 

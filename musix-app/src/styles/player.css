@@ -77,12 +77,25 @@
 }
 
 .player .song figure {
-  height: inherit;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  height: 4rem;
+  width: 4rem;
   margin-right: 0.7em;
+
+  overflow: hidden;
+}
+
+.player .song .loader {
+  width: 2.5rem;
+  height: 2.5rem;
 }
 
 .player .song figure img {
   height: inherit;
+  width: inherit;
 }
 
 

@@ -1,6 +1,8 @@
 from flask import Blueprint
 
-from Controlador.controller_users import create_users, upload_file, auth_user,find_user
+from Controlador.controller_users import create_users, upload_file, auth_user,find_user, add_song, get_songs, get_recent_songs
+
+from Controlador.controller_playlist import add_favorite
 
 blueprint = Blueprint('blueprint', __name__)
 
@@ -10,3 +12,7 @@ blueprint.route('/uploadFile', methods=['POST'])(upload_file)
 
 blueprint.route('/auth', methods=['POST'])(auth_user)
 blueprint.route('/finduser/<id>', methods=['GET'])(find_user)
+blueprint.route('/addsong', methods=['POST'])(add_song)
+blueprint.route('/getsongs', methods=['GET'])(get_songs)
+blueprint.route('/getrecentsongs', methods=['GET'])(get_recent_songs)
+blueprint.route('/addfavorite/<idsong>/<iduser>/<date>', methods=['GET'])(add_favorite)

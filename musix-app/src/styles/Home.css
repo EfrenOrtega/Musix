@@ -98,7 +98,6 @@ main .song-box {
 */
 .recently-added {
   display: flex;
-  align-items: center;
   justify-content: space-between;
 }
 

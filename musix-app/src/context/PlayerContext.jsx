@@ -21,9 +21,8 @@ const PlayerProvider = ({ children }) => {
   const [prevIsDisabled, setPrevIsDisabled] = useState(false)
   const [running, setRunning] = useState(false)
 
-
   const [dataSong, setDataSong] = useState(
-    { name: "", artist: "", duration: "", cover: "" }
+    { name: "", artist: "", duration: "", cover: "", url: "", _id: "" }
   )
 
   const audio_ref = useRef(null);

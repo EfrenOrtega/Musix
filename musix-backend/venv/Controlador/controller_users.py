@@ -1,6 +1,8 @@
 from Modelo.model_users import ModelUsers;
+from Modelo.model_songs import ModelSongs
 
 mUsers = ModelUsers()
+mSongs = ModelSongs()
 
 def create_users():
   return mUsers.create_user()
@@ -15,3 +17,16 @@ def auth_user():
 def find_user(id):
   mUsers.id = id
   return mUsers.find_user()
+
+
+def add_song():
+  return mSongs.add_song()
+
+def get_songs():
+  return mSongs.get_songs()
+
+def get_recent_songs():
+  return mSongs.get_recent_songs()
+
+def add_favorite():
+  return mSongs.add_favorite()

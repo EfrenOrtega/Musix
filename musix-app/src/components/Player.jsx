@@ -1,6 +1,7 @@
 import { useState, useRef, useEffect } from 'react'
 import PlayerContext from '../context/PlayerContext'
 import { Slider } from './micro/Slider'
+import fetchAJAX from '../helpers/fetch'
 
 import '../styles/player.css'
 import { useContext } from 'react'
@@ -43,6 +44,7 @@ const Player = ({ cover, songInfo }) => {
 
   const [volume, setVolume] = useState(0);
   const [displayVolume, setDisplayVolume] = useState(false)
+  const [active, setActive] = useState(true)
 
   useEffect(() => {
     keysFunctions(
@@ -55,20 +57,53 @@ const Player = ({ cover, songInfo }) => {
       setRunning)
   }, [dataSong])
 
+
   const handleVolume = (e) => {
     audio_ref.current.volume = e.target.value / 100;
     setVolume(e.target.value)
     console.log(e.target.value)
   }
 
+
+  const addFavorite = (e) => {
+    let dateNow = new Date(Date.now())
+    let dateTime = new Date(dateNow.getTime() - dateNow.getTimezoneOffset() * 60000).toISOString()
+    let date = dateTime.split('T')[0]
+
+    fetchAJAX({
+      url: `http://${location.hostname}:5000/addfavorite/${dataSong._id}/${localStorage.getItem('id')}/${date}`,
+      resSuccess: (res) => {
+        if (res.status) {
+          console.log(res)
+        } else {
+          console.log(res.message)
+        }
+
+      },
+      resError: (err) => {
+        console.log(err)
+      }
+    }
+    )
+  }
+
   return (
     <div className="player">
-      <audio onPlaying={(e) => setRunning(true)} ref={audio_ref} src=''></audio>
+      <audio
+        onPlaying={(e) => {
+          setRunning(true)
+          setActive(false)
+        }}
+        ref={audio_ref} src=''></audio>
 
       <div className='player-container'>
         <div className="song">
           <figure>
-            <img src={`${cover}`} alt="" />
+            {active ?
+              <img className='loader' src="images/loader.gif" alt="" />
+              :
+              <img src={`${cover}`} alt="" />
+            }
           </figure>
           <div className='data-song'>
             <p className='song-name'><strong>{name}</strong></p>
@@ -115,15 +150,19 @@ const Player = ({ cover, songInfo }) => {
             />
 
             <img onClick={
-              (e) => HandleNext(
-                e,
-                setPlayPause,
-                audio_ref,
-                setNextIsDisabled,
-                setPrevIsDisabled,
-                setDataSong,
-                setRunning
-              )}
+              (e) => {
+                setActive(true)
+                HandleNext(
+                  e,
+                  setPlayPause,
+                  audio_ref,
+                  setNextIsDisabled,
+                  setPrevIsDisabled,
+                  setDataSong,
+                  setRunning
+                )
+
+              }}
 
               src={!nextIsDisabled
                 ? '/icons/icon_controller-next.png'
@@ -164,7 +203,7 @@ const Player = ({ cover, songInfo }) => {
             </div>
 
             <div className='btn-option'>
-              <img src={'/icons/icon-favorite.png'} alt="Favorite" />
+              <img onClick={(e) => addFavorite(e)} src={'/icons/icon-favorite.png'} alt="Favorite" />
             </div>
 
             <div className='btn-option'>

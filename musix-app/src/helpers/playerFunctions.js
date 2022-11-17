@@ -1,42 +1,7 @@
 
-const content = [
-  {
-    id: 1,
-    name: "Dread Harp Blues",
-    artist: "Jesse Tabish",
-    cover: "jesseTabish.jpg",
-    src: 'content/audio_test_3.mp3'
-  },
-  {
-    id: 1,
-    name: "Dust It Off",
-    artist: "The Dø",
-    cover: "Both Ways Open Jaws - The Do.jpg",
-    src: 'content/audio_test_2.mp3'
-  },
-  {
-    id: 2,
-    name: "TQM",
-    artist: "Little Jesus",
-    cover: "Río Salvaje - Little Jesus.jpg",
-    src: 'content/audio_test.mp3'
-  },
-  {
-    id: 3,
-    name: "Solitude (Felsmann + Tiley Reinterpretation)",
-    artist: "M83",
-    cover: "Junk - M83.jpg",
-    src: 'content/audio_test_2.mp3'
-  },
-  {
-    id: 4,
-    name: "In Particular",
-    artist: "Blonde Redhead",
-    cover: "blondeRedhead.jpg",
-    src: 'content/audio_test_3.mp3'
-  }
-]
+import fetchAJAX from "./fetch";
 
+const content = []
 
 let currentIdSong = 0;
 let flag = true;
@@ -50,6 +15,19 @@ let counter = null;
 let loopFlag = false;
 let isLoop = false;
 
+const getSongs = () => {
+  fetchAJAX({
+    url: `http://${window.location.hostname}:5000/getsongs`,
+    resSuccess: (res) => {
+      content.push(...res)
+    },
+    resError: (err) => {
+      console.error(err)
+    }
+  })
+}
+
+getSongs()
 
 const loadSongs = (songs, counter) => {
   if ((currentIdSong + 1) == content.length) {
@@ -146,10 +124,10 @@ const play = async (audio, setNextIsDisabled, setPrevIsDisabled, setDataSong, se
     nextAutomatically(audio, setNextIsDisabled, setPrevIsDisabled, setDataSong, setRunning)
   }
 
-  if (audio.current.src == 'http://localhost:1420/') {
+  if (audio.current.src == `http://${window.location.hostname}:1420/`) {
     //The song doesn't exist
 
-    audio.current.src = content[currentIdSong].src
+    audio.current.src = content[currentIdSong].url
     await audio.current.play()
     loadMetadata(content[currentIdSong])
   } else {
@@ -179,7 +157,9 @@ const play = async (audio, setNextIsDisabled, setPrevIsDisabled, setDataSong, se
       name: content[currentIdSong].name,
       artist: content[currentIdSong].artist,
       duration: duration,
-      cover: content[currentIdSong].cover
+      cover: content[currentIdSong].cover,
+      url: content[currentIdSong].url,
+      _id: content[currentIdSong]._id
     })
   }, 400)
 
@@ -202,7 +182,6 @@ const nextAutomatically = (audio, setNextIsDisabled, setPrevIsDisabled, setDataS
 
 const next = (audio, setNextIsDisabled, setPrevIsDisabled, setDataSong, setRunning) => {
 
-
   if (((currentIdSong + 2) == content.length) && !loopFlag) {
     setNextIsDisabled(true)
   } else if (isLoop) {
@@ -221,7 +200,7 @@ const next = (audio, setNextIsDisabled, setPrevIsDisabled, setDataSong, setRunni
 
   currentIdSong++
 
-  audio.current.src = content[currentIdSong].src
+  audio.current.src = content[currentIdSong].url
   play(audio, setNextIsDisabled, setPrevIsDisabled, setDataSong, setRunning)
 }
 
@@ -239,7 +218,7 @@ const prev = (audio, setPrevIsDisabled, setNextIsDisabled, setDataSong) => {
   setNextIsDisabled(false)
   currentIdSong--
 
-  audio.current.src = content[currentIdSong].src
+  audio.current.src = content[currentIdSong].url
   play(audio, setNextIsDisabled, setPrevIsDisabled, setDataSong)
 }
 
@@ -260,7 +239,7 @@ const HandlePlayPause = (
   if (e && (e.target.matches('a') || e.target.matches('span *'))) {
     e.preventDefault();
     currentIdSong = 0;
-    audio_ref.current.src = content[currentIdSong].src
+    audio_ref.current.src = content[currentIdSong].url
 
     play(audio_ref, setNextIsDisabled, setPrevIsDisabled, setDataSong, setRunning)
     setPlayPause(true)

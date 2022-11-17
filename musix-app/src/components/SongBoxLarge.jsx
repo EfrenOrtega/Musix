@@ -2,7 +2,7 @@ import '../styles/song-box.css';
 
 import { useContext } from 'react';
 import PlayerContext from '../context/PlayerContext';
-
+import fetchAJAX from '../helpers/fetch';
 
 export default function SongBoxLarge({ data }) {
 
@@ -46,6 +46,33 @@ export default function SongBoxLarge({ data }) {
     )
   }
 
+
+  const addFavorite = (e) => {
+    fetchAJAX({
+      url: `http://${location.hostname}:5000/addfavorite`,
+      settings: {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(dataForm)
+      },
+      resSuccess: (res) => {
+        if (res.status) {
+          location.reload()
+        } else {
+          console.log(res.message)
+        }
+
+      },
+      resError: (err) => {
+        console.log(err)
+      }
+    }
+    )
+  }
+
+
   return (
     <div className="song-box large">
 
@@ -85,7 +112,7 @@ export default function SongBoxLarge({ data }) {
       </div>
 
       <div className="btn-options">
-        <img src={'/icons/icon-favorite.png'} alt="" />
+        <img onClick={(e) => addFavorite(e)} src={'/icons/icon-favorite.png'} alt="" />
         <img src={'/icons/more-options.png'} alt="" />
       </div>
     </div>

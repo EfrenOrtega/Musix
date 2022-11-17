@@ -12,6 +12,11 @@
   overflow: hidden;
 }
 
+.music-box.small {
+  width: 8rem;
+  min-width: 8rem;
+}
+
 .music-box .cover {
   position: relative;
   width: fit-content;

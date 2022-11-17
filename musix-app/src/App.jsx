@@ -25,15 +25,13 @@ export default function App() {
 
               </Router>
 
-
-
               <Player
-                cover="willOfThePeople.png"
+                cover=""
                 songInfo={
                   {
-                    name: "Will Of The People",
-                    artist: "Muse",
-                    duration: "02:30"
+                    name: "",
+                    artist: "",
+                    duration: ""
                   }
                 }
               />

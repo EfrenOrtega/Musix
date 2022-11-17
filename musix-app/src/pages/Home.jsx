@@ -10,73 +10,7 @@ import responsiveBoxes from '../helpers/responsiveBoxes'
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom';
 
-
-
-const SongsAdded = [
-  <MusicBox
-    cover="blondeRedhead.jpg"
-    songInfo={
-      {
-        name: "In Particular",
-        artist: "Blonde Redhead"
-      }
-    }
-  />,
-  <MusicBox
-    cover="The 2nd Law - Muse.jpg"
-    songInfo={
-      {
-        name: "Liquid State",
-        artist: "Muse"
-      }
-    }
-  />,
-  <MusicBox
-    cover="vacationsVibes.jpg"
-    songInfo={
-      {
-        name: "Young",
-        artist: "Vacations"
-      }
-    }
-  />,
-  <MusicBox
-    cover="radioheadHail.jpg"
-    songInfo={
-      {
-        name: "A wolf At the Door",
-        artist: "Radiohead"
-      }
-    }
-  />,
-  <MusicBox
-    cover="billieEilishWhenWe.jpg"
-    songInfo={
-      {
-        name: "You should see me in a cry",
-        artist: "Billie Eilish"
-      }
-    }
-  />,
-  <MusicBox
-    cover="BonesUnrendered.jpg"
-    songInfo={
-      {
-        name: "CtrlAltDelete",
-        artist: "Bones"
-      }
-    }
-  />,
-  <MusicBox
-    cover="BonesNoReddemingQualities.jpg"
-    songInfo={
-      {
-        name: "Oxygen",
-        artist: "Bones"
-      }
-    }
-  />
-]
+import fetchAJAX from "../helpers/fetch"
 
 const SongsLikes = [
   <MusicBox
@@ -257,6 +191,7 @@ const Playlists = [
 export default function Home() {
 
   const [quantity, setQuantity] = useState(null)
+  const [SongsAddedTest, setSongsAddedTest] = useState(null)
 
   const handleResize = () => {
     setQuantity(responsiveBoxes(elementos))
@@ -265,6 +200,21 @@ export default function Home() {
   useEffect(() => {
     handleResize()
     window.addEventListener('resize', handleResize)
+
+    /*let dateNow = new Date(Date.now())
+    let dateTime = new Date(dateNow.getTime() - dateNow.getTimezoneOffset() * 60000).toISOString()
+    let date = `${dateTime.split('T')[0]}T00:00:00.000Z`*/
+
+    fetchAJAX({
+      url: `http://${window.location.hostname}:5000/getrecentsongs`,
+      resSuccess: (res) => {
+        setSongsAddedTest(res)
+      },
+      resError: (err) => {
+        console.error(err)
+      }
+    })
+
   }, [])
 
   let elementos = [
@@ -388,12 +338,25 @@ export default function Home() {
                   artist: "Muse"
                 }
               }
+              nameClass="small"
             />
-            {quantity &&
-              SongsAdded.map((el, index) => {
-                if (index < quantity[0]) {
-                  return SongsAdded[index - 1]
+            {(quantity && SongsAddedTest) &&
+              SongsAddedTest.map((el, index) => {
+                if (index < (quantity[0] - 1)) {
+                  return < MusicBox
+                    cover={el.cover}
+                    songInfo={
+                      {
+                        id: el._id,
+                        name: el.name,
+                        artist: el.artist
+                      }
+                    }
+                    pathSong={el.url}
+                    nameClass="small"
+                  />
                 }
+
               })
 
             }
