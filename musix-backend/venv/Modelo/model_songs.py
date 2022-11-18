@@ -27,6 +27,7 @@ class ModelSongs():
 
     return jsonify({'status':True, 'message':'Songs Added'})
 
+
   def get_songs(self):
     songs = []
     for data in self.cSongs.find():

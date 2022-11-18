@@ -25,11 +25,11 @@ export default function SongBoxLarge({ data }) {
     if (content[0].id == id) return
 
     content.unshift({
-      id,
+      _id: id,
       name,
       artist,
-      cover: `images/${cover}`,
-      src: pathSong
+      cover: cover,
+      url: pathSong
     })
 
     setRunning(false)
@@ -88,7 +88,12 @@ export default function SongBoxLarge({ data }) {
           </span>
 
           <figure>
-            <img src={`/images/${cover}`} alt={name} />
+            {cover.includes('http')
+              ?
+              <img src={cover} alt={name} />
+              :
+              <img src={`/images/${cover}`} alt={name} />
+            }
           </figure>
         </div>
 

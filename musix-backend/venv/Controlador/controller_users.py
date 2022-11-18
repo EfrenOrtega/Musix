@@ -27,6 +27,3 @@ def get_songs():
 
 def get_recent_songs():
   return mSongs.get_recent_songs()
-
-def add_favorite():
-  return mSongs.add_favorite()

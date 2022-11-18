@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom'
 import '../styles/Menu.css'
 
 
@@ -14,7 +15,7 @@ export default function Menu() {
         <ul>
           <li>
             <img src="/icons/icon-favorite.png" alt="Favorite" />
-            <a href="">Favorites</a>
+            <Link to="/playlist/0">Favorites</Link>
           </li>
           <li>
             <a href="">Coming soon</a>

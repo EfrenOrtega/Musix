@@ -1,6 +1,8 @@
+import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import Header from "../components/Header";
 import SongBoxLarge from "../components/SongBoxLarge";
+import fetchAJAX from "../helpers/fetch";
 
 const content = [
   [
@@ -233,25 +235,61 @@ const content = [
 
 export default function Playlist() {
 
-  let { id } = useParams()
+  const [dataPlaylist, setDataPlaylist] = useState()
+  const [dataSongs, setDataSongs] = useState([])
+
+  useEffect(() => {
+
+    let songs = []
+
+    fetchAJAX({
+      url: `http://${window.location.hostname}:5000/getplaylist/${localStorage.getItem('id')}`,
+      resSuccess: (res) => {
+        if (!res.results) return
+        setDataPlaylist(res.results)
+        res.results[0].songs.forEach(el => {
+
+          fetchAJAX({
+            url: `http://${window.location.hostname}:5000/getsongplaylist/${el.song_id.$oid}`,
+            resSuccess: (res) => {
+              songs.push(res.results)
+              setDataSongs([...dataSongs, ...songs])
+            },
+            resError: (err) => {
+              console.error(err)
+            }
+          })
+
+        })
+
+      },
+      resError: (err) => {
+        console.error(err)
+      }
+    })
+  }, [])
+
+  let { idsong } = useParams()
 
   return (
     <div className='main-container'>
-      <Header
-        type="playlist"
-        data={{
-          title: "Playlist Name",
-          creator: "Created by name user",
-          created: "15/10/2022"
-        }}
-        cover={content[parseInt(id)][0].dataPlaylist.background}
-      />
+      {dataPlaylist &&
+        <Header
+          type="playlist"
+          data={{
+            title: dataPlaylist[0].name,
+            creator: dataPlaylist[0].createdBy,
+            created: "15/10/2022"
+          }}
+          cover={dataPlaylist[0].background}
+        />
+      }
 
       <main>
 
-        {
-          (content.length > id) &&
-          content[parseInt(id)][0].dataSong.map((el, index) => {
+        {!dataPlaylist ?
+          (content.length > idsong) &&
+          content[parseInt(idsong)][0].dataSong.map((el, index) => {
             return <SongBoxLarge
               key={index}
               data={{
@@ -263,6 +301,23 @@ export default function Playlist() {
                 album: el.album,
                 created: el.created,
                 pathSong: el.pathSong
+              }
+              }
+            />
+          })
+          :
+          dataSongs.map((el, index) => {
+            return <SongBoxLarge
+              key={index}
+              data={{
+                id: el._id,
+                cover: el.cover,
+                name: el.name,
+                artist: el.artist,
+                duration: el.duration,
+                album: el.album,
+                created: el.created,
+                pathSong: el.url
               }
               }
             />

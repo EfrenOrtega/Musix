@@ -14,16 +14,16 @@ export default function App() {
     <>
       {
         localStorage.getItem('login') == 'true' ?
-          <>
-            <Menu />
-            <PlayerProvider>
-              <Router>
-                <Routes>
-                  <Route path="/" element={<Home />}></Route>
-                  <Route path="/playlist/:id" element={<Playlist />}></Route>
-                </Routes>
 
-              </Router>
+          <Router>
+
+            <Menu />
+
+            <PlayerProvider>
+              <Routes>
+                <Route path="/" element={<Home />}></Route>
+                <Route path="/playlist/:idsong" element={<Playlist />}></Route>
+              </Routes>
 
               <Player
                 cover=""
@@ -36,11 +36,11 @@ export default function App() {
                 }
               />
             </PlayerProvider>
-          </>
+
+          </Router>
           :
           <Auth />
       }
-
     </>
   );
 }

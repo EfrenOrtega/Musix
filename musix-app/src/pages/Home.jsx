@@ -201,10 +201,6 @@ export default function Home() {
     handleResize()
     window.addEventListener('resize', handleResize)
 
-    /*let dateNow = new Date(Date.now())
-    let dateTime = new Date(dateNow.getTime() - dateNow.getTimezoneOffset() * 60000).toISOString()
-    let date = `${dateTime.split('T')[0]}T00:00:00.000Z`*/
-
     fetchAJAX({
       url: `http://${window.location.hostname}:5000/getrecentsongs`,
       resSuccess: (res) => {
