@@ -9,7 +9,7 @@ import { useNavigate } from 'react-router-dom';
 import { useEffect } from 'react'
 import fetchAJAX from '../helpers/fetch'
 
-export default function Header({ type, data, background, cover }) {
+export default function Header({ type, data, background, cover, btns }) {
 
   let navigate = useNavigate()
 
@@ -108,7 +108,7 @@ export default function Header({ type, data, background, cover }) {
             ? <HeaderBottomHome />
             :
             type == "playlist"
-              ? <HeaderBottomPlaylist data={data} cover={cover} />
+              ? <HeaderBottomPlaylist data={data} cover={cover} btns={btns} />
               : undefined
         }
 

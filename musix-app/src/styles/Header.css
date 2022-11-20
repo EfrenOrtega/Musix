@@ -129,6 +129,14 @@ header .section-bottom .title {
 /*Header Bottom Playlist*/
 header .bottom-playlist {
   display: flex;
+  justify-content: space-between;
+  align-items: end;
+  width: 100%;
+  gap: 2rem;
+}
+
+header .bottom-playlist .name-cover-playlist {
+  display: flex;
   gap: 2rem;
 }
 
@@ -184,4 +192,9 @@ header .bottom-playlist .cover {
 header .bottom-playlist .cover img {
   width: 8em;
   height: 8em;
+}
+
+header .bottom-playlist .btns img {
+  width: 3rem;
+  height: 3rem;
 }

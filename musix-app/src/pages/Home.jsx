@@ -234,7 +234,9 @@ export default function Home() {
         <div className='container-section-1'>
           <section className='section-playlist'>
             <div className='title-section'>
-              <h2>Your Playlists</h2>
+              <Link to="/playlists">
+                <h2>Your Playlists</h2>
+              </Link>
               <img src="/icons/icon-arrow-right.png" alt="" />
             </div>
 

@@ -59,22 +59,31 @@ export default function MusicBox({ cover, songInfo, pathSong, nameClass }) {
         </span>
 
 
-        {typeof cover == "object" ?
-          <div className='generate-cover'>
-            <img src={`/images/${cover[0]}`} alt="Song" />
-            <img src={`/images/${cover[1]}`} alt="Song" />
-            <img src={`/images/${cover[2]}`} alt="Song" />
-            <img src={`/images/${cover[3]}`} alt="Song" />
-          </div>
-          :
-          <div className='cover-img'>
-            {cover.includes('http') ?
-              <img src={`${cover}`} alt="Song" />
-              :
-              <img src={`/images/${cover}`} alt="Song" />
-            }
+        {!cover[0].includes('http') ?
 
-          </div>
+          cover.lenght > 0 ?
+            <div className='generate-cover'>
+              <img src={`/images/${cover[0]}`} alt="Song" />
+              <img src={`/images/${cover[1]}`} alt="Song" />
+              <img src={`/images/${cover[2]}`} alt="Song" />
+              <img src={`/images/${cover[3]}`} alt="Song" />
+            </div>
+            :
+            <div className='cover-img'>
+              <img src={`/images/${cover}`} alt="Song" />
+            </div>
+          :
+          cover.lenght > 0 ?
+            <div className='generate-cover'>
+              <img src={cover[0]} alt="Song" />
+              <img src={cover[1]} alt="Song" />
+              <img src={cover[2]} alt="Song" />
+              <img src={cover[3]} alt="Song" />
+            </div>
+            :
+            <div className='cover-img'>
+              <img src={cover[0]} alt="Song" />
+            </div>
         }
 
 

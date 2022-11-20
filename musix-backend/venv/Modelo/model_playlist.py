@@ -6,6 +6,15 @@ import dateutil
 from bson import json_util
 
 from Modelo.model_profile import ModelProfile
+from botocore.exceptions import ClientError
+
+import boto3
+
+import os
+from werkzeug.utils import secure_filename
+
+import uuid
+
 
 class ModelPlaylist():
 
@@ -22,6 +31,9 @@ class ModelPlaylist():
   iduser = None
   idPlaylist = None
   date = None
+  imageFile = None
+  nameImage = None
+  urlImage = None
 
   def __init__(self):
     pass
@@ -218,14 +230,7 @@ class ModelPlaylist():
 
   def get_playlists(self):
     playlists = []
-    for data in self.cPlaylist.find({'$and':[
-          {
-            'name':'Favorites'
-          },
-          {
-            'user_id':ObjectId(self.iduser)
-          }
-        ]}):
+    for data in self.cPlaylist.find({'user_id':ObjectId(self.iduser)}):
       playlists.append({
         '_id':str(ObjectId(data['_id'])),
         'user_id':str(ObjectId(data['user_id'])),
@@ -257,3 +262,106 @@ class ModelPlaylist():
         'date':song['date']
       }
     })
+
+
+  def create_playlist(self):
+    jsonData = json.load(request.files['Form'])
+
+    try:
+      if(request.files['File']):
+        self.imageFile = request.files['File']
+        self.upload_file()
+        self.upload_to_filebase()
+
+        user = self.cUsers.find_one({'_id': ObjectId(jsonData['idUser'])})
+
+        res = self.cPlaylist.insert_one({
+        'user_id':ObjectId(jsonData['idUser']),
+        'name':jsonData['dataForm']['name'],
+        'background':[
+          self.urlImage
+        ],
+        'created':jsonData['created'],
+        'createdBy':user['name'],
+        'songs':[],
+        'visibility':True
+        })
+
+    except:
+      user = self.cUsers.find_one({'_id': ObjectId(jsonData['idUser'])})
+
+      res = self.cPlaylist.insert_one({
+        'user_id':ObjectId(jsonData['idUser']),
+        'name':jsonData['dataForm']['name'],
+        'background':['https://ipfs.filebase.io/ipfs/QmZVKWX9ZEtgT4YmZWoZYDoin7puHgRnZs2etd9pdzJveX'],
+        'created':jsonData['created'],
+        'createdBy':user['name'],
+        'songs':[],
+        'visibility':True
+      })
+
+
+
+    return jsonify({'status':True, 'Message':'New Playlist created'})
+
+
+
+  def upload_file(self):
+    try:
+      #To upload an Imagen to this Flask server
+      file = self.imageFile
+      Path = os.path.join(os.path.dirname(__file__))    
+      UPLOAD_FOLDER = os.path.join(os.path.dirname(Path), 'images')
+
+      filename = secure_filename(file.filename)
+      extension = os.path.splitext(filename)[1]
+
+      newName = str(uuid.uuid4()) + extension
+
+      upload_path = os.path.join(UPLOAD_FOLDER, newName)
+      
+      file.save(upload_path)
+
+      self.nameImage = newName
+    
+      return jsonify({'status':True, 'message':'Imagen Uploaded'})
+    except ClientError as e:
+      print('error: %s') % e
+      return jsonify({'status':False, 'message':'Error to Upload the Image'})
+
+
+
+  def upload_to_filebase(self):
+    CDI = None
+
+    #Credenciales para acceder al Filebase
+    s3 = boto3.client('s3',
+      endpoint_url = 'https://s3.filebase.com',
+      aws_access_key_id = "B0E0B15155B64920B741",
+      aws_secret_access_key = "cqpvswtXeN5Eit3iZQmEaQtga5Nc1vY3qk5N0kiA"
+    )
+
+    image = self.nameImage
+    #Para Subir un nuevo objeto a un Bucket en este caso una imagen
+    currentPath = os.path.join(os.path.dirname(__file__))    
+    pathImage = os.path.join(os.path.dirname(currentPath), 'images', image)
+
+    with open(pathImage, 'rb') as data:
+      try:    
+
+        #Insertar objeto al bucket "movies-3077"
+        request = s3.put_object(
+          Body=data,
+          Bucket="musix-3066",
+          Key = 'covers-playlists/' + self.nameImage, 
+          ContentType = 'imagen/jpeg'
+        )
+        
+        CDI = request['ResponseMetadata']['HTTPHeaders']['x-amz-meta-cid']
+
+        #Recuperamos la URL del la imagen ya una vez subida a https://filebase.com/
+        self.urlImage = 'https://ipfs.filebase.io/ipfs/' + CDI
+
+      except ClientError as e:
+        print('error: %s') % e
+        return 'error'

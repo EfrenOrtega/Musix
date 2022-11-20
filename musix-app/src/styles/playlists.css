@@ -1,0 +1,11 @@
+.playlist-container .playlists {
+  width: 100%;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.5rem;
+}
+
+.form-playlists {
+  display: block;
+  width: 100%;
+}

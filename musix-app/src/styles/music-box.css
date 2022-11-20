@@ -65,6 +65,7 @@
 .music-box .cover .cover-img img {
   width: 8rem;
   height: 8rem;
+  object-fit: cover;
 }
 
 .music-box .cover figure {

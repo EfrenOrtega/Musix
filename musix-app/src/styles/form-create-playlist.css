@@ -1,0 +1,103 @@
+.btn-toggle-container {
+  display: flex;
+  gap: 0.6rem;
+  margin: 1rem 0;
+}
+
+.btn-toggle-container label {
+  width: 3rem;
+}
+
+.form-playlist.active {
+  display: block;
+  position: relative;
+  text-align: center;
+  width: 20rem;
+  height: fit-content;
+  padding: 1rem;
+
+  background: var(--second);
+
+  margin: auto;
+}
+
+.form-playlist {
+  display: none;
+}
+
+.form-playlist input {
+  background-color: #7A7A7A;
+  border-bottom: 1px solid white;
+  height: 2rem;
+  border-radius: 0.2rem;
+  color: #0B0C1C;
+  width: 90%;
+}
+
+.form-playlist input::placeholder {
+  color: #0B0C1C;
+}
+
+.form-playlist button {
+  background-color: white;
+  color: black;
+  font-weight: 600;
+  line-height: 1rem;
+  width: 80%;
+}
+
+.form-playlist button:hover {
+  border: none;
+}
+
+.container-background {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  height: 9rem;
+  overflow: hidden;
+
+  margin-bottom: 1rem;
+  margin-top: 1rem;
+}
+
+.container-background .background {
+  position: relative;
+  width: 9rem;
+  height: inherit;
+  overflow: hidden;
+}
+
+.container-background .background figure {
+  display: block;
+  position: relative;
+  height: inherit;
+  width: inherit;
+}
+
+.container-background .background figure img {
+  height: inherit;
+  width: inherit;
+
+  object-fit: cover;
+}
+
+.container-background .background #icon-upload {
+  position: absolute;
+  bottom: 0.3rem;
+  right: 0.3rem;
+  display: block;
+
+  cursor: pointer;
+}
+
+#icon-close {
+  position: absolute;
+  right: 1rem;
+  width: 1rem;
+  cursor: pointer;
+}
+
+input[type="file"] {
+  display: none;
+}

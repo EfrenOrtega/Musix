@@ -17,3 +17,6 @@ def get_song_playlists(idsong):
   mPlaylist.idsong = idsong
   
   return mPlaylist.get_song_playlists()
+
+def create_playlist():
+  return mPlaylist.create_playlist()
