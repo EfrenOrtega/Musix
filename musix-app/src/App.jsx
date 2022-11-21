@@ -7,35 +7,48 @@ import Player from "./components/Player"
 import Playlist from './pages/Playlist';
 import Playlists from './pages/Playlists';
 import Auth from './pages/Auth';
-import { PlayerProvider } from './context/PlayerContext'
 
+import { PlayerProvider } from './context/PlayerContext'
+import { PlaylistProvider } from './context/PlaylistContext';
+import Context from './context/Context'
+import { useContext } from 'react';
+import FormCreatePlaylist from './components/FormCreatePlaylist';
 
 export default function App() {
+
+  const { displayFormPlaylist } = useContext(Context);
+
   return (
     <>
       {
         localStorage.getItem('login') == 'true' ?
           <Router>
-
             <Menu />
 
             <PlayerProvider>
-              <Routes>
-                <Route path="/" element={<Home />}></Route>
-                <Route path="/playlist/:idsong" element={<Playlist />}></Route>
-                <Route path='/playlists' element={<Playlists />}></Route>
-              </Routes>
+              <PlaylistProvider>
 
-              <Player
-                cover=""
-                songInfo={
-                  {
-                    name: "",
-                    artist: "",
-                    duration: ""
-                  }
+                {displayFormPlaylist &&
+                  <FormCreatePlaylist />
                 }
-              />
+
+                <Routes>
+                  <Route path="/" element={<Home />}></Route>
+                  <Route path="/playlist/:id" element={<Playlist />}></Route>
+                  <Route path='/playlists' element={<Playlists />}></Route>
+                </Routes>
+
+                <Player
+                  cover=""
+                  songInfo={
+                    {
+                      name: "",
+                      artist: "",
+                      duration: ""
+                    }
+                  }
+                />
+              </PlaylistProvider>
             </PlayerProvider>
 
           </Router>

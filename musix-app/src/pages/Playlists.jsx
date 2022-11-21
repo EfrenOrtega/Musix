@@ -1,25 +1,27 @@
 import '../styles/playlists.css'
 
 import { useEffect } from "react"
-import { useState } from "react"
+import { useState, useContext } from "react"
 import Header from "../components/Header"
 import fetchAJAX from "../helpers/fetch"
 import MusicBox from "../components/MusicBox"
 import { Link } from "react-router-dom"
 import FormCreatePlaylist from '../components/FormCreatePlaylist'
+import PlaylistContext from '../context/PlaylistContext'
+import Context from '../context/Context'
 
 export default function Playlists() {
-  const [dataPlaylist, setDataPlaylist] = useState()
-  const [displayForm, setDisplayForm] = useState(false)
   const [update, setUpdate] = useState(false)
 
+  const { setPlaylists, Playlists } = useContext(PlaylistContext)
+  const { displayFormPlaylist, setDisplayFormPlaylist } = useContext(Context)
 
   useEffect(() => {
     fetchAJAX({
-      url: `http://${window.location.hostname}:5000/getplaylist/${localStorage.getItem('id')}`,
+      url: `http://${window.location.hostname}:5000/getplaylists/${localStorage.getItem('id')}`,
       resSuccess: (res) => {
         if (!res.results) return
-        setDataPlaylist(res.results)
+        setPlaylists(res.results)
       },
       resError: (err) => {
         console.error(err)
@@ -28,10 +30,10 @@ export default function Playlists() {
   }, [update])
 
   const handleForm = () => {
-    if (displayForm) {
-      setDisplayForm(false)
+    if (displayFormPlaylist) {
+      setDisplayFormPlaylist(false)
     } else {
-      setDisplayForm(true)
+      setDisplayFormPlaylist(true)
     }
   }
 
@@ -45,28 +47,17 @@ export default function Playlists() {
         cover={["background-playlist.png"]}
         btns={[
           {
-            'icon': ["icon-playlist-plus-active.png"],
+            'icon': ["icon-playlist-plus.png"],
             'event': handleForm,
           }
         ]}
       />
       <main className='playlist-container'>
-        <div className='form-playlists'>
-
-          <FormCreatePlaylist
-            displayForm={displayForm}
-            handleForm={handleForm}
-
-            update={update}
-            setUpdate={setUpdate}
-          />
-
-        </div>
 
         <div className="playlists">
 
-          {dataPlaylist &&
-            dataPlaylist.map((el, index) => {
+          {Playlists &&
+            Playlists.map((el, index) => {
               return <Link to="/playlist/0">
                 <MusicBox
                   cover={el.background}

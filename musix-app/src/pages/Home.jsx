@@ -7,10 +7,11 @@ import Genres from '../components/Genres'
 import Artist from '../components/Artist'
 
 import responsiveBoxes from '../helpers/responsiveBoxes'
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useContext, memo } from 'react'
 import { Link } from 'react-router-dom';
 
 import fetchAJAX from "../helpers/fetch"
+import PlaylistContext from '../context/PlaylistContext'
 
 const SongsLikes = [
   <MusicBox
@@ -90,7 +91,7 @@ const SongsLikes = [
   />
 ]
 
-const Playlists = [
+const Playlistss = [
   <MusicBox
     cover={[
       'muse - drones.jpg',
@@ -188,7 +189,9 @@ const Playlists = [
   />
 ]
 
+
 export default function Home() {
+  const { setPlaylists, Playlists } = useContext(PlaylistContext)
 
   const [quantity, setQuantity] = useState(null)
   const [SongsAddedTest, setSongsAddedTest] = useState(null)
@@ -198,8 +201,27 @@ export default function Home() {
   }
 
   useEffect(() => {
-    handleResize()
+
+    if (!quantity) {
+      setQuantity([3, 2, 3])
+    }
+
+    setTimeout(() => {
+      handleResize()
+    }, 500)
+
     window.addEventListener('resize', handleResize)
+
+    fetchAJAX({
+      url: `http://${window.location.hostname}:5000/getplaylists/${localStorage.getItem('id')}`,
+      resSuccess: (res) => {
+        if (!res.results) return
+        setPlaylists(res.results)
+      },
+      resError: (err) => {
+        console.error(err)
+      }
+    })
 
     fetchAJAX({
       url: `http://${window.location.hostname}:5000/getrecentsongs`,
@@ -241,34 +263,25 @@ export default function Home() {
             </div>
 
             <div className='playlist'>
-              <Link to="/playlist/0">
-                <MusicBox
-                  cover={[
-                    'badbunny - verano sin tí.jpg',
-                    'LosBunkers - Velocidad de la Luz.jpg',
-                    'LosDaniels - A casa.jpg',
-                    'provenza-karol G.jpg'
-                  ]}
-                  songInfo={
-                    {
-                      name: "Playlist 01 🎉🎉",
-                    }
-                  }
-                  playlist={true}
-                />
-              </Link>
 
-              {quantity &&
+              {(quantity && Playlists) &&
                 Playlists.map((el, index) => {
                   if (index < quantity[2]) {
                     return (
-                      <Link to={`/playlist/${index}`}>
-                        {Playlists[index - 1]}
+                      <Link to={`/playlist/${el._id}`}>
+                        <MusicBox
+                          cover={el.background}
+                          songInfo={
+                            {
+                              id: el._id,
+                              name: el.name,
+                            }
+                          }
+                        />
                       </Link>
                     )
                   }
                 })
-
               }
 
             </div>
@@ -328,21 +341,11 @@ export default function Home() {
           </div>
 
           <div className='recently-added'>
-            <MusicBox
-              cover="willOfThePeople.png"
-              songInfo={
-                {
-                  name: "Will of The People",
-                  artist: "Muse"
-                }
-              }
-              nameClass="small"
-            />
             {(quantity && SongsAddedTest) &&
               SongsAddedTest.map((el, index) => {
                 if (index < (quantity[0] - 1)) {
                   return < MusicBox
-                    cover={el.cover}
+                    cover={[el.cover]}
                     songInfo={
                       {
                         id: el._id,

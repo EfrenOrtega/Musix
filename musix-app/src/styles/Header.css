@@ -185,13 +185,14 @@ header .bottom-playlist .cover {
   font-size: 20.6px;
   border-radius: 0.3em;
   width: fit-content;
+  height: 8em;
   overflow: hidden;
-
 }
 
 header .bottom-playlist .cover img {
   width: 8em;
-  height: 8em;
+  height: 100%;
+  object-fit: cover;
 }
 
 header .bottom-playlist .btns img {

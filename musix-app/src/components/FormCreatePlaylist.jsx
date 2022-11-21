@@ -1,16 +1,21 @@
+import "../styles/form-create-playlist.css"
+
+import { useState, useRef, useContext } from "react"
+
+import Context from "../context/Context"
+
 import Input from "./micro/Input"
 import ButtonToggle from "./micro/ButtonToggle"
-import "../styles/form-create-playlist.css"
-import { useState } from "react"
-import { useRef } from "react"
+
 import fetchAJAX from "../helpers/fetch"
 
-export default function FormCreatePlaylist({ displayForm, handleForm, update, setUpdate }) {
+export default function FormCreatePlaylist() {
 
   const [visibility, setVisibility] = useState()
   const [dataForm, setDataForm] = useState({ 'name': '' })
   const previewImage = useRef(null)
   const file = useRef(null)
+  const { displayFormPlaylist, setDisplayFormPlaylist } = useContext(Context)
 
   const loadImage = (e) => {
     let src = URL.createObjectURL(e.target.files[0])
@@ -56,12 +61,8 @@ export default function FormCreatePlaylist({ displayForm, handleForm, update, se
       },
       resSuccess: (res) => {
         if (res.status) {
-          if (update) {
-            setUpdate(false)
-          } else {
-            setUpdate(true)
-          }
-          handleForm()
+          console.log(res.message)
+          setDisplayFormPlaylist(false)
         } else {
           console.log(res.message)
         }
@@ -75,60 +76,69 @@ export default function FormCreatePlaylist({ displayForm, handleForm, update, se
 
   }
 
+  const handleForm = (e) => {
+    if (displayFormPlaylist) {
+      setDisplayFormPlaylist(false)
+    } else {
+      setDisplayFormPlaylist(true)
+    }
+  }
 
   return (
-    <div className={!displayForm ? "form-playlist" : "form-playlist active"}>
+    <div className="form-playlist-container">
+      <div className="form-playlist">
 
-      <img onClick={(e) => handleForm()} id="icon-close" src="./icons/icon_close.svg" alt="Close" />
+        <img onClick={(e) => handleForm()} id="icon-close" src="./icons/icon_close.svg" alt="Close" />
 
-      <form onSubmit={(e) => createPlaylist(e)} action="">
-        <div className="container-background">
+        <form onSubmit={(e) => createPlaylist(e)} action="">
+          <div className="container-background">
 
-          <input
-            ref={file}
-            onChange={(e) => loadImage(e)}
-            type="file" name="" id="upload_image" accept="image/*" />
+            <input
+              ref={file}
+              onChange={(e) => loadImage(e)}
+              type="file" name="" id="upload_image" accept="image/*" />
 
-          <div className="background">
-            <figure>
-              <img ref={previewImage} src="/images/background-plaholder.png" alt="Img Placeholder" />
-            </figure>
+            <div className="background">
+              <figure>
+                <img ref={previewImage} src="/images/background-plaholder.png" alt="Img Placeholder" />
+              </figure>
 
-            <label htmlFor="upload_image">
-              <img id="icon-upload" src="/icons/icon_upload.svg" alt="Upload Image" />
-            </label>
-          </div>
-        </div>
-
-        <div className="">
-          <Input
-            name='name'
-            placeholder='Name'
-            type='Text'
-            handleChange={handleChange}
-            value={dataForm.name}
-          />
-
-          <div className="btn-toggle-container">
-            {false &&
-              <>
-                {visibility
-                  ? <label>Public</label>
-                  : <label>Private</label>
-                }
-
-                <ButtonToggle setVisibility={setVisibility} />
-              </>
-            }
-
+              <label htmlFor="upload_image">
+                <img id="icon-upload" src="/icons/icon_upload.svg" alt="Upload Image" />
+              </label>
+            </div>
           </div>
 
-          <button type="submit">Create</button>
+          <div className="">
+            <Input
+              name='name'
+              placeholder='Name'
+              type='Text'
+              handleChange={handleChange}
+              value={dataForm.name}
+            />
+
+            <div className="btn-toggle-container">
+              {false &&
+                <>
+                  {visibility
+                    ? <label>Public</label>
+                    : <label>Private</label>
+                  }
+
+                  <ButtonToggle setVisibility={setVisibility} />
+                </>
+              }
+
+            </div>
+
+            <button type="submit">Create</button>
 
 
-        </div>
-      </form>
+          </div>
+        </form>
 
+      </div>
     </div>
   )
 }

@@ -20,3 +20,12 @@ def get_song_playlists(idsong):
 
 def create_playlist():
   return mPlaylist.create_playlist()
+
+def get_playlist(idplaylist):
+  mPlaylist.idPlaylist = idplaylist
+  return mPlaylist.get_playlist()
+
+def add_to_playlist(idplaylist,idsong):
+  mPlaylist.idPlaylist = idplaylist
+  mPlaylist.idsong = idsong
+  return  mPlaylist.add_to_playlist()

@@ -1,15 +1,21 @@
-import { useState, useRef, useEffect } from 'react'
+import '../styles/player.css'
+
+import { useState, useRef, useEffect, useContext } from 'react'
+
 import PlayerContext from '../context/PlayerContext'
+
 import { Slider } from './micro/Slider'
+import ListPlaylist from './micro/ListPlaylist'
+
 import fetchAJAX from '../helpers/fetch'
 
-import '../styles/player.css'
-import { useContext } from 'react'
 
 
 const Player = ({ cover, songInfo }) => {
 
   let { name, artist, duration } = songInfo
+
+  const iconAddPlaylist = useRef(null)
 
   const {
     playPause,
@@ -31,7 +37,6 @@ const Player = ({ cover, songInfo }) => {
     setRunning
   } = useContext(PlayerContext)
 
-
   name = dataSong.name || name;
   artist = dataSong.artist || artist;
   duration = dataSong.duration || duration;
@@ -45,8 +50,13 @@ const Player = ({ cover, songInfo }) => {
   const [volume, setVolume] = useState(0);
   const [displayVolume, setDisplayVolume] = useState(false)
   const [active, setActive] = useState(true)
+  const [displayListPlaylist, setDisplayListPlaylist] = useState(false)
+  const [visibility, setVisibility] = useState(false)
+  const [pointerXY, setPointerXY] = useState({})
+
 
   useEffect(() => {
+
     keysFunctions(
       undefined,
       setPlayPause,
@@ -61,7 +71,6 @@ const Player = ({ cover, songInfo }) => {
   const handleVolume = (e) => {
     audio_ref.current.volume = e.target.value / 100;
     setVolume(e.target.value)
-    console.log(e.target.value)
   }
 
 
@@ -69,6 +78,10 @@ const Player = ({ cover, songInfo }) => {
     let dateNow = new Date(Date.now())
     let dateTime = new Date(dateNow.getTime() - dateNow.getTimezoneOffset() * 60000).toISOString()
     let date = dateTime.split('T')[0]
+
+
+    const controller = new AbortController();
+    options.signal = controller.signal;
 
     fetchAJAX({
       url: `http://${location.hostname}:5000/addfavorite/${dataSong._id}/${localStorage.getItem('id')}/${date}`,
@@ -85,10 +98,43 @@ const Player = ({ cover, songInfo }) => {
       }
     }
     )
+
+    return () => {
+      controller.abort()
+    }
+  }
+
+  const addToPlaylist = (e) => {
+
+    setPointerXY({
+      'x': e.target.getBoundingClientRect().left,
+      'y': e.target.getBoundingClientRect().top,
+      'width': e.target.getBoundingClientRect().width
+    })
+
+
+    if (displayListPlaylist) {
+      setDisplayListPlaylist(false)
+    } else {
+      setDisplayListPlaylist(true)
+    }
+
   }
 
   return (
     <div className="player">
+
+      {displayListPlaylist &&
+        <ListPlaylist
+          visibility={visibility}
+          setVisibility={setVisibility}
+          pointerXY={pointerXY}
+          iconAddPlaylist={iconAddPlaylist}
+          setDisplayListPlaylist={setDisplayListPlaylist}
+        />
+      }
+
+
       <audio
         onPlaying={(e) => {
           setRunning(true)
@@ -211,7 +257,7 @@ const Player = ({ cover, songInfo }) => {
             </div>
 
             <div className='btn-option'>
-              <img src={'/icons/icon-playlist-plus.png'} alt="Add Playlist" />
+              <img ref={iconAddPlaylist} onClick={(e) => addToPlaylist(e)} src={'/icons/icon-playlist-plus.png'} alt="Add Playlist" />
             </div>
 
           </div>

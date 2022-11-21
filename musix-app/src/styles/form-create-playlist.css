@@ -8,7 +8,22 @@
   width: 3rem;
 }
 
-.form-playlist.active {
+.form-playlist-container {
+  position: fixed;
+  z-index: 500;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+
+  background: rgba(0, 0, 0, .45);
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.form-playlist {
   display: block;
   position: relative;
   text-align: center;
@@ -19,10 +34,6 @@
   background: var(--second);
 
   margin: auto;
-}
-
-.form-playlist {
-  display: none;
 }
 
 .form-playlist input {

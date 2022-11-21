@@ -238,38 +238,72 @@ export default function Playlist() {
   const [dataPlaylist, setDataPlaylist] = useState()
   const [dataSongs, setDataSongs] = useState([])
 
+  let { id } = useParams()
+
   useEffect(() => {
 
     let songs = []
 
-    fetchAJAX({
-      url: `http://${window.location.hostname}:5000/getplaylist/${localStorage.getItem('id')}`,
-      resSuccess: (res) => {
-        if (!res.results) return
-        setDataPlaylist(res.results)
-        res.results[0].songs.forEach(el => {
 
-          fetchAJAX({
-            url: `http://${window.location.hostname}:5000/getsongplaylist/${el.song_id.$oid}`,
-            resSuccess: (res) => {
-              songs.push(res.results)
-              setDataSongs([...dataSongs, ...songs])
-            },
-            resError: (err) => {
-              console.error(err)
-            }
+    if (!id) {
+      fetchAJAX({
+        url: `http://${window.location.hostname}:5000/getplaylists/${localStorage.getItem('id')}`,
+        resSuccess: (res) => {
+          if (!res.results) return
+          setDataPlaylist(res.results)
+          res.results[0].songs.forEach(el => {
+
+            fetchAJAX({
+              url: `http://${window.location.hostname}:5000/getsongplaylist/${el.song_id.$oid}`,
+              resSuccess: (res) => {
+                songs.push(res.results)
+                setDataSongs([...dataSongs, ...songs])
+              },
+              resError: (err) => {
+                console.error(err)
+              }
+            })
+
           })
 
-        })
+        },
+        resError: (err) => {
+          console.error(err)
+        }
+      })
+    } else {
 
-      },
-      resError: (err) => {
-        console.error(err)
-      }
-    })
+      fetchAJAX({
+        url: `http://${window.location.hostname}:5000/getplaylist/${id}`,
+        resSuccess: (res) => {
+          if (!res.results) return
+          setDataPlaylist(res.results)
+          res.results[0].songs.forEach(el => {
+
+            fetchAJAX({
+              url: `http://${window.location.hostname}:5000/getsongplaylist/${el.song_id.$oid}`,
+              resSuccess: (res) => {
+                songs.push(res.results)
+                setDataSongs([...dataSongs, ...songs])
+              },
+              resError: (err) => {
+                console.error(err)
+              }
+            })
+
+          })
+
+        },
+        resError: (err) => {
+          console.error(err)
+        }
+      })
+
+    }
+
   }, [])
 
-  let { idsong } = useParams()
+
 
   return (
     <div className='main-container'>
@@ -288,8 +322,8 @@ export default function Playlist() {
       <main>
 
         {!dataPlaylist ?
-          (content.length > idsong) &&
-          content[parseInt(idsong)][0].dataSong.map((el, index) => {
+          (content.length > id) &&
+          content[parseInt(id)][0].dataSong.map((el, index) => {
             return <SongBoxLarge
               key={index}
               data={{

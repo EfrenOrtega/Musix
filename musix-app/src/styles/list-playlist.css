@@ -1,0 +1,48 @@
+.container-list-playlists {
+  position: fixed;
+  z-index: 500;
+  min-width: 10rem;
+  height: fit-content;
+  padding: 0.2rem;
+  border: 1px solid #44465f;
+  background-color: rgba(14, 16, 38, 0.85);
+
+  font-weight: 400;
+  font-size: 0.85rem;
+  font-family: 'Roboto', sans-serif;
+}
+
+.container-list-playlists.hide {
+  visibility: hidden;
+  opacity: 0;
+}
+
+.container-list-playlists .line {
+  display: block;
+  width: 100%;
+  height: 0.005rem;
+  background-color: #44465f;
+  margin-bottom: 0.5rem;
+}
+
+.container-list-playlists a {
+  width: 100%;
+  display: block;
+  padding: 0.3rem 0;
+  margin-left: 0.3rem;
+
+  font-size: 0.9rem;
+  font-weight: 300;
+}
+
+.container-list-playlists li:hover {
+  background-color: #1C1E3C;
+}
+
+.container-list-playlists .new-playlist {
+  cursor: pointer;
+}
+
+.container-list-playlists .new-playlist:hover {
+  color: #44465f;
+}

@@ -46,6 +46,7 @@ class ModelPlaylist():
     #Validation if song doesn't exist yet
     song = []
 
+    #Validation if playlist doesn't exist yet
     playlistOfUserExist = self.cPlaylist.find_one({
         '$and':[
           {
@@ -71,21 +72,6 @@ class ModelPlaylist():
       self.delete_favorite()
       return jsonify({'status':False, 'message':'The Song has been Removed from Favorites'})
     else:
-
-      #self.cPlaylist.find_one({'name':'Favorites'})
-
-
-      #if(self.idPlaylist):
-        #playlistOfUserExist = self.cProfile.find_one({
-        #  '$and':[
-        #    {'playlists':{
-        #      '$elemMatch':{'playlist_id':ObjectId(self.idPlaylist)}
-        #    }},
-        #    {
-        #      'user_id':ObjectId(self.iduser)
-        #    }
-        #  ]
-        #})
 
       playlistOfUserExist = self.cPlaylist.find_one({
         '$and':[
@@ -265,7 +251,24 @@ class ModelPlaylist():
 
 
   def create_playlist(self):
+
     jsonData = json.load(request.files['Form'])
+
+
+    #Validation if playlist doesn't exist yet
+    playlistOfUserExist = self.cPlaylist.find_one({
+        '$and':[
+          {
+            'name':(jsonData['dataForm']['name']).strip()
+          },
+          {
+            'user_id':ObjectId(jsonData['idUser'])
+          }
+        ]
+      })
+
+    if(playlistOfUserExist):
+      return jsonify({'status':False, 'message':'The playlist already exist'})
 
     try:
       if(request.files['File']):
@@ -277,7 +280,7 @@ class ModelPlaylist():
 
         res = self.cPlaylist.insert_one({
         'user_id':ObjectId(jsonData['idUser']),
-        'name':jsonData['dataForm']['name'],
+        'name':(jsonData['dataForm']['name']).strip(),
         'background':[
           self.urlImage
         ],
@@ -365,3 +368,68 @@ class ModelPlaylist():
       except ClientError as e:
         print('error: %s') % e
         return 'error'
+
+
+  def get_playlist(self):
+    playlist = []
+    data = self.cPlaylist.find_one({'_id':ObjectId(self.idPlaylist)})
+    playlist.append({
+      '_id':str(ObjectId(data['_id'])),
+      'user_id':str(ObjectId(data['user_id'])),
+      'name':data['name'],
+      'background':data['background'],
+      'created':data['created'],
+      'createdBy':data['createdBy'],
+      'songs':json.loads(json_util.dumps(data['songs'])),
+      'visibility':data['visibility']
+    })
+
+    return jsonify({'status':True, 'results':playlist})
+
+
+
+  def add_to_playlist(self):
+
+    song = []
+
+    songs = []
+    currentSongs = []
+
+    try:
+
+      song.append(self.cPlaylist.find_one({'$and':[
+        {
+          '_id':ObjectId(self.idPlaylist)
+        },
+        {
+        'songs':{
+          '$elemMatch':{'song_id':ObjectId(self.idsong)}
+          }
+        }
+      ]}))
+
+      if(song[0]):
+        return jsonify({'status':False, 'message':'Song already Exist'})
+
+      #1.- Get the array "songs" from MongoDB
+      for data in self.cPlaylist.find({'_id':ObjectId(self.idPlaylist)}):
+        songs = data['songs']
+      
+      #2.- Get each song ID from the array "songs" 
+      for data in songs:
+        if(data != ''):
+          currentSongs.append(data)
+
+      #3.- Add an object with the new song to "currentSongs"
+      currentSongs.append({
+        'song_id':ObjectId(self.idsong)
+      })
+
+      self.cPlaylist.find_one_and_update({'_id':ObjectId(self.idPlaylist)}, 
+      {'$set':{
+        'songs':currentSongs
+      }})
+
+      return jsonify({'status':True, 'message':'Song added to the Playlist'})
+    except:
+      return jsonify({'status':False, 'message':'Error to added the song try later'})
