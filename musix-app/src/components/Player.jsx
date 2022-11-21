@@ -3,6 +3,7 @@ import '../styles/player.css'
 import { useState, useRef, useEffect, useContext } from 'react'
 
 import PlayerContext from '../context/PlayerContext'
+import PlaylistContext from '../context/PlaylistContext'
 
 import { Slider } from './micro/Slider'
 import ListPlaylist from './micro/ListPlaylist'
@@ -37,6 +38,8 @@ const Player = ({ cover, songInfo }) => {
     setRunning
   } = useContext(PlayerContext)
 
+  const { favoriteSongs, setRun, run } = useContext(PlaylistContext)
+
   name = dataSong.name || name;
   artist = dataSong.artist || artist;
   duration = dataSong.duration || duration;
@@ -56,6 +59,12 @@ const Player = ({ cover, songInfo }) => {
 
 
   useEffect(() => {
+
+    if (run) {
+      setRun(false)
+    } else {
+      setRun(true)
+    }
 
     keysFunctions(
       undefined,
@@ -79,10 +88,6 @@ const Player = ({ cover, songInfo }) => {
     let dateTime = new Date(dateNow.getTime() - dateNow.getTimezoneOffset() * 60000).toISOString()
     let date = dateTime.split('T')[0]
 
-
-    const controller = new AbortController();
-    options.signal = controller.signal;
-
     fetchAJAX({
       url: `http://${location.hostname}:5000/addfavorite/${dataSong._id}/${localStorage.getItem('id')}/${date}`,
       resSuccess: (res) => {
@@ -99,9 +104,6 @@ const Player = ({ cover, songInfo }) => {
     }
     )
 
-    return () => {
-      controller.abort()
-    }
   }
 
   const addToPlaylist = (e) => {
@@ -119,6 +121,12 @@ const Player = ({ cover, songInfo }) => {
       setDisplayListPlaylist(true)
     }
 
+  }
+
+  const foundFavorites = () => {
+    let found = favoriteSongs.find(favorite => favorite == dataSong._id)
+
+    return found
   }
 
   return (
@@ -249,7 +257,16 @@ const Player = ({ cover, songInfo }) => {
             </div>
 
             <div className='btn-option'>
-              <img onClick={(e) => addFavorite(e)} src={'/icons/icon-favorite.png'} alt="Favorite" />
+              {
+                favoriteSongs ?
+                  foundFavorites() ?
+                    <img onClick={(e) => addFavorite(e)} src={'/icons/icon-favorite-active.png'} alt="Favorite" />
+                    :
+                    <img onClick={(e) => addFavorite(e)} src={'/icons/icon-favorite.png'} alt="Favorite" />
+                  :
+                  <img onClick={(e) => addFavorite(e)} src={'/icons/icon-favorite.png'} alt="Favorite" />
+              }
+
             </div>
 
             <div className='btn-option'>

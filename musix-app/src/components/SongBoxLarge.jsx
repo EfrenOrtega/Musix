@@ -1,10 +1,12 @@
 import '../styles/song-box.css';
 
-import { useContext } from 'react';
+import { useContext, useState } from 'react';
 import PlayerContext from '../context/PlayerContext';
+
 import fetchAJAX from '../helpers/fetch';
 
-export default function SongBoxLarge({ data }) {
+
+export default function SongBoxLarge({ data, favorite, displayOptions }) {
 
   const { id, cover, name, artist, duration, album, created, pathSong } = data
 
@@ -19,6 +21,7 @@ export default function SongBoxLarge({ data }) {
     content,
     setRunning
   } = useContext(PlayerContext)
+
 
   const playSong = (e, content) => {
 
@@ -73,9 +76,9 @@ export default function SongBoxLarge({ data }) {
   }
 
 
+
   return (
     <div className="song-box large">
-
       <div className='container-cover-data'>
         <div className="cover">
           <span>
@@ -117,8 +120,17 @@ export default function SongBoxLarge({ data }) {
       </div>
 
       <div className="btn-options">
-        <img onClick={(e) => addFavorite(e)} src={'/icons/icon-favorite.png'} alt="" />
-        <img src={'/icons/more-options.png'} alt="" />
+        {favorite ?
+          <img onClick={(e) => addFavorite(e)} src={'/icons/icon-favorite-active.png'} alt="" />
+          :
+          <img onClick={(e) => addFavorite(e)} src={'/icons/icon-favorite.png'} alt="" />
+        }
+
+        <img onClick={(e) => displayOptions(e, id)} src={'/icons/more-options.png'} alt="" />
+
+
+
+
       </div>
     </div>
   )

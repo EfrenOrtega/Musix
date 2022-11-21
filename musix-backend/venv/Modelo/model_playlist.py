@@ -43,6 +43,7 @@ class ModelPlaylist():
   #=====================================
   def add_favorite(self):
 
+    print(self.idsong)
     #Validation if song doesn't exist yet
     song = []
 
@@ -58,11 +59,19 @@ class ModelPlaylist():
         ]
       })
 
-    song.append(self.cPlaylist.find_one({
+    song.append(self.cPlaylist.find_one({'$and':[
+      {
+        'user_id':ObjectId(self.iduser)
+      },
+      {
+        'name':'Favorites'
+      },
+      {
       'songs':{
         '$elemMatch':{'song_id':ObjectId(self.idsong)}
         }
       }
+    ]}
     ))
 
     
@@ -433,3 +442,35 @@ class ModelPlaylist():
       return jsonify({'status':True, 'message':'Song added to the Playlist'})
     except:
       return jsonify({'status':False, 'message':'Error to added the song try later'})
+
+  
+
+  def get_favorites(self):
+
+    try:
+
+      favorites = []
+      data = self.cPlaylist.find_one({'$and':[
+        {
+          'user_id':ObjectId(self.iduser)
+        },
+        {
+          'name':'Favorites'
+        }
+      ]})
+
+
+      favorites.append({
+        '_id':str(ObjectId(data['_id'])),
+        'user_id':str(ObjectId(data['user_id'])),
+        'name':data['name'],
+        'background':data['background'],
+        'created':data['created'],
+        'createdBy':data['createdBy'],
+        'songs':json.loads(json_util.dumps(data['songs'])),
+        'visibility':data['visibility']
+      })
+
+      return jsonify({'status':True, 'results':favorites})
+    except:
+      return jsonify({'status':False, 'message':'Error to get the favorite songs'})

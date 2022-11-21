@@ -9,7 +9,7 @@ import fetchAJAX from '../../helpers/fetch'
 
 export default function ListPlaylist({ visibility, setVisibility, pointerXY, iconAddPlaylist, setDisplayListPlaylist }) {
 
-  const { Playlists } = useContext(PlaylistContext)
+  const { Playlists, addToPlaylist } = useContext(PlaylistContext)
   const { dataSong } = useContext(PlayerContext)
   const [positionXY, setPositionXY] = useState({})
   const { displayFormPlaylist, setDisplayFormPlaylist } = useContext(Context)
@@ -60,25 +60,6 @@ export default function ListPlaylist({ visibility, setVisibility, pointerXY, ico
     }
   }
 
-  const addToPlaylist = (e) => {
-    e.preventDefault()
-
-    if (!dataSong._id) return
-    let PlaylistSelected = e.target.dataset.id
-
-    fetchAJAX({
-      url: `http://${window.location.hostname}:5000/addtoplaylist/${PlaylistSelected}/${dataSong._id}`,
-      resSuccess: (res) => {
-        console.log(res.message)
-      },
-      resError: (err) => {
-        console.error(err)
-      }
-    })
-
-
-  }
-
   const newPlaylist = (e) => {
     e.preventDefault()
     if (!displayFormPlaylist) {
@@ -97,7 +78,7 @@ export default function ListPlaylist({ visibility, setVisibility, pointerXY, ico
         {Playlists && Playlists.map(el => {
           if (el.name !== 'Favorites') {
             return <li key={el._id}>
-              <a data-id={el._id} onClick={(e) => addToPlaylist(e)} href=''>{el.name}</a>
+              <a data-id={el._id} onClick={(e) => addToPlaylist(e, dataSong)} href=''>{el.name}</a>
             </li>
           }
         })}

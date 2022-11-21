@@ -29,3 +29,7 @@ def add_to_playlist(idplaylist,idsong):
   mPlaylist.idPlaylist = idplaylist
   mPlaylist.idsong = idsong
   return  mPlaylist.add_to_playlist()
+
+def get_favorites(iduser):
+  mPlaylist.iduser = iduser
+  return mPlaylist.get_favorites()

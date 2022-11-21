@@ -7,6 +7,7 @@ import Player from "./components/Player"
 import Playlist from './pages/Playlist';
 import Playlists from './pages/Playlists';
 import Auth from './pages/Auth';
+import OptionsPerSong from './components/micro/OptionsPerSong';
 
 import { PlayerProvider } from './context/PlayerContext'
 import { PlaylistProvider } from './context/PlaylistContext';
@@ -16,7 +17,7 @@ import FormCreatePlaylist from './components/FormCreatePlaylist';
 
 export default function App() {
 
-  const { displayFormPlaylist } = useContext(Context);
+  const { displayFormPlaylist, displayOptionsSong } = useContext(Context);
 
   return (
     <>
@@ -24,10 +25,8 @@ export default function App() {
         localStorage.getItem('login') == 'true' ?
           <Router>
             <Menu />
-
             <PlayerProvider>
               <PlaylistProvider>
-
                 {displayFormPlaylist &&
                   <FormCreatePlaylist />
                 }

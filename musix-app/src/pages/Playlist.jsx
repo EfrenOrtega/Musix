@@ -1,8 +1,13 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useContext } from "react";
 import { useParams } from "react-router-dom";
 import Header from "../components/Header";
 import SongBoxLarge from "../components/SongBoxLarge";
+import OptionsPerSong from "../components/micro/OptionsPerSong";
+
 import fetchAJAX from "../helpers/fetch";
+
+import PlaylistContext from "../context/PlaylistContext";
+import Context from "../context/Context";
 
 const content = [
   [
@@ -238,12 +243,31 @@ export default function Playlist() {
   const [dataPlaylist, setDataPlaylist] = useState()
   const [dataSongs, setDataSongs] = useState([])
 
+  const [visibility, setVisibility] = useState(false)
+  const [pointerXY, setPointerXY] = useState({})
+  const [pointerXYPrev, setPointerXYPrev] = useState(null)
+  const [idSong, setIdSong] = useState(null)
+
+
+
+  const { favoriteSongs, setRun, run } = useContext(PlaylistContext)
+
   let { id } = useParams()
+
+  const { displayOptionsSong, setDisplayOptionsSong } = useContext(Context)
+
 
   useEffect(() => {
 
-    let songs = []
+    setDisplayOptionsSong(false)
 
+    if (run) {
+      setRun(false)
+    } else {
+      setRun(true)
+    }
+
+    let songs = []
 
     if (!id) {
       fetchAJAX({
@@ -304,6 +328,66 @@ export default function Playlist() {
   }, [])
 
 
+  const displayOptions = (e, idsong) => {
+
+    setIdSong(idsong)
+
+    setPointerXY({
+      'left': e.target.getBoundingClientRect().left,
+      'top': e.target.getBoundingClientRect().top,
+      'width': e.target.getBoundingClientRect().width,
+      'topScroll': document.querySelector('.main-container').scrollTop
+    })
+
+    if (pointerXYPrev) {
+      if (pointerXYPrev.top != e.target.getBoundingClientRect().top) {
+        setPointerXY({
+          'left': e.target.getBoundingClientRect().left,
+          'top': e.target.getBoundingClientRect().top,
+          'width': e.target.getBoundingClientRect().width,
+          'topScroll': document.querySelector('.main-container').scrollTop
+        })
+
+        setPointerXYPrev({
+          'left': e.target.getBoundingClientRect().left,
+          'top': e.target.getBoundingClientRect().top,
+          'width': e.target.getBoundingClientRect().width,
+          'topScroll': document.querySelector('.main-container').scrollTop
+        })
+
+        setDisplayOptionsSong(false)
+        setDisplayOptionsSong(true)
+      } else {
+        if (displayOptionsSong) {
+          setDisplayOptionsSong(false)
+        } else {
+          setDisplayOptionsSong(true)
+        }
+      }
+    } else {
+      setPointerXY({
+        'left': e.target.getBoundingClientRect().left,
+        'top': e.target.getBoundingClientRect().top,
+        'width': e.target.getBoundingClientRect().width,
+        'topScroll': document.querySelector('.main-container').scrollTop
+      })
+
+      setPointerXYPrev({
+        'left': e.target.getBoundingClientRect().left,
+        'top': e.target.getBoundingClientRect().top,
+        'width': e.target.getBoundingClientRect().width,
+        'topScroll': document.querySelector('.main-container').scrollTop
+      })
+
+      if (displayOptionsSong) {
+        setDisplayOptionsSong(false)
+      } else {
+        setDisplayOptionsSong(true)
+      }
+    }
+  }
+
+
 
   return (
     <div className='main-container'>
@@ -321,26 +405,20 @@ export default function Playlist() {
 
       <main>
 
+        {displayOptionsSong &&
+          <OptionsPerSong
+            visibility={visibility}
+            setVisibility={setVisibility}
+            pointerXY={pointerXY}
+            setPointerXY={setPointerXY}
+            idSong={idSong}
+          />
+        }
+
         {!dataPlaylist ?
           (content.length > id) &&
           content[parseInt(id)][0].dataSong.map((el, index) => {
-            return <SongBoxLarge
-              key={index}
-              data={{
-                id: el.id,
-                cover: el.cover,
-                name: el.name,
-                artist: el.artist,
-                duration: el.duration,
-                album: el.album,
-                created: el.created,
-                pathSong: el.pathSong
-              }
-              }
-            />
-          })
-          :
-          dataSongs.map((el, index) => {
+
             return <SongBoxLarge
               key={index}
               data={{
@@ -351,10 +429,53 @@ export default function Playlist() {
                 duration: el.duration,
                 album: el.album,
                 created: el.created,
-                pathSong: el.url
+                pathSong: el.pathSong
               }
               }
+              favorite={false}
+              displayOptions={displayOptions}
             />
+
+          })
+          :
+          dataSongs.map((el, index) => {
+            let found = favoriteSongs.find(favorite => favorite == el._id)
+
+            if (!found) {
+              return <SongBoxLarge
+                key={index}
+                data={{
+                  id: el._id,
+                  cover: el.cover,
+                  name: el.name,
+                  artist: el.artist,
+                  duration: el.duration,
+                  album: el.album,
+                  created: el.created,
+                  pathSong: el.pathSong
+                }
+                }
+                favorite={false}
+                displayOptions={displayOptions}
+              />
+            } else {
+              return <SongBoxLarge
+                key={index}
+                data={{
+                  id: el._id,
+                  cover: el.cover,
+                  name: el.name,
+                  artist: el.artist,
+                  duration: el.duration,
+                  album: el.album,
+                  created: el.created,
+                  pathSong: el.pathSong
+                }
+                }
+                favorite={true}
+                displayOptions={displayOptions}
+              />
+            }
           })
         }
 
