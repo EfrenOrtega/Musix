@@ -2,13 +2,10 @@
 import { useContext } from "react";
 import { useState, createContext, useEffect } from "react";
 import fetchAJAX from "../helpers/fetch";
-import Context from "./Context";
 
 const PlaylistContext = createContext();
 
 const PlaylistProvider = ({ children }) => {
-
-  const { setDisplayOptionsSong } = useContext(Context)
 
   const [Playlists, setPlaylists] = useState()
   const [favoriteSongs, setFavoriteSongs] = useState()
@@ -45,7 +42,6 @@ const PlaylistProvider = ({ children }) => {
       url: `http://${window.location.hostname}:5000/addtoplaylist/${PlaylistSelected}/${dataSong._id}`,
       resSuccess: (res) => {
         console.log(res.message)
-        setDisplayOptionsSong(false)
       },
       resError: (err) => {
         console.error(err)

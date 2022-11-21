@@ -31,11 +31,8 @@ getSongs()
 
 const loadSongs = (songs, counter) => {
   if ((currentIdSong + 1) == content.length) {
-    //currentIdSong = counter;
     isLoop = true;
-    console.log("Id song restored", currentIdSong)
   } else {
-    console.log("Id Song don't restored", currentIdSong)
   }
 
 }
@@ -301,7 +298,6 @@ const HandleProgress = (e, slider_ref, duration, setRange, range) => {
   let timer = "";
 
   if (durationMin == min && durationSec == sec) {
-    console.log(durationMin, '=', min, ' y ', durationSec, '=', sec)
     window.clearInterval(counter)
     setRange(0)
   } else {
@@ -312,18 +308,14 @@ const HandleProgress = (e, slider_ref, duration, setRange, range) => {
     if (sec.toString().length != 1) {
       if (min.toString().length != 1) {
         timer = `${min}:${sec++}`
-        console.log(timer)
       } else {
         timer = `0${min}:${sec++}`
-        console.log(timer)
       }
     } else {
       if (min.toString().length != 1) {
         timer = `${min}:0${sec++}`
-        console.log(timer)
       } else {
         timer = `0${min}:0${sec++}`
-        console.log(timer)
       }
     }
 
@@ -369,7 +361,6 @@ const HandleVolumeApp = (e, setDisplayVolume, displayVolume) => {
   } else {
     setDisplayVolume(true)
   }
-  console.log("Volume")
 }
 
 export {

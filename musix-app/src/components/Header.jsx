@@ -4,9 +4,8 @@ import SettingsUser from './SettingsUser'
 import HeaderBottomPlaylist from './micro/HeaderBottomPlaylist'
 import HeaderBottomHome from './micro/HeaderBottomHome'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom';
-import { useEffect } from 'react'
 import fetchAJAX from '../helpers/fetch'
 
 export default function Header({ type, data, background, cover, btns }) {
@@ -18,6 +17,7 @@ export default function Header({ type, data, background, cover, btns }) {
   const [dataUser, setDataUser] = useState()
 
   useEffect(() => {
+
     fetchAJAX({
       url: `http://${location.hostname}:5000/finduser/${localStorage.getItem('id')}`,
       settings: {
@@ -28,7 +28,6 @@ export default function Header({ type, data, background, cover, btns }) {
       },
       resSuccess: (res) => {
         if (res.status) {
-          console.log(res)
           setDataUser(res.data)
         } else {
           console.log(res.message)

@@ -1,11 +1,11 @@
+/*Display a list with all the user's playlists*/
+
 import '../../styles/list-playlist.css'
 import { useContext, useRef, useEffect, useState } from 'react'
 
 import PlaylistContext from '../../context/PlaylistContext'
 import PlayerContext from '../../context/PlayerContext'
 import Context from '../../context/Context'
-
-import fetchAJAX from '../../helpers/fetch'
 
 export default function ListPlaylist({ visibility, setVisibility, pointerXY, iconAddPlaylist, setDisplayListPlaylist }) {
 
@@ -43,6 +43,7 @@ export default function ListPlaylist({ visibility, setVisibility, pointerXY, ico
 
   }, [])
 
+  /*Help to display this element at the correct coordinates*/
   const translateElementXY = (x, y, widthIcon, width, height) => {
 
     if (x && y & widthIcon) {
@@ -60,6 +61,7 @@ export default function ListPlaylist({ visibility, setVisibility, pointerXY, ico
     }
   }
 
+  //Display the <form> to add a new playlist
   const newPlaylist = (e) => {
     e.preventDefault()
     if (!displayFormPlaylist) {

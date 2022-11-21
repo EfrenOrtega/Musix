@@ -15,6 +15,7 @@ import PlaylistContext from '../context/PlaylistContext'
 
 const SongsLikes = [
   <MusicBox
+    key={1}
     cover="jesseTabish.jpg"
     songInfo={
       {
@@ -26,6 +27,7 @@ const SongsLikes = [
     pathSong='content/audio_test.mp3'
   />,
   <MusicBox
+    key={2}
     cover="marilynManson.jpg"
     songInfo={
       {
@@ -37,6 +39,7 @@ const SongsLikes = [
     pathSong=''
   />,
   <MusicBox
+    key={3}
     cover="aurora.jpg"
     songInfo={
       {
@@ -48,6 +51,7 @@ const SongsLikes = [
     pathSong=''
   />,
   <MusicBox
+    key={4}
     cover="massive attack.jpg"
     songInfo={
       {
@@ -59,6 +63,7 @@ const SongsLikes = [
     pathSong=''
   />,
   <MusicBox
+    key={5}
     cover="placebo.jpg"
     songInfo={
       {
@@ -70,6 +75,7 @@ const SongsLikes = [
     pathSong=''
   />,
   <MusicBox
+    key={6}
     cover="goldKey.jpg"
     songInfo={
       {
@@ -80,6 +86,7 @@ const SongsLikes = [
     }
   />,
   <MusicBox
+    key={7}
     cover="willOfThePeople.png"
     songInfo={
       {
@@ -268,8 +275,9 @@ export default function Home() {
                 Playlists.map((el, index) => {
                   if (index < quantity[2]) {
                     return (
-                      <Link to={`/playlist/${el._id}`}>
+                      <Link key={el._id} to={`/playlist/${el._id}`}>
                         <MusicBox
+                          key={el._id}
                           cover={el.background}
                           songInfo={
                             {
@@ -345,6 +353,7 @@ export default function Home() {
               SongsAddedTest.map((el, index) => {
                 if (index < (quantity[0] - 1)) {
                   return < MusicBox
+                    key={el._id}
                     cover={[el.cover]}
                     songInfo={
                       {

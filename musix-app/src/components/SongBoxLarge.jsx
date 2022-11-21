@@ -25,7 +25,7 @@ export default function SongBoxLarge({ data, favorite, displayOptions }) {
 
   const playSong = (e, content) => {
 
-    if (content[0].id == id) return
+    if (content[0]._id == id) return
 
     content.unshift({
       _id: id,

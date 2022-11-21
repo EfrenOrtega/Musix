@@ -254,7 +254,9 @@ export default function Playlist() {
 
   let { id } = useParams()
 
-  const { displayOptionsSong, setDisplayOptionsSong } = useContext(Context)
+  //const { displayOptionsSong, setDisplayOptionsSong } = useContext(Context)
+  const [displayOptionsSong, setDisplayOptionsSong] = useState()
+
 
 
   useEffect(() => {
@@ -407,6 +409,7 @@ export default function Playlist() {
 
         {displayOptionsSong &&
           <OptionsPerSong
+            setDisplayOptionsSong={setDisplayOptionsSong}
             visibility={visibility}
             setVisibility={setVisibility}
             pointerXY={pointerXY}
@@ -452,7 +455,7 @@ export default function Playlist() {
                   duration: el.duration,
                   album: el.album,
                   created: el.created,
-                  pathSong: el.pathSong
+                  pathSong: el.url
                 }
                 }
                 favorite={false}
@@ -469,7 +472,7 @@ export default function Playlist() {
                   duration: el.duration,
                   album: el.album,
                   created: el.created,
-                  pathSong: el.pathSong
+                  pathSong: el.url
                 }
                 }
                 favorite={true}

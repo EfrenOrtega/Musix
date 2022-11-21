@@ -1,11 +1,12 @@
 
+/*This display the options for each song*/
 import '../../styles/options-songs.css'
 
 import { useContext } from 'react'
 import PlaylistContext from '../../context/PlaylistContext'
 import { useEffect, useState, useRef } from 'react'
 
-export default function OptionsPerSong({ visibility, setVisibility, pointerXY, idSong }) {
+export default function OptionsPerSong({ visibility, setVisibility, pointerXY, idSong, setDisplayOptionsSong }) {
 
   const { Playlists, addToPlaylist } = useContext(PlaylistContext)
   const [positionXY, setPositionXY] = useState({})
@@ -28,6 +29,7 @@ export default function OptionsPerSong({ visibility, setVisibility, pointerXY, i
     translateElement()
   }, [pointerXY])
 
+  /*Help to display this element at the correct coordinates*/
   const translateElementXY = (x, y, widthIcon, width, height) => {
 
     if (x && y & widthIcon) {
@@ -53,7 +55,10 @@ export default function OptionsPerSong({ visibility, setVisibility, pointerXY, i
             {Playlists && Playlists.map(el => {
               if (el.name !== 'Favorites') {
                 return <li key={el._id}>
-                  <a onClick={(e) => addToPlaylist(e, { '_id': idSong })} data-id={el._id} href=''>{el.name}</a>
+                  <a onClick={(e) => {
+                    setDisplayOptionsSong(false)
+                    addToPlaylist(e, { '_id': idSong })
+                  }} data-id={el._id} href=''>{el.name}</a>
                 </li>
               }
             })}

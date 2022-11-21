@@ -156,7 +156,10 @@ const Player = ({ cover, songInfo }) => {
             {active ?
               <img className='loader' src="images/loader.gif" alt="" />
               :
-              <img src={`${cover}`} alt="" />
+              cover ?
+                <img src={`${cover}`} alt="Song Cover" />
+                :
+                <img src="/images/background-plaholder.png" alt="Song Cover" />
             }
           </figure>
           <div className='data-song'>

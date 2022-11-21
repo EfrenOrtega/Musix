@@ -58,7 +58,7 @@ export default function Playlists() {
 
           {Playlists &&
             Playlists.map((el, index) => {
-              return <Link to="/playlist/0">
+              return <Link to={`/playlist/${el._id}`} >
                 <MusicBox
                   cover={el.background}
                   songInfo={
