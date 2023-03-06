@@ -1,5 +1,3 @@
-
-import { useContext } from "react";
 import { useState, createContext, useEffect } from "react";
 import fetchAJAX from "../helpers/fetch";
 
@@ -10,6 +8,7 @@ const PlaylistProvider = ({ children }) => {
   const [Playlists, setPlaylists] = useState()
   const [favoriteSongs, setFavoriteSongs] = useState()
   const [run, setRun] = useState(false)
+  const [dataSongs, setDataSongs] = useState([])
 
   useEffect(() => {
 
@@ -50,6 +49,46 @@ const PlaylistProvider = ({ children }) => {
   }
 
 
+  const getSongsPlaylist = (idPlaylist) => {
+
+    let songs = []
+
+    return new Promise((resolve, reject) => {
+
+      fetchAJAX({
+        url: `http://${window.location.hostname}:5000/getplaylist/${idPlaylist}`,
+        resSuccess: (res) => {
+          if (!res.results) return
+          res.results[0].songs.forEach((el, index) => {
+
+            fetchAJAX({
+              url: `http://${window.location.hostname}:5000/getsongplaylist/${el.song_id.$oid}`,
+              resSuccess: (resSong) => {
+                songs.push(resSong.results)
+                setDataSongs([...dataSongs, ...songs])
+
+                if (index + 1 == res.results[0].songs.length) {
+                  return resolve(songs)
+                }
+              },
+              resError: (err) => {
+                console.error(err)
+              }
+            })
+
+          })
+
+        },
+        resError: (err) => {
+          console.error(err)
+        }
+      })
+
+    })
+
+  }
+
+
   let data = {
     setPlaylists,
     Playlists,
@@ -57,7 +96,9 @@ const PlaylistProvider = ({ children }) => {
     setFavoriteSongs,
     setRun,
     run,
-    addToPlaylist
+    addToPlaylist,
+    dataSongs,
+    getSongsPlaylist
   }
 
   return (

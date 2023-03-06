@@ -202,6 +202,7 @@ export default function Home() {
 
   const [quantity, setQuantity] = useState(null)
   const [SongsAddedTest, setSongsAddedTest] = useState(null)
+  const [artists, setArtists] = useState(null)
 
   const handleResize = () => {
     setQuantity(responsiveBoxes(elementos))
@@ -234,6 +235,17 @@ export default function Home() {
       url: `http://${window.location.hostname}:5000/getrecentsongs`,
       resSuccess: (res) => {
         setSongsAddedTest(res)
+      },
+      resError: (err) => {
+        console.error(err)
+      }
+    })
+
+
+    fetchAJAX({
+      url: `http://${window.location.hostname}:5000/getartists`,
+      resSuccess: (res) => {
+        setArtists(res)
       },
       resError: (err) => {
         console.error(err)
@@ -285,6 +297,7 @@ export default function Home() {
                               name: el.name,
                             }
                           }
+                          type="playlist"
                         />
                       </Link>
                     )
@@ -447,15 +460,26 @@ export default function Home() {
           </div>
 
           <div className='artist'>
-            <Artist
-              cover="muse.jpg"
-              artist="Muse"
-            />
 
-            <Artist
-              cover="twentyOnePilots.jpeg"
-              artist="Twenty One Pilots"
-            />
+            {
+              artists &&
+              console.log(artists)
+
+            }
+
+
+            {
+              artists &&
+              artists.map(artist => {
+                return <Link key={artist.id} to={`/artist/${artist.id}`}>
+                  <Artist
+                    cover={artist.profile_image}
+                    artist={artist.name}
+                  />
+                </Link>
+              })
+
+            }
 
             <Artist
               cover="radioHead.jpeg"

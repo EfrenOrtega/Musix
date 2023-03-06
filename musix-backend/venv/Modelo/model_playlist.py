@@ -15,7 +15,7 @@ from werkzeug.utils import secure_filename
 
 import uuid
 
-
+#=================================================== START
 class ModelPlaylist():
 
   db = Conexion.connect()
@@ -37,6 +37,32 @@ class ModelPlaylist():
 
   def __init__(self):
     pass
+
+
+  def create_favorite_playlis(self):
+    user = []
+
+    #Get the user ID from mongoDB
+    for data in self.cUsers.find({'_id':ObjectId(self.iduser)}):
+      user.append({'name':data['name']})
+
+    print(data)
+
+     #Insert a New Object called "Favorites"
+    res = self.cPlaylist.insert_one({
+      'user_id':ObjectId(self.iduser),
+      'name':'Favorites',
+      'background':[
+         'https://ipfs.filebase.io/ipfs/QmVEMj1uaEHGwDDbzDEZEuPajXuLxLprEYwQwmFxrn63c4'
+       ],
+      'created':dateutil.parser.parse(self.date),
+      'createdBy':user[0]['name'],
+      'songs':[],
+      'visibility':True,
+    })  
+    
+    return jsonify({'status':True, 'message':'Favorite Created'})
+
 
   #=====================================
   #   ADD THE FIRST SONG TO FAVORITES
@@ -129,7 +155,7 @@ class ModelPlaylist():
         self.mProfile.add_playlist()
 
         return jsonify({'status':True, 'message':'Song has been Added to Favorite'})
-
+#========================================================================================== END
 
   #==================================
   #   ADD ANOTHER SONG TO FAVORITES

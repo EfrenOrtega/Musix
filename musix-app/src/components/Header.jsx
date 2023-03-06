@@ -7,6 +7,7 @@ import HeaderBottomHome from './micro/HeaderBottomHome'
 import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom';
 import fetchAJAX from '../helpers/fetch'
+import HeaderBottomArtist from './micro/HeaderBottomArtist'
 
 export default function Header({ type, data, background, cover, btns }) {
 
@@ -61,7 +62,9 @@ export default function Header({ type, data, background, cover, btns }) {
     <header style={{ background: 'linear - gradient(rgba(95, 58, 120, .7) 10%, #0E1026 100%)' }}
     >
       {background &&
-        <img className='background' src={`./images/${background}`} alt="" />
+        background.includes('https://ipfs') ?
+        <img className='background' src={background} alt="" />
+        : <img className='background' src={`./images/${background}`} alt="" />
       }
 
       <div className="section-top">
@@ -108,7 +111,9 @@ export default function Header({ type, data, background, cover, btns }) {
             :
             type == "playlist"
               ? <HeaderBottomPlaylist data={data} cover={cover} btns={btns} />
-              : undefined
+              : type == "artist"
+                ? <HeaderBottomArtist data={data} cover={cover} />
+                : undefined
         }
 
 

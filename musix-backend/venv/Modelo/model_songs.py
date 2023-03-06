@@ -4,9 +4,10 @@ from flask import jsonify, request
 
 import json
 
-class ModelSongs():
+class 	ModelSongs():
   db = Conexion.connect()
   cSongs = db.songs
+  artist = ''
 
 
   def __init__(self):
@@ -22,7 +23,7 @@ class ModelSongs():
         'cover':request.json['cover'],
         'duration':request.json['duration'],
         'url':request.json['url'],
-        'date':request.json['data']
+        'date':request.json['date']
       })
 
     return jsonify({'status':True, 'message':'Songs Added'})
@@ -62,5 +63,24 @@ class ModelSongs():
         'date':data['date']
       })
 
+
+    return jsonify(songs)
+
+  
+  def get_songsByArtist(self):
+    songs = []
+    for data in self.cSongs.find({'artist':self.artist}):
+
+      songs.append({
+        '_id':str(ObjectId(data['_id'])),
+        'name':data['name'],
+        'album':data['album'],
+        'artist':data['artist'],
+        'genre':data['genre'],
+        'cover':data['cover'],
+        'duration':data['duration'],
+        'url':data['url'],
+        'date':data['date']
+      })
 
     return jsonify(songs)

@@ -63,7 +63,7 @@ class ModelUsers():
       'user_id':self.id
     })
   
-    return jsonify({'status':True, 'id_account':str(res.inserted_id)})
+    return jsonify({'status':True, 'id_account':str(res.inserted_id), 'id_user':self.id})
 
 
   #=======================================

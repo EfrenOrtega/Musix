@@ -46,7 +46,7 @@ export default function Login({ active, displayHideLogin }) {
   }
 
   return (
-    <form onClick={(e) => login(e)} className={`login ${active}`}>
+    <form onSubmit={(e) => login(e)} className={`login ${active}`}>
       <h1>Login</h1>
       <Input
         placeholder="Username or Email"

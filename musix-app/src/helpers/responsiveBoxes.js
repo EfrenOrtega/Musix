@@ -11,22 +11,24 @@ export default function responsiveBoxes(CHILDREN) {
   let quantity = null
   let style = null
 
+  try {
+    CHILDREN.forEach(child => {
+      $CONTAINER = document.querySelector(child.split(' ')[0].toString())
 
-  CHILDREN.forEach(child => {
-    $CONTAINER = document.querySelector(child.split(' ')[0].toString())
-
-    $CHILDREN = document.querySelector(child)
-    style = window.getComputedStyle($CHILDREN)
+      $CHILDREN = document.querySelector(child)
+      style = window.getComputedStyle($CHILDREN)
 
 
-    wContainer = $CONTAINER.getBoundingClientRect().width
-    wChild = $CHILDREN.offsetWidth
-    marginChild = parseFloat(style.marginLeft) + parseFloat(style.marginRight)
+      wContainer = $CONTAINER.getBoundingClientRect().width
+      wChild = $CHILDREN.offsetWidth
+      marginChild = parseFloat(style.marginLeft) + parseFloat(style.marginRight)
 
-    quantity = Math.floor(wContainer / (wChild + marginChild))
+      quantity = Math.floor(wContainer / (wChild + marginChild))
 
-    quantityArray.push(quantity);
-  });
+      quantityArray.push(quantity);
+    });
+  } catch (error) {
 
+  }
   return quantityArray;
 }

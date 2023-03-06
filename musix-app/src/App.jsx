@@ -7,17 +7,17 @@ import Player from "./components/Player"
 import Playlist from './pages/Playlist';
 import Playlists from './pages/Playlists';
 import Auth from './pages/Auth';
-import OptionsPerSong from './components/micro/OptionsPerSong';
 
 import { PlayerProvider } from './context/PlayerContext'
 import { PlaylistProvider } from './context/PlaylistContext';
 import Context from './context/Context'
-import { useContext } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import FormCreatePlaylist from './components/FormCreatePlaylist';
+import Artist from './pages/Artist';
 
 export default function App() {
 
-  const { displayFormPlaylist, displayOptionsSong } = useContext(Context);
+  const { displayFormPlaylist } = useContext(Context);
 
   return (
     <>
@@ -35,6 +35,7 @@ export default function App() {
                   <Route path="/" element={<Home />}></Route>
                   <Route path="/playlist/:id" element={<Playlist />}></Route>
                   <Route path='/playlists' element={<Playlists />}></Route>
+                  <Route path="/artist/:id" element={<Artist />}></Route>
                 </Routes>
 
                 <Player

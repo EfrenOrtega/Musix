@@ -51,18 +51,21 @@ export default function SongBoxLarge({ data, favorite, displayOptions }) {
 
 
   const addFavorite = (e) => {
+
+    let dateNow = new Date(Date.now())
+    let dateTime = new Date(dateNow.getTime() - dateNow.getTimezoneOffset() * 60000).toISOString()
+    let date = dateTime.split('T')[0]
+
     fetchAJAX({
-      url: `http://${location.hostname}:5000/addfavorite`,
+      url: `http://${location.hostname}:5000/addfavorite/${id}/${localStorage.getItem('id')}/${date}`,
       settings: {
-        method: 'POST',
         headers: {
           'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(dataForm)
+        }
       },
       resSuccess: (res) => {
         if (res.status) {
-          location.reload()
+          alert("Added to Favorites")
         } else {
           console.log(res.message)
         }

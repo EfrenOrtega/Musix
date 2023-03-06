@@ -18,6 +18,32 @@ export default function SignUp({ active, displayHideLogin }) {
     }
   )
 
+
+  const createPlaylistFavorite = (idUser) => {
+
+    let dateNow = new Date(Date.now())
+    let dateTime = new Date(dateNow.getTime() - dateNow.getTimezoneOffset() * 60000).toISOString()
+    let date = dateTime.split('T')[0]
+
+    fetchAJAX({
+      url: `http://${location.hostname}:5000/createPlaylistFavorites/${idUser}/${date}`,
+      settings: {
+        method: 'GET'
+      },
+      resSuccess: (res) => {
+        if (res.status) {
+        } else {
+          console.log(res.message)
+        }
+
+      },
+      resError: (err) => {
+        console.log(err)
+      }
+    }
+    )
+  }
+
   const handleSubmit = (e) => {
     e.preventDefault()
     fetchAJAX({
@@ -31,6 +57,8 @@ export default function SignUp({ active, displayHideLogin }) {
       },
       resSuccess: (res) => {
         if (res.status) {
+          console.log(res)
+          createPlaylistFavorite(res.id_user)
           location.reload()
         } else {
           console.log(res.message)

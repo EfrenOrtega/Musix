@@ -2,8 +2,9 @@ import { useContext } from 'react';
 
 import '../styles/music-box.css'
 import PlayerContext from '../context/PlayerContext';
+import PlaylistContext from '../context/PlaylistContext';
 
-export default function MusicBox({ cover, songInfo, pathSong, nameClass }) {
+export default function MusicBox({ cover, songInfo, pathSong, nameClass, type }) {
 
   const { id, name, artist } = songInfo
 
@@ -19,18 +20,38 @@ export default function MusicBox({ cover, songInfo, pathSong, nameClass }) {
     setRunning
   } = useContext(PlayerContext)
 
+  const { setRun, run, getSongsPlaylist } = useContext(PlaylistContext)
 
-  const playSong = (e, content) => {
+  const playSong = async (e, content) => {
 
-    if (content[0]._id == id) return
+    if (type === 'playlist') {
 
-    content.unshift({
-      _id: id,
-      name,
-      artist,
-      cover: `${cover}`,
-      url: pathSong
-    })
+      if (run) {
+        setRun(false)
+      } else {
+        setRun(true)
+      }
+
+      await getSongsPlaylist(id)
+        .then(res => {
+          content.length = 0
+          content.push(...res)
+        })
+        .catch(err => {
+          console.log(err)
+        })
+
+    } else {
+      if (content[0]._id == id) return
+
+      content.unshift({
+        _id: id,
+        name,
+        artist,
+        cover: `${cover}`,
+        url: pathSong
+      })
+    }
 
     setRunning(false)
 

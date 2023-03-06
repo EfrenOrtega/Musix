@@ -1,4 +1,4 @@
-
+//All functions to the Player (Play, Pause, Next, Prev, Loop, etc.)
 import fetchAJAX from "./fetch";
 
 const content = []

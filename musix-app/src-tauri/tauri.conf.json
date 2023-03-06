@@ -29,7 +29,7 @@
         "icons/logo.png",
         "icons/logo.png"
       ],
-      "identifier": "com.tauri.dev",
+      "identifier": "musix",
       "longDescription": "",
       "macOS": {
         "entitlements": null,

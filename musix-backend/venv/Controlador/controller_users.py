@@ -27,3 +27,7 @@ def get_songs():
 
 def get_recent_songs():
   return mSongs.get_recent_songs()
+
+def get_songsByArtist(artist):
+  mSongs.artist = artist
+  return mSongs.get_songsByArtist()

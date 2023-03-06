@@ -7,7 +7,7 @@ import OptionsPerSong from "../components/micro/OptionsPerSong";
 import fetchAJAX from "../helpers/fetch";
 
 import PlaylistContext from "../context/PlaylistContext";
-import Context from "../context/Context";
+
 
 const content = [
   [
@@ -237,7 +237,6 @@ const content = [
 ]
 
 
-
 export default function Playlist() {
 
   const [dataPlaylist, setDataPlaylist] = useState()
@@ -249,15 +248,11 @@ export default function Playlist() {
   const [idSong, setIdSong] = useState(null)
 
 
-
   const { favoriteSongs, setRun, run } = useContext(PlaylistContext)
 
   let { id } = useParams()
 
-  //const { displayOptionsSong, setDisplayOptionsSong } = useContext(Context)
   const [displayOptionsSong, setDisplayOptionsSong] = useState()
-
-
 
   useEffect(() => {
 

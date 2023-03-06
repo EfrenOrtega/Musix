@@ -2,6 +2,11 @@ from Modelo.model_playlist import ModelPlaylist
 
 mPlaylist = ModelPlaylist()
 
+def create_playlistFavorite(iduser, date):
+  mPlaylist.iduser = iduser
+  mPlaylist.date = date
+  return mPlaylist.create_favorite_playlis()
+
 def add_favorite(idsong, iduser, date):
   mPlaylist.idsong = idsong
   mPlaylist.iduser = iduser
