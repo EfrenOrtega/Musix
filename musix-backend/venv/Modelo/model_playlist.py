@@ -46,8 +46,6 @@ class ModelPlaylist():
     for data in self.cUsers.find({'_id':ObjectId(self.iduser)}):
       user.append({'name':data['name']})
 
-    print(data)
-
      #Insert a New Object called "Favorites"
     res = self.cPlaylist.insert_one({
       'user_id':ObjectId(self.iduser),
@@ -61,6 +59,10 @@ class ModelPlaylist():
       'visibility':True,
     })  
     
+    self.mProfile.idUser = self.iduser
+    self.mProfile.idPlaylist = res.inserted_id
+    self.mProfile.add_playlist()
+
     return jsonify({'status':True, 'message':'Favorite Created'})
 
 
@@ -339,6 +341,10 @@ class ModelPlaylist():
       })
 
 
+    self.mProfile.idUser = self.iduser
+    self.mProfile.idPlaylist = res.inserted_id
+    self.mProfile.add_playlist()
+    
 
     return jsonify({'status':True, 'Message':'New Playlist created'})
 

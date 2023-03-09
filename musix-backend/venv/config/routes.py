@@ -6,6 +6,8 @@ from Controlador.controller_users import create_users, upload_file, auth_user,fi
 
 from Controlador.controller_playlist import add_favorite, get_playlists, get_song_playlists, create_playlist, get_playlist, add_to_playlist, get_favorites, create_playlistFavorite
 
+from Controlador.controller_songs import get_recommended_songs, get_my_likes
+
 
 blueprint = Blueprint('blueprint', __name__)
 
@@ -32,3 +34,6 @@ blueprint.route('/addartist', methods=['GET'])(insert_artist)
 blueprint.route('/getartists', methods=['GET'])(get_artists)
 blueprint.route('/getartist/<idartist>', methods=['GET'])(get_artist)
 blueprint.route('/getsongbyartist/<artist>', methods=['GET'])(get_songsByArtist)
+
+blueprint.route('/getrecommendedsongs/<iduser>', methods=['GET'])(get_recommended_songs)
+blueprint.route('/getmylikes/<iduser>', methods=['GET'])(get_my_likes)

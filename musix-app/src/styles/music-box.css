@@ -5,8 +5,8 @@
 }
 
 .music-box {
-  width: fit-content;
-  min-width: fit-content;
+  width: 10rem;
+  min-width: 10rem;
 
   text-align: center;
   overflow: hidden;

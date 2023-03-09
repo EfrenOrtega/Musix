@@ -6,10 +6,14 @@ const Context = createContext();
 const Provider = ({ children }) => {
 
   const [displayFormPlaylist, setDisplayFormPlaylist] = useState(false)
+  const [display, setDisplay] = useState(false) //To Display o Hide the Player
+
 
   let data = {
     displayFormPlaylist,
     setDisplayFormPlaylist,
+    display,
+    setDisplay
   }
 
   return (

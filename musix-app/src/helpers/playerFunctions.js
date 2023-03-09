@@ -1,6 +1,7 @@
 //All functions to the Player (Play, Pause, Next, Prev, Loop, etc.)
 import fetchAJAX from "./fetch";
 
+
 const content = []
 
 let currentIdSong = 0;
@@ -115,7 +116,6 @@ const keysFunctions = (
 }
 
 const play = async (audio, setNextIsDisabled, setPrevIsDisabled, setDataSong, setRunning) => {
-
   if (flag) {
     flag = false;
     nextAutomatically(audio, setNextIsDisabled, setPrevIsDisabled, setDataSong, setRunning)

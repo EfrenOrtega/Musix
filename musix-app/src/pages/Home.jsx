@@ -13,196 +13,13 @@ import { Link } from 'react-router-dom';
 import fetchAJAX from "../helpers/fetch"
 import PlaylistContext from '../context/PlaylistContext'
 
-const SongsLikes = [
-  <MusicBox
-    key={1}
-    cover="jesseTabish.jpg"
-    songInfo={
-      {
-        id: 8,
-        name: "Dread Harp Blues",
-        artist: "Jesse Tabish"
-      }
-    }
-    pathSong='content/audio_test.mp3'
-  />,
-  <MusicBox
-    key={2}
-    cover="marilynManson.jpg"
-    songInfo={
-      {
-        id: 9,
-        name: "Killing Strangers",
-        artist: "Marilyn Manson"
-      }
-    }
-    pathSong=''
-  />,
-  <MusicBox
-    key={3}
-    cover="aurora.jpg"
-    songInfo={
-      {
-        id: 10,
-        name: "The Seed",
-        artist: "Aurora"
-      }
-    }
-    pathSong=''
-  />,
-  <MusicBox
-    key={4}
-    cover="massive attack.jpg"
-    songInfo={
-      {
-        id: 20,
-        name: "Angel",
-        artist: "Massive Attack"
-      }
-    }
-    pathSong=''
-  />,
-  <MusicBox
-    key={5}
-    cover="placebo.jpg"
-    songInfo={
-      {
-        id: 30,
-        name: "Battle for the Sun",
-        artist: "Placebo"
-      }
-    }
-    pathSong=''
-  />,
-  <MusicBox
-    key={6}
-    cover="goldKey.jpg"
-    songInfo={
-      {
-        id: 40,
-        name: "Creep in Slowly",
-        artist: "Gold Key"
-      }
-    }
-  />,
-  <MusicBox
-    key={7}
-    cover="willOfThePeople.png"
-    songInfo={
-      {
-        id: 50,
-        name: "Will of The People",
-        artist: "Muse"
-      }
-    }
-  />
-]
-
-const Playlistss = [
-  <MusicBox
-    cover={[
-      'muse - drones.jpg',
-      'Showbiz - Muse.jpg',
-      'Simulation Theory - Muse.jpg',
-      'The 2nd Law - Muse.jpg'
-    ]}
-    songInfo={
-      {
-        id: 1,
-        name: "Playlist 02 😎",
-      }
-    }
-  />,
-
-  <MusicBox
-    cover='natural.jpg'
-    songInfo={
-      {
-        id: 2,
-        name: "🌧️ Playlist 03",
-      }
-    }
-  />,
-
-
-  <MusicBox
-    cover='rails.jpg'
-    songInfo={
-      {
-        id: 3,
-        name: "❄️ Playlist 04 ❄️",
-      }
-    }
-  />,
-
-  <MusicBox
-    cover='caratula.png'
-    songInfo={
-      {
-        id: 4,
-        name: "Playlist 05 🤘",
-      }
-    }
-  />,
-
-  <MusicBox
-    cover='willOfThePeople.png'
-    songInfo={
-      {
-        id: 5,
-        name: "Playlist 06 😎",
-      }
-    }
-  />,
-
-  <MusicBox
-    cover='willOfThePeople.png'
-    songInfo={
-      {
-        id: 6,
-        name: "Playlist 07 😎",
-      }
-    }
-  />,
-
-  <MusicBox
-    cover='caratula.png'
-    songInfo={
-      {
-        id: 7,
-        name: "Playlist 08 😎",
-      }
-    }
-  />,
-
-  <MusicBox
-    cover='willOfThePeople.png'
-    songInfo={
-      {
-        id: 8,
-        name: "Playlist 09 😎",
-      }
-    }
-  />,
-
-  <MusicBox
-    cover='caratula.png'
-    songInfo={
-      {
-        id: 9,
-        name: "Playlist 10 😎",
-      }
-    }
-  />
-]
-
-
 export default function Home() {
   const { setPlaylists, Playlists } = useContext(PlaylistContext)
 
   const [quantity, setQuantity] = useState(null)
   const [SongsAddedTest, setSongsAddedTest] = useState(null)
   const [artists, setArtists] = useState(null)
+  const [likes, setLikes] = useState(null)
 
   const handleResize = () => {
     setQuantity(responsiveBoxes(elementos))
@@ -241,11 +58,23 @@ export default function Home() {
       }
     })
 
-
     fetchAJAX({
       url: `http://${window.location.hostname}:5000/getartists`,
       resSuccess: (res) => {
         setArtists(res)
+      },
+      resError: (err) => {
+        console.error(err)
+      }
+    })
+
+
+    fetchAJAX({
+      url: `http://${window.location.hostname}:5000/getrecommendedsongs/${localStorage.getItem('id')}`,
+      resSuccess: (res) => {
+        console.log("dwdwdwdw", res)
+        if (res.length == 0) return
+        setLikes(res)
       },
       resError: (err) => {
         console.error(err)
@@ -388,34 +217,40 @@ export default function Home() {
           </div>
         </section>
 
-        <section className='section-your-likes'>
-          <div className='title-section'>
-            <h2>Your Likes</h2>
-            <img src="/icons/icon-arrow-right.png" alt="" />
-          </div>
+        {likes &&
+          <section className='section-your-likes'>
+            <div className='title-section'>
+              <h2>Your Likes</h2>
+              <img src="/icons/icon-arrow-right.png" alt="" />
+            </div>
 
-          <div className='your-likes'>
-            <MusicBox
-              cover="willOfThePeople.png"
-              songInfo={
-                {
-                  name: "Will of The People",
-                  artist: "Muse"
-                }
+            <div className='your-likes'>
+
+
+              {
+                likes.map((song, index) => {
+                  if (index < (quantity[0] - 1))
+                    return <MusicBox
+                      key={song._id}
+                      cover={[song.cover]}
+                      songInfo={
+                        {
+                          id: song._id,
+                          name: song.name,
+                          artist: song.artist
+                        }
+                      }
+                      pathSong={song.url}
+                    />
+
+                })
               }
-            />
-            {quantity &&
-              SongsLikes.map((el, index) => {
-                if (index < quantity[1]) {
-                  return SongsLikes[index - 1]
-                }
-              })
 
-            }
-          </div>
 
-        </section>
+            </div>
 
+          </section>
+        }
         <section className='section-genres'>
           <div className='title-section'>
             <h2>Genres</h2>
@@ -481,30 +316,6 @@ export default function Home() {
 
             }
 
-            <Artist
-              cover="radioHead.jpeg"
-              artist="RadioHead"
-            />
-
-            <Artist
-              cover="theStrokes.jpeg"
-              artist="The Strokes"
-            />
-
-            <Artist
-              cover="BlondeRedheadArtist.jpg"
-              artist="Blonde Redhead"
-            />
-
-            <Artist
-              cover="AC-DC.jpeg"
-              artist="AC/DC"
-            />
-
-            <Artist
-              cover="interpol.jpeg"
-              artist="Interpol"
-            />
           </div>
 
         </section>

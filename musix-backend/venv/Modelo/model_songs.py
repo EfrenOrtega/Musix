@@ -7,8 +7,9 @@ import json
 class 	ModelSongs():
   db = Conexion.connect()
   cSongs = db.songs
+  cProfile = db.profile
   artist = ''
-
+  idUser = ''
 
   def __init__(self):
     pass
@@ -84,3 +85,51 @@ class 	ModelSongs():
       })
 
     return jsonify(songs)
+
+
+  def get_recommended_songs(self):
+
+    userprofile = self.cProfile.find_one({'user_id':ObjectId(self.idUser)})
+    if(not userprofile):
+      return jsonify({'status':False, 'message':"There aren't a likes songs yet"})
+
+    songs = []
+
+    for data in self.cSongs.find({'genre':userprofile['favorite_genre']}):
+      songs.append({
+        '_id':str(ObjectId(data['_id'])),
+        'name':data['name'],
+        'album':data['album'],
+        'artist':data['artist'],
+        'genre':data['genre'],
+        'cover':data['cover'],
+        'duration':data['duration'],
+        'url':data['url'],
+        'date':data['date']
+      })
+
+    return jsonify(songs)
+
+
+  def get_my_likes(self):
+    userprofile = self.cProfile.find_one({'user_id':ObjectId(self.idUser)})
+
+    if(not userprofile): 
+      return jsonify({'status':False, 'message':"There aren't a likes songs yet"})
+    else:
+      songs = []
+
+      for data in self.cSongs.find({'artist':userprofile['favorite_artist']}):
+        songs.append({
+          '_id':str(ObjectId(data['_id'])),
+          'name':data['name'],
+          'album':data['album'],
+          'artist':data['artist'],
+          'genre':data['genre'],
+          'cover':data['cover'],
+          'duration':data['duration'],
+          'url':data['url'],
+          'date':data['date']
+        })
+
+      return jsonify(songs)

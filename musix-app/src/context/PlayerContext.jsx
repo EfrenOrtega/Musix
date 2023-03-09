@@ -51,7 +51,7 @@ const PlayerProvider = ({ children }) => {
     loadSongs,
     HandleVolumeApp,
     running,
-    setRunning
+    setRunning,
   }
 
   return (
