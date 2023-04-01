@@ -72,7 +72,6 @@ export default function Home() {
     fetchAJAX({
       url: `http://${window.location.hostname}:5000/getrecommendedsongs/${localStorage.getItem('id')}`,
       resSuccess: (res) => {
-        console.log("dwdwdwdw", res)
         if (res.length == 0) return
         setLikes(res)
       },
@@ -93,7 +92,7 @@ export default function Home() {
     <div className='main-container'>
       <Header
         type="home"
-        background='background-header-2.jpg'
+        background='background-header-3.jpg'
         data={{
           title: "No Music No Life",
           creator: "Created by name user",

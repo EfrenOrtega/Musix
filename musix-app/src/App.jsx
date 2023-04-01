@@ -11,14 +11,13 @@ import Auth from './pages/Auth';
 import { PlayerProvider } from './context/PlayerContext'
 import { PlaylistProvider } from './context/PlaylistContext';
 import Context from './context/Context'
-import { useContext, useEffect, useState } from 'react';
+import { useContext } from 'react';
 import FormCreatePlaylist from './components/FormCreatePlaylist';
 import Artist from './pages/Artist';
 
 export default function App() {
 
   const { displayFormPlaylist } = useContext(Context);
-
   return (
     <>
       {

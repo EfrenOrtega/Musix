@@ -1,12 +1,5 @@
 @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@100;300;400;700&display=swap');
 
-:root {
-  --main: #0B0C1C;
-  --second: #0E1026;
-  --third: #171929;
-  --extra: #333937;
-}
-
 * {
   margin: 0;
   padding: 0;
@@ -57,9 +50,9 @@
 
 .auth .left input {
   margin-top: 1.6rem;
-  border-bottom: 1px solid white;
-
-  background-color: rgba(14, 16, 38, 40);
+  color: white;
+  border-bottom: 0.5px solid var(--extra);
+  font-weight: 300;
 }
 
 .auth .left .signup-span {

@@ -5,9 +5,9 @@
 @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@100;300;400;700&display=swap');
 
 :root {
-  --main: #0B0C1C;
-  --second: #0E1026;
-  --third: #171929;
+  --main: #0C0C0C;
+  --second: #000000;
+  --third: #1d1d1d;
   --extra: #333937;
 }
 

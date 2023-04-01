@@ -41,6 +41,7 @@ export default function Playlists() {
     <div className='main-container'>
       <Header
         type="playlist"
+        background=''
         data={{
           title: 'Your Playlists'
         }}

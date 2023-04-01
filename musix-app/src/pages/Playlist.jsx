@@ -9,234 +9,6 @@ import fetchAJAX from "../helpers/fetch";
 import PlaylistContext from "../context/PlaylistContext";
 
 
-const content = [
-  [
-    {
-      dataPlaylist: {
-        name: "Playlist 01",
-        background: [
-          'badbunny - verano sin tí.jpg',
-          'LosBunkers - Velocidad de la Luz.jpg',
-          'LosDaniels - A casa.jpg',
-          'provenza-karol G.jpg'
-        ]
-      },
-      dataSong: [
-        {
-          id: 1,
-          name: "Me Porto Bonito",
-          artist: "Bad Bunny",
-          album: "Un Verano Sin Tí",
-          cover: "badbunny - verano sin tí.jpg",
-          created: "15/10/0000",
-          duration: "02:58",
-          pathSong: 'content/audio_test_3.mp3'
-        },
-        {
-          id: 2,
-          name: "Ojitos Lindos",
-          artist: "Bad Bunny",
-          album: "Un Verano Sin Tí",
-          cover: "badbunny - verano sin tí.jpg",
-          created: "15/10/0000",
-          duration: "04:18",
-          pathSong: 'content/audio_test_2.mp3'
-        },
-        {
-          id: 3,
-          name: "Provenza",
-          artist: "Karol G",
-          album: "Provenza",
-          cover: "provenza-karol G.jpg",
-          created: "15/10/0000",
-          duration: "03:30",
-          pathSong: 'content/audio_test_3.mp3'
-        },
-        {
-          id: 4,
-          name: "Bailando Solo",
-          artist: "Los Bunkers",
-          album: "La Velocidad de la Luz",
-          cover: "LosBunkers - Velocidad de la Luz.jpg",
-          created: "15/10/0000",
-          duration: "04:27",
-          pathSong: 'content/audio_test_2.mp3'
-        },
-        {
-          id: 5,
-          name: "Quisiera Saber (with Natalia Lafourcade)",
-          artist: "Los Daniels",
-          album: "A Casa",
-          cover: "LosDaniels - A casa.jpg",
-          created: "15/10/0000",
-          duration: "03:29",
-          pathSong: 'content/audio_test_2.mp3'
-        }
-      ]
-    }
-  ],
-  [
-    {
-      dataPlaylist: {
-        name: "Playlist 02",
-        background: [
-          'muse - drones.jpg',
-          'Showbiz - Muse.jpg',
-          'Simulation Theory - Muse.jpg',
-          'The 2nd Law - Muse.jpg'
-        ]
-      },
-      dataSong: [
-        {
-          id: 1,
-          name: "The 2nd Law: Isolated System",
-          artist: "Muse",
-          album: "The 2nd Law",
-          cover: "The 2nd Law - Muse.jpg",
-          created: "15/10/0000",
-          duration: "04:59",
-          pathSong: 'content/audio_test_2.mp3'
-        },
-        {
-          id: 2,
-          name: "Algorithm",
-          artist: "Muse",
-          album: "Simulation Theory (Super Deluxe)",
-          cover: "Simulation Theory - Muse.jpg",
-          created: "15/10/0000",
-          duration: "04:05",
-          pathSong: 'content/audio_test_3.mp3'
-        },
-        {
-          id: 3,
-          name: "Animals",
-          artist: "Muse",
-          album: "The 2nd Law",
-          cover: "The 2nd Law - Muse.jpg",
-          created: "15/10/0000",
-          duration: "04:22",
-          pathSong: 'content/audio_test_2.mp3'
-        },
-        {
-          id: 4,
-          name: "The Handler",
-          artist: "Muse",
-          album: "Drones",
-          cover: "muse - drones.jpg",
-          created: "15/10/0000",
-          duration: "04:27",
-          pathSong: 'content/audio_test_3.mp3'
-        },
-        {
-          id: 5,
-          name: "Showbiz",
-          artist: "Muse",
-          album: "Showbiz",
-          cover: "Showbiz - Muse.jpg",
-          created: "15/10/0000",
-          duration: "05:17",
-          pathSong: 'content/audio_test_2.mp3'
-        }
-      ]
-    }
-  ],
-  [
-    {
-      dataPlaylist: {
-        name: "Playlist 03",
-        background: [
-          'natural.jpg'
-        ]
-      },
-      dataSong: [
-        {
-          id: 1,
-          name: "Like Spinning Plates (Lives)",
-          artist: "Radiohead",
-          album: "I Might Be Wrong",
-          cover: "Radiohead - Like Spinning.jpg",
-          created: "15/10/0000",
-          duration: "03:52",
-          pathSong: 'content/audio_test_2.mp3'
-        },
-        {
-          id: 2,
-          name: "Daydreaming",
-          artist: "Radiohead",
-          album: "A Moon Shaped Pool",
-          cover: "Radiohead - Daydreaming.jpg",
-          created: "15/10/0000",
-          duration: "06:24",
-          pathSong: 'content/audio_test_3.mp3'
-        },
-        {
-          id: 3,
-          name: "Remembrance",
-          artist: "Balmorhea",
-          album: "All Is Wild, All Is Silent",
-          cover: "Balmorhea - All is Wild, All is Silent.jpg",
-          created: "15/10/0000",
-          duration: "05:49",
-          pathSong: 'content/audio_test_2.mp3'
-        },
-      ]
-    }
-  ],
-  [
-    {
-      dataPlaylist: {
-        name: "Playlist 04",
-        background: [
-          'rails.jpg'
-        ]
-      },
-      dataSong: [
-
-      ]
-    }
-  ],
-  [
-    {
-      dataPlaylist: {
-        name: "Playlist 05",
-        background: [
-          'caratula.png'
-        ]
-      },
-      dataSong: [
-
-      ]
-    }
-  ],
-  [
-    {
-      dataPlaylist: {
-        name: "Playlist 05",
-        background: [
-          'caratula.png'
-        ]
-      },
-      dataSong: [
-
-      ]
-    }
-  ],
-  [
-    {
-      dataPlaylist: {
-        name: "Playlist 05",
-        background: [
-          'caratula.png'
-        ]
-      },
-      dataSong: [
-
-      ]
-    }
-  ],
-]
-
-
 export default function Playlist() {
 
   const [dataPlaylist, setDataPlaylist] = useState()
@@ -329,58 +101,57 @@ export default function Playlist() {
 
     setIdSong(idsong)
 
+    //Set the x, y, with and the position of the scroll of the icon when user clicked it to see the options of the song
     setPointerXY({
-      'left': e.target.getBoundingClientRect().left,
-      'top': e.target.getBoundingClientRect().top,
+      'x': e.target.getBoundingClientRect().x,
+      'y': e.target.getBoundingClientRect().y,
       'width': e.target.getBoundingClientRect().width,
       'topScroll': document.querySelector('.main-container').scrollTop
     })
 
-    if (pointerXYPrev) {
-      if (pointerXYPrev.top != e.target.getBoundingClientRect().top) {
-        setPointerXY({
-          'left': e.target.getBoundingClientRect().left,
-          'top': e.target.getBoundingClientRect().top,
-          'width': e.target.getBoundingClientRect().width,
-          'topScroll': document.querySelector('.main-container').scrollTop
-        })
+    //Now I need to control de previous options that the user opened
+    if (pointerXYPrev) {//if true means isn't the first time the user open the options of one song
 
+      //so, first verify is the user open a diferent song options or he clicked on the same icon to display the option of the same song
+      if (pointerXYPrev.y != e.target.getBoundingClientRect().y) {
+
+
+        //So save the same data: x, y, with and the position of the scroll of the icon that display the options of the song
         setPointerXYPrev({
-          'left': e.target.getBoundingClientRect().left,
-          'top': e.target.getBoundingClientRect().top,
+          'x': e.target.getBoundingClientRect().x,
+          'y': e.target.getBoundingClientRect().y,
           'width': e.target.getBoundingClientRect().width,
           'topScroll': document.querySelector('.main-container').scrollTop
         })
 
-        setDisplayOptionsSong(false)
         setDisplayOptionsSong(true)
       } else {
+
+        //If the user cliked on the same icon we only have two option display or hide song options.
         if (displayOptionsSong) {
           setDisplayOptionsSong(false)
         } else {
           setDisplayOptionsSong(true)
         }
+
       }
-    } else {
-      setPointerXY({
-        'left': e.target.getBoundingClientRect().left,
-        'top': e.target.getBoundingClientRect().top,
+    } else {//If pointerXYPrev it's false means is the first time the user open the options of one song
+
+      //So save the same data: x, y, with and the position of the scroll of the icon that display the options of the song
+      setPointerXYPrev({
+        'x': e.target.getBoundingClientRect().x,
+        'y': e.target.getBoundingClientRect().y,
         'width': e.target.getBoundingClientRect().width,
         'topScroll': document.querySelector('.main-container').scrollTop
       })
 
-      setPointerXYPrev({
-        'left': e.target.getBoundingClientRect().left,
-        'top': e.target.getBoundingClientRect().top,
-        'width': e.target.getBoundingClientRect().width,
-        'topScroll': document.querySelector('.main-container').scrollTop
-      })
 
       if (displayOptionsSong) {
         setDisplayOptionsSong(false)
       } else {
         setDisplayOptionsSong(true)
       }
+
     }
   }
 
@@ -391,6 +162,7 @@ export default function Playlist() {
       {dataPlaylist &&
         <Header
           type="playlist"
+          background=''
           data={{
             title: dataPlaylist[0].name,
             creator: dataPlaylist[0].createdBy,
@@ -402,7 +174,10 @@ export default function Playlist() {
 
       <main>
 
-        {displayOptionsSong &&
+
+        {
+          //This is to display option for each song of the playlist
+          displayOptionsSong &&
           <OptionsPerSong
             setDisplayOptionsSong={setDisplayOptionsSong}
             visibility={visibility}
@@ -413,9 +188,14 @@ export default function Playlist() {
           />
         }
 
-        {!dataPlaylist ?
-          (content.length > id) &&
-          content[parseInt(id)][0].dataSong.map((el, index) => {
+
+        {
+          //LOAD PLAYLIST SONG
+          dataPlaylist &&
+          dataSongs.map((el, index) => {
+
+            //Now find if the current song of the playlist is a favorite song of the user
+            let foundFavoriteSongs = favoriteSongs.find(favorite => favorite == el._id)
 
             return <SongBoxLarge
               key={index}
@@ -427,53 +207,12 @@ export default function Playlist() {
                 duration: el.duration,
                 album: el.album,
                 created: el.created,
-                pathSong: el.pathSong
+                pathSong: el.url
               }
               }
-              favorite={false}
+              favorite={foundFavoriteSongs ? true : false} //If foundFavoriteSongs isn't empty the current song is a favorite song of the user else the song isn't a favorite song for the user.
               displayOptions={displayOptions}
             />
-
-          })
-          :
-          dataSongs.map((el, index) => {
-            let found = favoriteSongs.find(favorite => favorite == el._id)
-
-            if (!found) {
-              return <SongBoxLarge
-                key={index}
-                data={{
-                  id: el._id,
-                  cover: el.cover,
-                  name: el.name,
-                  artist: el.artist,
-                  duration: el.duration,
-                  album: el.album,
-                  created: el.created,
-                  pathSong: el.url
-                }
-                }
-                favorite={false}
-                displayOptions={displayOptions}
-              />
-            } else {
-              return <SongBoxLarge
-                key={index}
-                data={{
-                  id: el._id,
-                  cover: el.cover,
-                  name: el.name,
-                  artist: el.artist,
-                  duration: el.duration,
-                  album: el.album,
-                  created: el.created,
-                  pathSong: el.url
-                }
-                }
-                favorite={true}
-                displayOptions={displayOptions}
-              />
-            }
           })
         }
 

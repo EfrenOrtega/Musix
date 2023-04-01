@@ -198,6 +198,7 @@ const next = (audio, setNextIsDisabled, setPrevIsDisabled, setDataSong, setRunni
   currentIdSong++
 
   audio.current.src = content[currentIdSong].url
+  localStorage.setItem('idSong', audio.current.src)
   play(audio, setNextIsDisabled, setPrevIsDisabled, setDataSong, setRunning)
 }
 

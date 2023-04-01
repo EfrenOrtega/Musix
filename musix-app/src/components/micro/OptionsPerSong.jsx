@@ -30,6 +30,7 @@ export default function OptionsPerSong({ visibility, setVisibility, pointerXY, i
   }, [pointerXY])
 
   /*Help to display this element at the correct coordinates*/
+  //So in this function we optain the x & y to display the song options
   const translateElementXY = (x, y, widthIcon, width, height) => {
 
     if (x && y & widthIcon) {
@@ -39,11 +40,12 @@ export default function OptionsPerSong({ visibility, setVisibility, pointerXY, i
       })
     } else {
       setPositionXY({
-        x: (pointerXY.left - (width * 2)) - pointerXY.width,
-        y: (pointerXY.top - height) + pointerXY.topScroll,
+        x: (pointerXY.x - (width * 2)) - pointerXY.width,
+        y: (pointerXY.y - height) + pointerXY.topScroll,
       })
 
-      setVisibility(true)
+
+      setVisibility(true)//Display this componente "Song's Options"
     }
   }
 

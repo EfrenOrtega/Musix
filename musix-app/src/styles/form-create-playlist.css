@@ -21,6 +21,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
+
 }
 
 .form-playlist {
@@ -31,34 +32,36 @@
   height: fit-content;
   padding: 1rem;
 
-  background: var(--second);
-
+  background: var(--third);
+  border-radius: 0.3rem;
   margin: auto;
 }
 
 .form-playlist input {
-  background-color: #7A7A7A;
   border-bottom: 1px solid white;
   height: 2rem;
   border-radius: 0.2rem;
-  color: #0B0C1C;
+  color: white;
+  font-size: 0.9rem;
   width: 90%;
 }
 
 .form-playlist input::placeholder {
-  color: #0B0C1C;
+  color: #b8b8b8;
 }
 
 .form-playlist button {
   background-color: white;
-  color: black;
+  color: rgb(24, 24, 24);
   font-weight: 600;
   line-height: 1rem;
-  width: 80%;
+  width: 65%;
+  font-size: 0.95rem;
+  border: none;
 }
 
 .form-playlist button:hover {
-  border: none;
+  transform: scale(.96);
 }
 
 .container-background {
@@ -105,7 +108,7 @@
 #icon-close {
   position: absolute;
   right: 1rem;
-  width: 1rem;
+  width: 0.7rem;
   cursor: pointer;
 }
 

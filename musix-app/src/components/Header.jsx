@@ -64,7 +64,9 @@ export default function Header({ type, data, background, cover, btns }) {
       {background &&
         background.includes('https://ipfs') ?
         <img className='background' src={background} alt="" />
-        : <img className='background' src={`./images/${background}`} alt="" />
+        :
+        background != "" &&
+        <img className='background' src={`./images/${background}`} alt="" />
       }
 
       <div className="section-top">
