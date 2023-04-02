@@ -17,7 +17,7 @@ export default function SongBox({ cover, songInfo }) {
         </span>
 
         <figure>
-          <img src={`/images/${cover}`} alt={name} />
+          <img src={cover} alt={name} />
         </figure>
       </div>
 

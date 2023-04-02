@@ -10,6 +10,7 @@ class 	ModelSongs():
   cProfile = db.profile
   artist = ''
   idUser = ''
+  idSong = ''
 
   def __init__(self):
     pass
@@ -29,6 +30,21 @@ class 	ModelSongs():
 
     return jsonify({'status':True, 'message':'Songs Added'})
 
+  def get_song(self):
+    song = self.cSongs.find_one({'_id': ObjectId(self.idSong)})
+    return jsonify({'status':True, 'message':'Song Found', 
+      'data': {
+        '_id':str(ObjectId(song['_id'])),
+        'name':song['name'],
+        'album':song['album'],
+        'artist':song['artist'],
+        'genre':song['genre'],
+        'cover':song['cover'],
+        'duration':song['duration'],
+        'url':song['url'],
+        'date':song['date']
+      }
+    })
 
   def get_songs(self):
     songs = []

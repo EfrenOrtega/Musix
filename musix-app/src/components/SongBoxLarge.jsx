@@ -6,7 +6,7 @@ import PlayerContext from '../context/PlayerContext';
 import fetchAJAX from '../helpers/fetch';
 
 
-export default function SongBoxLarge({ data, favorite, displayOptions }) {
+export default function SongBoxLarge({ data, _favorite, displayOptions }) {
 
   const { id, cover, name, artist, duration, album, created, pathSong } = data
 
@@ -19,7 +19,9 @@ export default function SongBoxLarge({ data, favorite, displayOptions }) {
     audio_ref,
     setDataSong,
     content,
-    setRunning
+    setRunning,
+    favorite,
+    setFavorite
   } = useContext(PlayerContext)
 
 
@@ -51,7 +53,6 @@ export default function SongBoxLarge({ data, favorite, displayOptions }) {
 
 
   const addFavorite = (e) => {
-
     let dateNow = new Date(Date.now())
     let dateTime = new Date(dateNow.getTime() - dateNow.getTimezoneOffset() * 60000).toISOString()
     let date = dateTime.split('T')[0]
@@ -70,12 +71,19 @@ export default function SongBoxLarge({ data, favorite, displayOptions }) {
           console.log(res.message)
         }
 
+        if (favorite) {
+          setFavorite(false)
+        } else {
+          setFavorite(true)
+        }
+
       },
       resError: (err) => {
         console.log(err)
       }
     }
     )
+
   }
 
 
@@ -123,7 +131,7 @@ export default function SongBoxLarge({ data, favorite, displayOptions }) {
       </div>
 
       <div className="btn-options">
-        {favorite ?
+        {_favorite ?
           <img onClick={(e) => addFavorite(e)} src={'/icons/icon-favorite-active.png'} alt="" />
           :
           <img onClick={(e) => addFavorite(e)} src={'/icons/icon-favorite.png'} alt="" />

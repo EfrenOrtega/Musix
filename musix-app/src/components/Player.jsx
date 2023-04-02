@@ -35,7 +35,10 @@ const Player = ({ cover, songInfo }) => {
     HandleLoop,
     HandleVolumeApp,
     running,
-    setRunning
+    content,
+    setRunning,
+    favorite,
+    setFavorite
   } = useContext(PlayerContext)
 
   const { favoriteSongs, setRun, run } = useContext(PlaylistContext)
@@ -57,8 +60,41 @@ const Player = ({ cover, songInfo }) => {
   const [visibility, setVisibility] = useState(false)
   const [pointerXY, setPointerXY] = useState({})
 
+  const [data, setData] = useState(null)
+
 
   useEffect(() => {
+
+    if (localStorage.getItem('volume')) {
+      audio_ref.current.volume = localStorage.getItem('volume') / 100;
+    }
+
+    if (localStorage.getItem('idSong') && localStorage.getItem('executed') == 'false') {
+      let id = localStorage.getItem('idSong')
+
+      fetch(`http://192.168.1.78:5000/getsong/${id}`)
+        .then(res => res.ok ? res.json() : Promise.reject(res))
+        .then(json => {
+          console.log(json.data)
+          content.unshift({
+            _id: json.data._id,
+            name: json.data.name,
+            artist: json.data.artist,
+            cover: `${json.data.cover}`,
+            url: json.data.url
+          })
+          setData({ name: json.data.name, artist: json.data.artist, cover: json.data.cover })
+        })
+        .catch(err => {
+          console.log(err)
+        })
+
+
+
+      localStorage.setItem('executed', true)
+    } else {
+      setData(null)
+    }
 
     if (run) {
       setRun(false)
@@ -78,6 +114,7 @@ const Player = ({ cover, songInfo }) => {
 
 
   const handleVolume = (e) => {
+    localStorage.setItem('volume', e.target.value)
     audio_ref.current.volume = e.target.value / 100;
     setVolume(e.target.value)
   }
@@ -96,13 +133,17 @@ const Player = ({ cover, songInfo }) => {
         } else {
           console.log(res.message)
         }
-
       },
       resError: (err) => {
         console.log(err)
       }
+    })
+
+    if (favorite) {
+      setFavorite(false)
+    } else {
+      setFavorite(true)
     }
-    )
 
   }
 
@@ -125,7 +166,6 @@ const Player = ({ cover, songInfo }) => {
 
   const foundFavorites = () => {
     let found = favoriteSongs.find(favorite => favorite == dataSong._id)
-
     return found
   }
 
@@ -153,18 +193,27 @@ const Player = ({ cover, songInfo }) => {
       <div className='player-container'>
         <div className="song">
           <figure>
-            {active ?
-              <img className='loader' src="images/loader.gif" alt="" />
-              :
-              cover ?
-                <img src={`${cover}`} alt="Song Cover" />
+
+            {
+              data ?
+                <img src={`${data.cover}`} alt="Song Cover" />
                 :
-                <img src="/images/background-plaholder.png" alt="Song Cover" />
+                cover &&
+                <img src={`${cover}`} alt="Song Cover" />
             }
           </figure>
           <div className='data-song'>
-            <p className='song-name'><strong>{name}</strong></p>
-            <p id='artist'>{artist}</p>
+            {data ?
+              <>
+                <p className='song-name'><strong>{data.name}</strong></p>
+                <p id='artist'>{data.artist}</p>
+              </>
+              :
+              <>
+                <p className='song-name'><strong>{name}</strong></p>
+                <p id='artist'>{artist}</p>
+              </>
+            }
           </div>
         </div>
 
@@ -172,15 +221,18 @@ const Player = ({ cover, songInfo }) => {
           <div className="controls">
 
             <img onClick={
-              (e) => HandlePrev(
-                e,
-                setPlayPause,
-                audio_ref,
-                setPrevIsDisabled,
-                setNextIsDisabled,
-                setDataSong,
-                setRunning
-              )}
+              (e) => {
+                setFavorite(false)
+                HandlePrev(
+                  e,
+                  setPlayPause,
+                  audio_ref,
+                  setPrevIsDisabled,
+                  setNextIsDisabled,
+                  setDataSong,
+                  setRunning
+                )
+              }}
 
               src={!prevIsDisabled
                 ? '/icons/icon-controller-previous.png'
@@ -209,6 +261,7 @@ const Player = ({ cover, songInfo }) => {
             <img onClick={
               (e) => {
                 setActive(true)
+                setFavorite(false)
                 HandleNext(
                   e,
                   setPlayPause,
@@ -255,19 +308,32 @@ const Player = ({ cover, songInfo }) => {
                 </div>
               </div>
 
-              <img src="/icons/icon-volume.png" alt="volume" />
+              {volume == 0 ?
+                <img src="/icons/volume-off.png" alt="volume" />
+                :
+                (volume > 0 && volume <= 20) ?
+                  <img src="/icons/volume_low.png" alt="volume" />
+                  :
+                  (volume > 20 && volume < 50) ?
+                    <img src="/icons/volume_med.png" alt="volume" />
+                    :
+                    <img src="/icons/volume.png" alt="volume" />
+              }
 
             </div>
 
             <div className='btn-option'>
               {
-                favoriteSongs ?
+                favoriteSongs &&
                   foundFavorites() ?
+                  <img onClick={(e) => addFavorite(e)} src={'/icons/icon-favorite-active.png'} alt="Favorite" />
+                  :
+                  favorite ?
                     <img onClick={(e) => addFavorite(e)} src={'/icons/icon-favorite-active.png'} alt="Favorite" />
                     :
                     <img onClick={(e) => addFavorite(e)} src={'/icons/icon-favorite.png'} alt="Favorite" />
-                  :
-                  <img onClick={(e) => addFavorite(e)} src={'/icons/icon-favorite.png'} alt="Favorite" />
+
+
               }
 
             </div>

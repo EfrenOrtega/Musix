@@ -8,6 +8,7 @@ export default function Auth() {
 
   const [displaySignUp, setDisplaySignUp] = useState(false)
 
+
   const displayHideLogin = (e) => {
     e.preventDefault();
 

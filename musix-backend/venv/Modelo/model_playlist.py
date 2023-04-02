@@ -71,7 +71,6 @@ class ModelPlaylist():
   #=====================================
   def add_favorite(self):
 
-    print(self.idsong)
     #Validation if song doesn't exist yet
     song = []
 
@@ -106,6 +105,7 @@ class ModelPlaylist():
     if(song[0] and playlistOfUserExist):
       #Remove song of Favorites, because the user click again on the favorite button 
       #of the same song
+
       self.delete_favorite()
       return jsonify({'status':False, 'message':'The Song has been Removed from Favorites'})
     else:
@@ -231,21 +231,40 @@ class ModelPlaylist():
     for data in currentSongs:
       elementToDelete += 1
       if(data == self.idsong):#When we find the ID song: break
-        break   
+        break
     
     #4.- If we found the ID song so delete a element from songs array in the position "elementToDelete" from MongoDB
     if(elementToDelete > -1):
-       self.cPlaylist.update_one({'$and':[
+      self.cPlaylist.update_one(
+        {'$and':[
           {
             'name':'Favorites'
           },
           {
             'user_id':ObjectId(self.iduser)
           }
-        ]}, 
-       {'$pop':{'songs':elementToDelete}})
+        ]},
+        {
+          "$unset": {f"songs.{elementToDelete}": 1},
+        }
+       )
 
-       return True
+      self.cPlaylist.update_one(
+        
+        {'$and':[
+          {
+            'name':'Favorites'
+          },
+          {
+            'user_id':ObjectId(self.iduser)
+          }
+        ]},
+        {
+        "$pull": {"songs": None}
+        }
+       )
+    
+      return True
        
     else:
       return False

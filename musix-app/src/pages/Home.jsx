@@ -7,7 +7,7 @@ import Genres from '../components/Genres'
 import Artist from '../components/Artist'
 
 import responsiveBoxes from '../helpers/responsiveBoxes'
-import { useEffect, useState, useContext, memo } from 'react'
+import { useEffect, useState, useContext, useMemo } from 'react'
 import { Link } from 'react-router-dom';
 
 import fetchAJAX from "../helpers/fetch"
@@ -20,10 +20,12 @@ export default function Home() {
   const [SongsAddedTest, setSongsAddedTest] = useState(null)
   const [artists, setArtists] = useState(null)
   const [likes, setLikes] = useState(null)
+  const [recentlyPlayed, SetRecentlyPlayed] = useState(null)
 
   const handleResize = () => {
     setQuantity(responsiveBoxes(elementos))
   }
+
 
   useEffect(() => {
 
@@ -36,6 +38,17 @@ export default function Home() {
     }, 500)
 
     window.addEventListener('resize', handleResize)
+
+    fetchAJAX({
+      url: `http://${window.location.hostname}:5000/getHistory/3`,
+      resSuccess: (res) => {
+        console.log(res)
+        SetRecentlyPlayed(res)
+      },
+      resError: (err) => {
+        console.error(err)
+      }
+    })
 
     fetchAJAX({
       url: `http://${window.location.hostname}:5000/getplaylists/${localStorage.getItem('id')}`,
@@ -141,44 +154,23 @@ export default function Home() {
               <h2>Recently Played</h2>
             </div>
 
-            <div className='songs'>
-              <SongBox
-                cover="jesseTabish.jpg"
-                songInfo={
-                  {
-                    name: "Dread Harp Blues",
-                    artist: "Jesse Tabish",
-                    duration: "02:30"
-                  }
-                }
-              />
-            </div>
+            {recentlyPlayed &&
+              recentlyPlayed.map((song, index) => {
+                return <div className='songs' key={`${song._id}${index}`}>
+                  <SongBox
+                    cover={song.cover}
+                    songInfo={
+                      {
+                        name: song.name,
+                        artist: song.artist,
+                        duration: song.duration
+                      }
+                    }
+                  />
+                </div>
+              })
+            }
 
-            <div className='songs'>
-              <SongBox
-                cover="marilynManson.jpg"
-                songInfo={
-                  {
-                    name: "Killing Strangers",
-                    artist: "Marilyn Manson",
-                    duration: "02:30"
-                  }
-                }
-              />
-            </div>
-
-            <div className='songs'>
-              <SongBox
-                cover="HeroesDelSilencio.jpg"
-                songInfo={
-                  {
-                    name: "Maldito Duende",
-                    artist: "Héroes del Silencio",
-                    duration: "02:30"
-                  }
-                }
-              />
-            </div>
           </section>
 
         </div>
@@ -258,17 +250,17 @@ export default function Home() {
 
           <div className='genres'>
             <Genres
-              cover="willOfThePeople.png"
+              cover="rock.png"
               genre="Rock"
             />
 
             <Genres
-              cover="willOfThePeople.png"
+              cover="pop.png"
               genre="Pop"
             />
 
             <Genres
-              cover="badBunny.jpg"
+              cover="reggaeton.png"
               genre="Reggaeton"
             />
 
@@ -294,14 +286,6 @@ export default function Home() {
           </div>
 
           <div className='artist'>
-
-            {
-              artists &&
-              console.log(artists)
-
-            }
-
-
             {
               artists &&
               artists.map(artist => {

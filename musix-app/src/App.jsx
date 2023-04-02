@@ -16,7 +16,7 @@ import FormCreatePlaylist from './components/FormCreatePlaylist';
 import Artist from './pages/Artist';
 
 export default function App() {
-
+  localStorage.setItem('executed', false)
   const { displayFormPlaylist } = useContext(Context);
   return (
     <>

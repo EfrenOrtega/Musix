@@ -20,6 +20,8 @@ const PlayerProvider = ({ children }) => {
   const [nextIsDisabled, setNextIsDisabled] = useState(false)
   const [prevIsDisabled, setPrevIsDisabled] = useState(false)
   const [running, setRunning] = useState(false)
+  const [favorite, setFavorite] = useState(false)
+
 
   const [dataSong, setDataSong] = useState(
     { name: "", artist: "", duration: "", cover: "", url: "", _id: "" }
@@ -52,6 +54,8 @@ const PlayerProvider = ({ children }) => {
     HandleVolumeApp,
     running,
     setRunning,
+    favorite,
+    setFavorite
   }
 
   return (

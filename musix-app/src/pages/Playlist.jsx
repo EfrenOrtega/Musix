@@ -7,7 +7,9 @@ import OptionsPerSong from "../components/micro/OptionsPerSong";
 import fetchAJAX from "../helpers/fetch";
 
 import PlaylistContext from "../context/PlaylistContext";
+import PlayerContext from "../context/PlayerContext";
 
+let songs = []
 
 export default function Playlist() {
 
@@ -21,12 +23,15 @@ export default function Playlist() {
 
 
   const { favoriteSongs, setRun, run } = useContext(PlaylistContext)
+  const { favorite } = useContext(PlayerContext)
 
   let { id } = useParams()
 
   const [displayOptionsSong, setDisplayOptionsSong] = useState()
 
   useEffect(() => {
+    setDataSongs([])
+    songs = []
 
     setDisplayOptionsSong(false)
 
@@ -36,7 +41,6 @@ export default function Playlist() {
       setRun(true)
     }
 
-    let songs = []
 
     if (!id) {
       fetchAJAX({
@@ -50,7 +54,7 @@ export default function Playlist() {
               url: `http://${window.location.hostname}:5000/getsongplaylist/${el.song_id.$oid}`,
               resSuccess: (res) => {
                 songs.push(res.results)
-                setDataSongs([...dataSongs, ...songs])
+                setDataSongs([...songs])
               },
               resError: (err) => {
                 console.error(err)
@@ -71,13 +75,14 @@ export default function Playlist() {
         resSuccess: (res) => {
           if (!res.results) return
           setDataPlaylist(res.results)
+          if (res.results[0].songs.length == 0) return
           res.results[0].songs.forEach(el => {
 
             fetchAJAX({
               url: `http://${window.location.hostname}:5000/getsongplaylist/${el.song_id.$oid}`,
               resSuccess: (res) => {
                 songs.push(res.results)
-                setDataSongs([...dataSongs, ...songs])
+                setDataSongs([...songs])
               },
               resError: (err) => {
                 console.error(err)
@@ -94,7 +99,9 @@ export default function Playlist() {
 
     }
 
-  }, [])
+    return () => setDataSongs([])
+
+  }, [favorite])
 
 
   const displayOptions = (e, idsong) => {
@@ -210,7 +217,7 @@ export default function Playlist() {
                 pathSong: el.url
               }
               }
-              favorite={foundFavoriteSongs ? true : false} //If foundFavoriteSongs isn't empty the current song is a favorite song of the user else the song isn't a favorite song for the user.
+              _favorite={foundFavoriteSongs ? true : false} //If foundFavoriteSongs isn't empty the current song is a favorite song of the user else the song isn't a favorite song for the user.
               displayOptions={displayOptions}
             />
           })

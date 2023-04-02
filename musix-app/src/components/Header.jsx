@@ -108,14 +108,14 @@ export default function Header({ type, data, background, cover, btns }) {
       <div className="section-bottom">
 
         {
-          type == "home"
+          /*type == "home"
             ? <HeaderBottomHome />
-            :
-            type == "playlist"
-              ? <HeaderBottomPlaylist data={data} cover={cover} btns={btns} />
-              : type == "artist"
-                ? <HeaderBottomArtist data={data} cover={cover} />
-                : undefined
+            :*/
+          type == "playlist"
+            ? <HeaderBottomPlaylist data={data} cover={cover} btns={btns} />
+            : type == "artist"
+              ? <HeaderBottomArtist data={data} cover={cover} />
+              : undefined
         }
 
 

@@ -133,6 +133,31 @@ const play = async (audio, setNextIsDisabled, setPrevIsDisabled, setDataSong, se
     loadMetadata(content[currentIdSong])
   }
 
+  //UPDATE HISTORY
+  let settings = {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      idUser: localStorage.getItem('id'),
+      idSong: content[currentIdSong]._id,
+      date: new Date()
+    })
+  }
+
+  fetch(`http://192.168.1.78:5000/updateHistory`, settings)
+    .then(res => res.ok ? res.json() : Promise.reject(res))
+    .then(json => {
+      console.log(json)
+    })
+    .catch(err => {
+      console.log(err)
+    })
+
+  localStorage.setItem('idSong', content[currentIdSong]._id)
+
+
   setTimeout(() => {
     durationMils = audio.current.duration;
     durationMin = parseInt(audio.current.duration / 60)
@@ -198,7 +223,7 @@ const next = (audio, setNextIsDisabled, setPrevIsDisabled, setDataSong, setRunni
   currentIdSong++
 
   audio.current.src = content[currentIdSong].url
-  localStorage.setItem('idSong', audio.current.src)
+  localStorage.setItem('idSong', content[currentIdSong]._id)
   play(audio, setNextIsDisabled, setPrevIsDisabled, setDataSong, setRunning)
 }
 
