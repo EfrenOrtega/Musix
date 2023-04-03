@@ -7,7 +7,7 @@ import Genres from '../components/Genres'
 import Artist from '../components/Artist'
 
 import responsiveBoxes from '../helpers/responsiveBoxes'
-import { useEffect, useState, useContext, useMemo } from 'react'
+import { useEffect, useState, useContext, useLayoutEffect, useRef } from 'react'
 import { Link } from 'react-router-dom';
 
 import fetchAJAX from "../helpers/fetch"
@@ -16,26 +16,23 @@ import PlaylistContext from '../context/PlaylistContext'
 export default function Home() {
   const { setPlaylists, Playlists } = useContext(PlaylistContext)
 
-  const [quantity, setQuantity] = useState(null)
+  const [quantity, setQuantity] = useState([4, 2, 4])
   const [SongsAddedTest, setSongsAddedTest] = useState(null)
   const [artists, setArtists] = useState(null)
   const [likes, setLikes] = useState(null)
   const [recentlyPlayed, SetRecentlyPlayed] = useState(null)
+
+
+  const elementRef = useRef(null);
+
 
   const handleResize = () => {
     setQuantity(responsiveBoxes(elementos))
   }
 
 
+
   useEffect(() => {
-
-    if (!quantity) {
-      setQuantity([3, 2, 3])
-    }
-
-    setTimeout(() => {
-      handleResize()
-    }, 500)
 
     window.addEventListener('resize', handleResize)
 
@@ -95,6 +92,7 @@ export default function Home() {
 
   }, [])
 
+
   let elementos = [
     '.recently-added .music-box',
     '.your-likes .music-box',
@@ -124,7 +122,7 @@ export default function Home() {
 
             <div className='playlist'>
 
-              {(quantity && Playlists) &&
+              {(quantity.length > 1 && Playlists) &&
                 Playlists.map((el, index) => {
                   if (index < quantity[2]) {
                     return (
@@ -142,6 +140,8 @@ export default function Home() {
                         />
                       </Link>
                     )
+                  } else {
+                    console.log("ERROR")
                   }
                 })
               }
@@ -262,16 +262,6 @@ export default function Home() {
             <Genres
               cover="reggaeton.png"
               genre="Reggaeton"
-            />
-
-            <Genres
-              cover="willOfThePeople.png"
-              genre="Pop"
-            />
-
-            <Genres
-              cover="twentyOnePilots.jpg"
-              genre="Pop"
             />
 
           </div>

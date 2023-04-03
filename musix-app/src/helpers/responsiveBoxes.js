@@ -28,7 +28,7 @@ export default function responsiveBoxes(CHILDREN) {
       quantityArray.push(quantity);
     });
   } catch (error) {
-
+    console.log(error)
   }
   return quantityArray;
 }
