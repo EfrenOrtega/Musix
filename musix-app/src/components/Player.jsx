@@ -9,6 +9,7 @@ import { Slider } from './micro/Slider'
 import ListPlaylist from './micro/ListPlaylist'
 
 import fetchAJAX from '../helpers/fetch'
+import { Link } from 'react-router-dom'
 
 
 
@@ -38,7 +39,7 @@ const Player = ({ cover, songInfo }) => {
     content,
     setRunning,
     favorite,
-    setFavorite
+    setFavorite,
   } = useContext(PlayerContext)
 
   const { favoriteSongs, setRun, run } = useContext(PlaylistContext)
@@ -53,7 +54,7 @@ const Player = ({ cover, songInfo }) => {
   const [loop, setLoop] = useState(0)
   //=====================================
 
-  const [volume, setVolume] = useState(0);
+  const [volume, setVolume] = useState(20);
   const [displayVolume, setDisplayVolume] = useState(false)
   const [active, setActive] = useState(true)
   const [displayListPlaylist, setDisplayListPlaylist] = useState(false)
@@ -64,7 +65,7 @@ const Player = ({ cover, songInfo }) => {
 
 
   useEffect(() => {
-
+    console.log(dataSong)
     if (localStorage.getItem('volume')) {
       audio_ref.current.volume = localStorage.getItem('volume') / 100;
     }
@@ -72,7 +73,7 @@ const Player = ({ cover, songInfo }) => {
     if (localStorage.getItem('idSong') && localStorage.getItem('executed') == 'false') {
       let id = localStorage.getItem('idSong')
 
-      fetch(`http://192.168.1.78:5000/getsong/${id}`)
+      fetch(`http://${location.hostname}:5000/getsong/${id}`)
         .then(res => res.ok ? res.json() : Promise.reject(res))
         .then(json => {
           console.log(json.data)
@@ -80,10 +81,11 @@ const Player = ({ cover, songInfo }) => {
             _id: json.data._id,
             name: json.data.name,
             artist: json.data.artist,
+            lyrics: json.data.lyrics,
             cover: `${json.data.cover}`,
             url: json.data.url
           })
-          setData({ name: json.data.name, artist: json.data.artist, cover: json.data.cover })
+          setData({ name: json.data.name, artist: json.data.artist, cover: json.data.cover, lyrics:json.data.lyrics})
         })
         .catch(err => {
           console.log(err)
@@ -181,7 +183,6 @@ const Player = ({ cover, songInfo }) => {
           setDisplayListPlaylist={setDisplayListPlaylist}
         />
       }
-
 
       <audio
         onPlaying={(e) => {
@@ -339,7 +340,25 @@ const Player = ({ cover, songInfo }) => {
             </div>
 
             <div className='btn-option'>
-              <img src={'/icons/icon-microphone.png'} alt="Microphone" />
+              {data ?
+              data.lyrics ?
+                <Link to={`/lyrics/${localStorage.getItem('idSong')}`}>
+                  <img src={'/icons/icon-microphone-active.png'} alt="Microphone" />
+                </Link>
+              :
+                <img src={'/icons/icon-microphone.png'} alt="Microphone" />     
+                :
+                
+                dataSong &&
+                dataSong.lyrics ?
+                  <Link to={`/lyrics/${localStorage.getItem('idSong')}`}>
+                    <img src={'/icons/icon-microphone-active.png'} alt="Microphone" />
+                  </Link>
+                :
+                <img src={'/icons/icon-microphone.png'} alt="Microphone" />
+              }
+
+              
             </div>
 
             <div className='btn-option'>

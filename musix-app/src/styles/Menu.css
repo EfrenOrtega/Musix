@@ -26,7 +26,6 @@
 }
 
 .menu ul {
-  text-align: left !important;
   margin-left: 2.2rem;
 }
 
@@ -58,13 +57,23 @@ nav img {
   width: 100%;
 }
 
-nav .logo-name-app {
-  margin: 3.5rem auto;
-  width: 50%;
+nav .logo-name-app{
+  margin: 3rem auto 4rem;
+  width: 100%;
 }
 
-nav .logo-name-app img:nth-child(1) {
-  width: 50%;
+nav .logo-name-app img{
+  margin: auto;
+  display: block;
+}
+
+nav .logo-name-app img:nth-child(1){
+  width: 25%;
+  margin-bottom: 0.2rem;
+}
+
+nav .logo-name-app img:nth-child(2) {
+  width: 35%;
 }
 
 .developer {

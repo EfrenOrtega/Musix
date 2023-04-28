@@ -16,30 +16,36 @@ import PlaylistContext from '../context/PlaylistContext'
 export default function Home() {
   const { setPlaylists, Playlists } = useContext(PlaylistContext)
 
-  const [quantity, setQuantity] = useState([4, 2, 4])
+  const [quantity, setQuantity] = useState([4,2,4])
   const [SongsAddedTest, setSongsAddedTest] = useState(null)
   const [artists, setArtists] = useState(null)
   const [likes, setLikes] = useState(null)
   const [recentlyPlayed, SetRecentlyPlayed] = useState(null)
 
 
-  const elementRef = useRef(null);
+  const containers = useRef({
+    recentlyAdded:null,
+    yourLikes:null,
+    playlist:null
+  });
 
-
-  const handleResize = () => {
-    setQuantity(responsiveBoxes(elementos))
+  const handleResize = (containers) => {
+    setQuantity(responsiveBoxes(containers))
   }
-
-
 
   useEffect(() => {
 
-    window.addEventListener('resize', handleResize)
+    window.addEventListener('resize', e=>{
+      handleResize(containers)
+    })
+
+    let quantityArr = responsiveBoxes(containers);
+    console.log("Resultados responsive:", quantityArr)
+    setQuantity(quantityArr)
 
     fetchAJAX({
       url: `http://${window.location.hostname}:5000/getHistory/3`,
       resSuccess: (res) => {
-        console.log(res)
         SetRecentlyPlayed(res)
       },
       resError: (err) => {
@@ -78,7 +84,6 @@ export default function Home() {
       }
     })
 
-
     fetchAJAX({
       url: `http://${window.location.hostname}:5000/getrecommendedsongs/${localStorage.getItem('id')}`,
       resSuccess: (res) => {
@@ -93,12 +98,6 @@ export default function Home() {
   }, [])
 
 
-  let elementos = [
-    '.recently-added .music-box',
-    '.your-likes .music-box',
-    '.section-playlist .playlist .music-box'
-  ]
-
   return (
     <div className='main-container'>
       <Header
@@ -112,7 +111,7 @@ export default function Home() {
       />
       <main>
         <div className='container-section-1'>
-          <section className='section-playlist'>
+          <section  ref={el=>containers.current.playlist = el}  className='section-playlist'>
             <div className='title-section'>
               <Link to="/playlists">
                 <h2>Your Playlists</h2>
@@ -121,8 +120,7 @@ export default function Home() {
             </div>
 
             <div className='playlist'>
-
-              {(quantity.length > 1 && Playlists) &&
+              {(quantity && Playlists) &&
                 Playlists.map((el, index) => {
                   if (index < quantity[2]) {
                     return (
@@ -141,9 +139,9 @@ export default function Home() {
                       </Link>
                     )
                   } else {
-                    console.log("ERROR")
+                    console.log("ERROR", quantity[1])
                   }
-                })
+                })                
               }
 
             </div>
@@ -161,11 +159,14 @@ export default function Home() {
                     cover={song.cover}
                     songInfo={
                       {
+                        id : song._id,
                         name: song.name,
                         artist: song.artist,
-                        duration: song.duration
+                        duration: song.duration,
+                        lyrics : song.lyrics
                       }
                     }
+                    pathSong = {song.url}
                   />
                 </div>
               })
@@ -181,10 +182,10 @@ export default function Home() {
             <img src="/icons/icon-arrow-right.png" alt="" />
           </div>
 
-          <div className='recently-added'>
+          <div ref={el=>containers.current.recentlyAdded = el} className='recently-added'>
             {(quantity && SongsAddedTest) &&
               SongsAddedTest.map((el, index) => {
-                if (index < (quantity[0] - 1)) {
+                if (index < (quantity[0])) {
                   return < MusicBox
                     key={el._id}
                     cover={[el.cover]}
@@ -192,11 +193,12 @@ export default function Home() {
                       {
                         id: el._id,
                         name: el.name,
-                        artist: el.artist
+                        artist: el.artist,
                       }
                     }
                     pathSong={el.url}
                     nameClass="small"
+                    lyrics = {el.lyrics}
                   />
                 }
 
@@ -208,19 +210,19 @@ export default function Home() {
           </div>
         </section>
 
-        {likes &&
+
           <section className='section-your-likes'>
             <div className='title-section'>
               <h2>Your Likes</h2>
               <img src="/icons/icon-arrow-right.png" alt="" />
             </div>
 
-            <div className='your-likes'>
-
-
+            <div ref={el=>containers.current.yourLikes = el}  className='your-likes'>
+              
               {
+                likes &&
                 likes.map((song, index) => {
-                  if (index < (quantity[0] - 1))
+                  if (index < (quantity[1]))
                     return <MusicBox
                       key={song._id}
                       cover={[song.cover]}
@@ -232,6 +234,7 @@ export default function Home() {
                         }
                       }
                       pathSong={song.url}
+                      lyrics = {song.lyrics}
                     />
 
                 })
@@ -241,7 +244,7 @@ export default function Home() {
             </div>
 
           </section>
-        }
+        
         <section className='section-genres'>
           <div className='title-section'>
             <h2>Genres</h2>

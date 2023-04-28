@@ -51,7 +51,7 @@ class ModelPlaylist():
       'user_id':ObjectId(self.iduser),
       'name':'Favorites',
       'background':[
-         'https://ipfs.filebase.io/ipfs/QmVEMj1uaEHGwDDbzDEZEuPajXuLxLprEYwQwmFxrn63c4'
+         'https://ipfs.filebase.io/ipfs/QmaNbzvqbwmyku7KsgRWe8DJmqrjG2UzKfY3f3YxZAarBG'
        ],
       'created':dateutil.parser.parse(self.date),
       'createdBy':user[0]['name'],

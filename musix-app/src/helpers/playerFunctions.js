@@ -116,6 +116,9 @@ const keysFunctions = (
 }
 
 const play = async (audio, setNextIsDisabled, setPrevIsDisabled, setDataSong, setRunning) => {
+
+  console.log(content)
+
   if (flag) {
     flag = false;
     nextAutomatically(audio, setNextIsDisabled, setPrevIsDisabled, setDataSong, setRunning)
@@ -146,7 +149,7 @@ const play = async (audio, setNextIsDisabled, setPrevIsDisabled, setDataSong, se
     })
   }
 
-  fetch(`http://192.168.1.78:5000/updateHistory`, settings)
+  fetch(`http://${window.location.hostname}:5000/updateHistory`, settings)
     .then(res => res.ok ? res.json() : Promise.reject(res))
     .then(json => {
       console.log(json)
@@ -175,12 +178,15 @@ const play = async (audio, setNextIsDisabled, setPrevIsDisabled, setDataSong, se
       duration = `${durationMin.toString()}:${durationSec.toString()}`
     }
 
+    console.warn(content)
+
     setDataSong({
       name: content[currentIdSong].name,
       artist: content[currentIdSong].artist,
       duration: duration,
       cover: content[currentIdSong].cover,
       url: content[currentIdSong].url,
+      lyrics : content[currentIdSong].lyrics,
       _id: content[currentIdSong]._id
     })
   }, 400)

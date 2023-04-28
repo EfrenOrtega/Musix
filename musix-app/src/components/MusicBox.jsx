@@ -4,9 +4,9 @@ import '../styles/music-box.css'
 import PlayerContext from '../context/PlayerContext';
 import PlaylistContext from '../context/PlaylistContext';
 
-export default function MusicBox({ cover, songInfo, pathSong, nameClass, type }) {
+export default function MusicBox({ cover, songInfo, pathSong, nameClass, type, lyrics}) {
 
-  const { id, name, artist } = songInfo
+  const { id, name, artist} = songInfo
 
   const {
     playPause,
@@ -17,12 +17,28 @@ export default function MusicBox({ cover, songInfo, pathSong, nameClass, type })
     audio_ref,
     setDataSong,
     content,
-    setRunning
+    setRunning,
+    setStop
   } = useContext(PlayerContext)
 
   const { setRun, run, getSongsPlaylist } = useContext(PlaylistContext)
 
   const playSong = async (e, content) => {
+
+    if(playPause){
+      setRunning(false)
+      
+      HandlePlayPause(
+        e,
+        false,
+        setPlayPause,
+        audio_ref,
+        setNextIsDisabled,
+        setPrevIsDisabled,
+        setDataSong,
+        setRunning
+      )
+    }
 
     if (type === 'playlist') {
 
@@ -42,15 +58,16 @@ export default function MusicBox({ cover, songInfo, pathSong, nameClass, type })
         })
 
     } else {
-      if (content[0]._id == id) return
-
-      content.unshift({
-        _id: id,
-        name,
-        artist,
-        cover: `${cover}`,
-        url: pathSong
-      })
+      if (content[0]._id != id){
+        content.unshift({
+          _id: id,
+          name,
+          artist,
+          cover: `${cover}`,
+          lyrics:`${lyrics}`,
+          url: pathSong
+        })
+      }
     }
 
     setRunning(false)

@@ -6,6 +6,10 @@
   box-sizing: border-box;
 }
 
+#name{
+  line-height: 1rem;
+}
+
 .song-box {
   font-size: 13px;
 
@@ -14,14 +18,14 @@
   display: flex;
   align-items: center;
 
-  height: 5em;
+  height: 5.5em;
   background-color: var(--third);
   border-radius: 0.5em;
   padding: 0.5em;
   font-family: 'Roboto', sans-serif;
 
   overflow: hidden;
-  width: 24em;
+  width: 25em;
 }
 
 .song-box figure {

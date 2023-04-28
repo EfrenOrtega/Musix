@@ -24,7 +24,7 @@ const PlayerProvider = ({ children }) => {
 
 
   const [dataSong, setDataSong] = useState(
-    { name: "", artist: "", duration: "", cover: "", url: "", _id: "" }
+    { name: "", artist: "", duration: "", cover: "", url: "", lyrics:"", _id: "" }
   )
 
   const audio_ref = useRef(null);

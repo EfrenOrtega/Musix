@@ -9,7 +9,7 @@ let sec = null;
 let min = null;
 let timerState = null;
 
-export const Slider = ({ running, setRunning, playPause, loop }) => {
+export const Slider = ({running, setRunning, playPause, loop }) => {
 
   const {
     audio_ref,

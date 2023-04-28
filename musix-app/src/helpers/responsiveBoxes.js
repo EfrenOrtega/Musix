@@ -1,34 +1,35 @@
 
 
-export default function responsiveBoxes(CHILDREN) {
+export default function responsiveBoxes(CONTAINERS) {
 
   let quantityArray = [];
   let $CONTAINER = null
-  let $CHILDREN = null
   let wContainer = null
   let wChild = null
+  
+  let children = {
+    0:{width:128, margin:16, parent:'recentlyAdded'},
+    1:{width:160, margin:16, parent:'yourLikes'},
+    2:{width:128, margin:20, parent:'playlist'},
+  }
+  
   let marginChild = null
-  let quantity = null
-  let style = null
 
   try {
-    CHILDREN.forEach(child => {
-      $CONTAINER = document.querySelector(child.split(' ')[0].toString())
+    Object.values(children).map((child, index)=>{
 
-      $CHILDREN = document.querySelector(child)
-      style = window.getComputedStyle($CHILDREN)
-
-
+      $CONTAINER = CONTAINERS.current[child.parent];
       wContainer = $CONTAINER.getBoundingClientRect().width
-      wChild = $CHILDREN.offsetWidth
-      marginChild = parseFloat(style.marginLeft) + parseFloat(style.marginRight)
+      wChild = child.width
+      marginChild = child.margin
 
-      quantity = Math.floor(wContainer / (wChild + marginChild))
+      quantityArray.push(Math.floor(wContainer / (wChild + marginChild)))
+    })
 
-      quantityArray.push(quantity);
-    });
   } catch (error) {
-    console.log(error)
+    console.error("Error in resposiveBoxes.js", error)
   }
+
+  console.log("Resultados Cantidad responsiveBoxes.js", quantityArray)
   return quantityArray;
 }

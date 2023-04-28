@@ -25,7 +25,8 @@ class 	ModelSongs():
         'cover':request.json['cover'],
         'duration':request.json['duration'],
         'url':request.json['url'],
-        'date':request.json['date']
+        'date':request.json['date'],
+        'lyrics':request.json['lyrics']
       })
 
     return jsonify({'status':True, 'message':'Songs Added'})
@@ -42,7 +43,8 @@ class 	ModelSongs():
         'cover':song['cover'],
         'duration':song['duration'],
         'url':song['url'],
-        'date':song['date']
+        'date':song['date'],
+        'lyrics':song['lyrics']
       }
     })
 
@@ -59,7 +61,8 @@ class 	ModelSongs():
         'cover':data['cover'],
         'duration':data['duration'],
         'url':data['url'],
-        'date':data['date']
+        'date':data['date'],
+        'lyrics':data['lyrics']
       })
 
     return jsonify(songs)
@@ -77,13 +80,14 @@ class 	ModelSongs():
         'cover':data['cover'],
         'duration':data['duration'],
         'url':data['url'],
-        'date':data['date']
+        'date':data['date'],
+        'lyrics':data['lyrics']
+        
       })
 
 
     return jsonify(songs)
 
-  
   def get_songsByArtist(self):
     songs = []
     for data in self.cSongs.find({'artist':self.artist}):
@@ -97,11 +101,11 @@ class 	ModelSongs():
         'cover':data['cover'],
         'duration':data['duration'],
         'url':data['url'],
-        'date':data['date']
+        'date':data['date'],
+        'lyrics':data['lyrics']
       })
 
     return jsonify(songs)
-
 
   def get_recommended_songs(self):
 
@@ -121,11 +125,11 @@ class 	ModelSongs():
         'cover':data['cover'],
         'duration':data['duration'],
         'url':data['url'],
-        'date':data['date']
+        'date':data['date'],
+        'lyrics':data['lyrics']
       })
 
     return jsonify(songs)
-
 
   def get_my_likes(self):
     userprofile = self.cProfile.find_one({'user_id':ObjectId(self.idUser)})
@@ -145,7 +149,8 @@ class 	ModelSongs():
           'cover':data['cover'],
           'duration':data['duration'],
           'url':data['url'],
-          'date':data['date']
+          'date':data['date'],
+          'lyrics':data['lyrics']
         })
 
       return jsonify(songs)

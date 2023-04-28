@@ -194,12 +194,28 @@ input[type=range]::-webkit-slider-thumb {
   align-items: center;
   justify-content: center;
   margin-right: 2em;
+  overflow: hidden;
+
 }
 
 .player .btn-options .btn-option {
   height: 1.81em;
   display: flex;
   align-items: center;
+}
+
+.player .btn-options .btn-option a{
+  padding: 0;
+  margin: 0;
+  height: inherit;
+}
+
+.player .btn-options .btn-option a img{
+  padding: 0;
+  margin: 0;
+  height: inherit;
+  margin: 0 1em;
+
 }
 
 .player .btn-options div img {

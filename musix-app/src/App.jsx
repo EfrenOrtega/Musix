@@ -7,6 +7,7 @@ import Player from "./components/Player"
 import Playlist from './pages/Playlist';
 import Playlists from './pages/Playlists';
 import Auth from './pages/Auth';
+import Lyrics from './pages/Lyrics'
 
 import { PlayerProvider } from './context/PlayerContext'
 import { PlaylistProvider } from './context/PlaylistContext';
@@ -15,7 +16,11 @@ import { useContext } from 'react';
 import FormCreatePlaylist from './components/FormCreatePlaylist';
 import Artist from './pages/Artist';
 
+
+
 export default function App() {
+  
+  localStorage.setItem('volume', 20)
   localStorage.setItem('executed', false)
   const { displayFormPlaylist } = useContext(Context);
   return (
@@ -23,9 +28,9 @@ export default function App() {
       {
         localStorage.getItem('login') == 'true' ?
           <Router>
-            <Menu />
             <PlayerProvider>
               <PlaylistProvider>
+            <Menu />
                 {displayFormPlaylist &&
                   <FormCreatePlaylist />
                 }
@@ -35,6 +40,7 @@ export default function App() {
                   <Route path="/playlist/:id" element={<Playlist />}></Route>
                   <Route path='/playlists' element={<Playlists />}></Route>
                   <Route path="/artist/:id" element={<Artist />}></Route>
+                  <Route path="/lyrics/:id" element={<Lyrics/>}></Route>
                 </Routes>
 
                 <Player

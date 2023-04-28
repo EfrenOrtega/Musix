@@ -49,7 +49,8 @@ class ModelHistory():
         'cover':song['cover'],
         'duration':song['duration'],
         'url':song['url'],
-        'date':song['date']
+        'date':song['date'],
+        'lyrics':song['lyrics']
       })
 
     return jsonify(songsHistory)
