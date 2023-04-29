@@ -15,6 +15,7 @@ import Context from './context/Context'
 import { useContext } from 'react';
 import FormCreatePlaylist from './components/FormCreatePlaylist';
 import Artist from './pages/Artist';
+import Profile from './pages/Profile';
 
 
 
@@ -41,6 +42,7 @@ export default function App() {
                   <Route path='/playlists' element={<Playlists />}></Route>
                   <Route path="/artist/:id" element={<Artist />}></Route>
                   <Route path="/lyrics/:id" element={<Lyrics/>}></Route>
+                  <Route path="/profile" element={<Profile/>}></Route>
                 </Routes>
 
                 <Player

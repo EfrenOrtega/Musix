@@ -19,7 +19,7 @@
   position: relative;
   width: fit-content;
   overflow: hidden;
-  width: 100%;
+  max-width: 100%;
 
   border-radius: 0.3rem;
 }
@@ -61,7 +61,7 @@
 }
 
 .music-box .cover .cover-img img {
-  width: 8rem;
+  width: 100%;
   height: 8rem;
   object-fit: cover;
 }

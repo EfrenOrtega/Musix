@@ -2,10 +2,20 @@
   width: 100%;
   display: flex;
   flex-wrap: wrap;
-  gap: 1.5rem;
+  font-size: 15px;
 }
 
 .form-playlists {
   display: block;
   width: 100%;
+}
+
+.playlists a{
+  max-width: 10rem;
+  width: 10rem;
+}
+
+.playlist-container  .music-box {
+  width: 8rem;
+  max-width: 8rem;
 }

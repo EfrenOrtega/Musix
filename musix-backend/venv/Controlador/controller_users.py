@@ -10,6 +10,9 @@ def create_users():
 def upload_file():
   return mUsers.uploadFile()
 
+def update_profile():
+  return mUsers.update_profile()
+
 def auth_user():
   return mUsers.auth_user()
 
@@ -17,6 +20,10 @@ def auth_user():
 def find_user(id):
   mUsers.id = id
   return mUsers.find_user()
+
+def find_account(id):
+  mUsers.id = id
+  return mUsers.find_account()
 
 
 def add_song():

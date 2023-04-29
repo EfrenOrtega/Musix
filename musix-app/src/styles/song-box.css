@@ -57,6 +57,8 @@
 
 .section-playlist .music-box {
   margin-right: 1em;
+  width: 8rem;
+  max-width: 8rem;
 }
 
 .song-box .cover {

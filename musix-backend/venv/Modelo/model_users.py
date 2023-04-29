@@ -12,6 +12,9 @@ import os
 
 from werkzeug.utils import secure_filename
 
+import uuid
+
+
 class ModelUsers():
 
   db = Conexion.connect()
@@ -21,6 +24,7 @@ class ModelUsers():
   id=""
   urlImage = None
   nameImage = 'avatar.jpg'
+  imageFile = None
 
   def __init__(self):
     pass
@@ -157,3 +161,64 @@ class ModelUsers():
         'avatar':user['avatar']
       }
     })
+
+  def find_account(self):
+    account = self.cAccount.find_one({'user_id': self.id})
+    return jsonify({'status':True, 'message':'Account Found', 
+      'data': {
+        '_id':str(ObjectId(account['_id'])),
+        'username':account['username'],
+        'password':account['password'],
+      }
+    })  
+
+  def upload_file(self):
+    try:
+      #To upload an Imagen to this Flask server
+      file = self.imageFile
+      Path = os.path.join(os.path.dirname(__file__))    
+      UPLOAD_FOLDER = os.path.join(os.path.dirname(Path), 'images')
+
+      filename = secure_filename(file.filename)
+      extension = os.path.splitext(filename)[1]
+
+      newName = str(uuid.uuid4()) + extension
+
+      upload_path = os.path.join(UPLOAD_FOLDER, newName)
+      
+      file.save(upload_path)
+
+      self.nameImage = newName
+    
+      return jsonify({'status':True, 'message':'Imagen Uploaded'})
+    except ClientError as e:
+      print('error: %s') % e
+      return jsonify({'status':False, 'message':'Error to Upload the Image'})
+
+  def update_profile(self):
+    jsonData = json.load(request.files['Form'])   
+
+    try:
+      if(request.files['File']):
+        self.imageFile = request.files['File']
+        self.upload_file()
+        self.upload_to_filebase()
+        print(self.urlImage)
+
+        self.cUsers.update_one({'_id': ObjectId(jsonData['idUser'])}, {'$set':{
+          'name':jsonData['dataUser']['name'],
+          'last':jsonData['dataUser']['last'],
+          'email':jsonData['dataUser']['email'],
+          'avatar':self.urlImage
+        }})
+
+        self.cAccount.update_one({'user_id': jsonData['idUser']}, {'$set':{
+          'username':jsonData['dataAccount']['username']
+        }})
+
+        return jsonify({'msg':'Profile Updated', 'status':True})
+
+    except Exception as e:
+      print("Error", e)    
+
+    return jsonify({'msg':'Error to update the profile', 'status':False})

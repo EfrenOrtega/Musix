@@ -141,6 +141,7 @@ header .bottom-playlist h1 {
 header .bottom-playlist p:last-child {
   text-align: right;
   font-weight: 600;
+  margin-top: 1.2rem;
 }
 
 .nav-controls-search {

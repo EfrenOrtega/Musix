@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom'
 import '../styles/settings-user.css'
 
 export default function SettingsUser({ dataUser }) {
@@ -24,7 +25,9 @@ export default function SettingsUser({ dataUser }) {
         </div>
 
         <ul className='options-settings-user'>
+          <Link to="profile">
           <li>Profile</li>
+          </Link>
           <li onClick={(e) => logOut(e)}>Log Out</li>
         </ul>
 
