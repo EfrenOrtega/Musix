@@ -2,6 +2,7 @@ import '../styles/player.css'
 
 import { useState, useRef, useEffect, useContext } from 'react'
 
+import Context from '../context/Context'
 import PlayerContext from '../context/PlayerContext'
 import PlaylistContext from '../context/PlaylistContext'
 
@@ -10,12 +11,13 @@ import ListPlaylist from './micro/ListPlaylist'
 
 import fetchAJAX from '../helpers/fetch'
 import { Link } from 'react-router-dom'
+import { QueryCache } from 'react-query'
 
 
 
 const Player = ({ cover, songInfo }) => {
 
-  let { name, artist, duration } = songInfo
+  let { name, artist, duration, favoriteSong } = songInfo
 
   const iconAddPlaylist = useRef(null)
 
@@ -42,13 +44,15 @@ const Player = ({ cover, songInfo }) => {
     setFavorite,
   } = useContext(PlayerContext)
 
-  const { favoriteSongs, setRun, run } = useContext(PlaylistContext)
+  const { favoriteSongs, setRun, run, setFavorite:setFavoritePlaylist, refetchCachePlaylist} = useContext(PlaylistContext)
+  const { setAlertVisible, setMsgAlert } = useContext(Context);
+
 
   name = dataSong.name || name;
   artist = dataSong.artist || artist;
   duration = dataSong.duration || duration;
   cover = dataSong.cover || cover;
-
+  favoriteSong = dataSong.favorite || favoriteSong;
 
   //=====================================
   const [loop, setLoop] = useState(0)
@@ -56,7 +60,6 @@ const Player = ({ cover, songInfo }) => {
 
   const [volume, setVolume] = useState(20);
   const [displayVolume, setDisplayVolume] = useState(false)
-  const [active, setActive] = useState(true)
   const [displayListPlaylist, setDisplayListPlaylist] = useState(false)
   const [visibility, setVisibility] = useState(false)
   const [pointerXY, setPointerXY] = useState({})
@@ -65,37 +68,39 @@ const Player = ({ cover, songInfo }) => {
 
 
   useEffect(() => {
-    console.log(dataSong)
     if (localStorage.getItem('volume')) {
       audio_ref.current.volume = localStorage.getItem('volume') / 100;
     }
 
+    //This only runs when the app starts, to load the last song the user listened to
     if (localStorage.getItem('idSong') && localStorage.getItem('executed') == 'false') {
+
       let id = localStorage.getItem('idSong')
 
-      fetch(`http://${location.hostname}:5000/getsong/${id}`)
+      fetch(`http://${location.hostname}:5000/getsong/${id}/${localStorage.getItem('id')}`)
         .then(res => res.ok ? res.json() : Promise.reject(res))
         .then(json => {
-          console.log(json.data)
           content.unshift({
             _id: json.data._id,
             name: json.data.name,
             artist: json.data.artist,
             lyrics: json.data.lyrics,
             cover: `${json.data.cover}`,
-            url: json.data.url
+            url: json.data.url,
+            favorite:json.data.favorite
           })
-          setData({ name: json.data.name, artist: json.data.artist, cover: json.data.cover, lyrics:json.data.lyrics})
+          setFavorite(json.data.favorite)
+          setData({ name: json.data.name, artist: json.data.artist, cover: json.data.cover, lyrics:json.data.lyrics, favorite:json.data.favorite})
         })
         .catch(err => {
           console.log(err)
         })
 
-
-
       localStorage.setItem('executed', true)
     } else {
       setData(null)
+      console.log(dataSong.favorite, "  ",  favoriteSong)
+      setFavorite(favoriteSong)
     }
 
     if (run) {
@@ -114,7 +119,6 @@ const Player = ({ cover, songInfo }) => {
       setRunning)
   }, [dataSong])
 
-
   const handleVolume = (e) => {
     localStorage.setItem('volume', e.target.value)
     audio_ref.current.volume = e.target.value / 100;
@@ -123,6 +127,7 @@ const Player = ({ cover, songInfo }) => {
 
 
   const addFavorite = (e) => {
+
     let dateNow = new Date(Date.now())
     let dateTime = new Date(dateNow.getTime() - dateNow.getTimezoneOffset() * 60000).toISOString()
     let date = dateTime.split('T')[0]
@@ -130,6 +135,17 @@ const Player = ({ cover, songInfo }) => {
     fetchAJAX({
       url: `http://${location.hostname}:5000/addfavorite/${dataSong._id}/${localStorage.getItem('id')}/${date}`,
       resSuccess: (res) => {
+
+        if(((data && data.favorite) || (dataSong && dataSong.favorite)) && favorite ){
+          dataSong.favorite = false;
+          setFavorite(false)
+        }else{
+          dataSong.favorite = true;
+          setFavorite(true)
+        }
+
+        refetchCachePlaylist()
+
         if (res.status) {
           console.log(res)
         } else {
@@ -137,15 +153,46 @@ const Player = ({ cover, songInfo }) => {
         }
       },
       resError: (err) => {
-        console.log(err)
+        console.log("Error to add favorite", err)
+
+        setMsgAlert({msg:'Error to Add Song', status:false})
+        setAlertVisible(true)
+
+        setTimeout(()=>{
+          setAlertVisible(false)
+        }, 1800)
+
+        if((data && data.favorite) || (dataSong && dataSong.favorite) && favorite){
+          setData({
+            ...data,
+            favorite:false
+          })
+          setFavorite(false)
+        }else{
+          setData({
+            ...data,
+            favorite:true
+          })
+          setFavorite(true)
+        }
+        
+        setTimeout(()=>{
+          if(!data.favorite){
+            setData({
+              ...data,
+              favorite:false
+            })
+            setFavorite(false)
+          }else{
+            setData({
+              ...data,
+              favorite:true
+            })
+            setFavorite(true)
+          }     
+        }, 300)
       }
     })
-
-    if (favorite) {
-      setFavorite(false)
-    } else {
-      setFavorite(true)
-    }
 
   }
 
@@ -167,6 +214,11 @@ const Player = ({ cover, songInfo }) => {
   }
 
   const foundFavorites = () => {
+    if(favoriteSongs.length == 0){
+      console.log("No favorites", favorite)
+      setFavorite(false)
+      return
+    }
     let found = favoriteSongs.find(favorite => favorite == dataSong._id)
     return found
   }
@@ -187,7 +239,6 @@ const Player = ({ cover, songInfo }) => {
       <audio
         onPlaying={(e) => {
           setRunning(true)
-          setActive(false)
         }}
         ref={audio_ref} src=''></audio>
 
@@ -261,7 +312,6 @@ const Player = ({ cover, songInfo }) => {
 
             <img onClick={
               (e) => {
-                setActive(true)
                 setFavorite(false)
                 HandleNext(
                   e,
@@ -325,15 +375,16 @@ const Player = ({ cover, songInfo }) => {
 
             <div className='btn-option'>
               {
-                favoriteSongs &&
-                  foundFavorites() ?
+                data ?
+                  data.favorite ?
                   <img onClick={(e) => addFavorite(e)} src={'/icons/icon-favorite-active.png'} alt="Favorite" />
                   :
+                  <img onClick={(e) => addFavorite(e)} src={'/icons/icon-favorite.png'} alt="Favorite" />
+                :
                   favorite ?
-                    <img onClick={(e) => addFavorite(e)} src={'/icons/icon-favorite-active.png'} alt="Favorite" />
-                    :
-                    <img onClick={(e) => addFavorite(e)} src={'/icons/icon-favorite.png'} alt="Favorite" />
-
+                  <img onClick={(e) => addFavorite(e)} src={'/icons/icon-favorite-active.png'} alt="Favorite" />
+                  :
+                  <img onClick={(e) => addFavorite(e)} src={'/icons/icon-favorite.png'} alt="Favorite" />
 
               }
 

@@ -1,4 +1,6 @@
-import { useEffect, useState, useContext } from "react";
+import { useEffect, useState, useContext, useCallback} from "react";
+import { useQuery } from 'react-query'
+
 import { useParams } from "react-router-dom";
 import Header from "../components/Header";
 import SongBoxLarge from "../components/SongBoxLarge";
@@ -9,12 +11,9 @@ import fetchAJAX from "../helpers/fetch";
 import PlaylistContext from "../context/PlaylistContext";
 import PlayerContext from "../context/PlayerContext";
 
-let songs = []
+import { queryClient } from "../main";
 
 export default function Playlist() {
-
-  const [dataPlaylist, setDataPlaylist] = useState()
-  const [dataSongs, setDataSongs] = useState([])
 
   const [visibility, setVisibility] = useState(false)
   const [pointerXY, setPointerXY] = useState({})
@@ -22,17 +21,54 @@ export default function Playlist() {
   const [idSong, setIdSong] = useState(null)
 
 
-  const { favoriteSongs, setRun, run } = useContext(PlaylistContext)
+  const { favoriteSongs, setRun, run, setRefetchCachePlaylist, refetchPlaylist, setIdPlaylist, dataPlaylist} = useContext(PlaylistContext)
   const { favorite } = useContext(PlayerContext)
 
   let { id } = useParams()
 
   const [displayOptionsSong, setDisplayOptionsSong] = useState()
+  
+  /*const getplaylists = ()=>{
+    if (!id) {
+      return  fetchAJAX({
+        url: `http://${window.location.hostname}:5000/getplaylists/${localStorage.getItem('id')}`,
+        resSuccess: (res) => {
+          if (!res.results) return
+          let playlists = res.results
+          return playlists
+        },
+        resError: (err) => {
+          console.error(err)
+        }
+      })
+    }else{
+      return fetchAJAX({
+        url: `http://${window.location.hostname}:5000/getplaylist/${id}`,
+        resSuccess:async (res) => {
+          if (!res.results) return
+          let playlists = res.results
+          return playlists
+        },
+        resError: (err) => {
+          console.error(err)
+        }
+      })
+    }
+  }
+
+  const {data:dataPlaylist} = useQuery(['playlist', id], getplaylists,
+  {
+    staleTime:Infinity,
+    keepPreviousData:true
+  })*/
 
   useEffect(() => {
-    setDataSongs([])
-    songs = []
 
+    if(id){
+      setIdPlaylist(id)
+    }
+
+    //refetchPlaylist()
     setDisplayOptionsSong(false)
 
     if (run) {
@@ -41,67 +77,7 @@ export default function Playlist() {
       setRun(true)
     }
 
-
-    if (!id) {
-      fetchAJAX({
-        url: `http://${window.location.hostname}:5000/getplaylists/${localStorage.getItem('id')}`,
-        resSuccess: (res) => {
-          if (!res.results) return
-          setDataPlaylist(res.results)
-          res.results[0].songs.forEach(el => {
-
-            fetchAJAX({
-              url: `http://${window.location.hostname}:5000/getsongplaylist/${el.song_id.$oid}`,
-              resSuccess: (res) => {
-                songs.push(res.results)
-                setDataSongs([...songs])
-              },
-              resError: (err) => {
-                console.error(err)
-              }
-            })
-
-          })
-
-        },
-        resError: (err) => {
-          console.error(err)
-        }
-      })
-    } else {
-
-      fetchAJAX({
-        url: `http://${window.location.hostname}:5000/getplaylist/${id}`,
-        resSuccess: (res) => {
-          if (!res.results) return
-          setDataPlaylist(res.results)
-          if (res.results[0].songs.length == 0) return
-          res.results[0].songs.forEach(el => {
-
-            fetchAJAX({
-              url: `http://${window.location.hostname}:5000/getsongplaylist/${el.song_id.$oid}`,
-              resSuccess: (res) => {
-                songs.push(res.results)
-                setDataSongs([...songs])
-              },
-              resError: (err) => {
-                console.error(err)
-              }
-            })
-
-          })
-
-        },
-        resError: (err) => {
-          console.error(err)
-        }
-      })
-
-    }
-
-    return () => setDataSongs([])
-
-  }, [favorite])
+  }, [dataPlaylist])
 
 
   const displayOptions = (e, idsong) => {
@@ -162,11 +138,10 @@ export default function Playlist() {
     }
   }
 
-
-
   return (
     <div className='main-container'>
-      {dataPlaylist &&
+
+      {(dataPlaylist) &&
         <Header
           type="playlist"
           background=''
@@ -180,8 +155,6 @@ export default function Playlist() {
       }
 
       <main>
-
-
         {
           //This is to display option for each song of the playlist
           displayOptionsSong &&
@@ -196,14 +169,11 @@ export default function Playlist() {
         }
 
 
+
         {
           //LOAD PLAYLIST SONG
-          dataPlaylist &&
-          dataSongs.map((el, index) => {
-
-            //Now find if the current song of the playlist is a favorite song of the user
-            let foundFavoriteSongs = favoriteSongs.find(favorite => favorite == el._id)
-
+          ((dataPlaylist && dataPlaylist.length > 0)) &&
+          dataPlaylist[0].songs.map((el, index) => {
             return <SongBoxLarge
               key={index}
               data={{
@@ -214,10 +184,11 @@ export default function Playlist() {
                 duration: el.duration,
                 album: el.album,
                 created: el.created,
-                pathSong: el.url
+                pathSong: el.url,
+                favoriteSong:el.favorite
               }
               }
-              _favorite={foundFavoriteSongs ? true : false} //If foundFavoriteSongs isn't empty the current song is a favorite song of the user else the song isn't a favorite song for the user.
+              _favorite={el.favorite ? true : false}
               displayOptions={displayOptions}
             />
           })

@@ -1,14 +1,16 @@
 import '../styles/song-box.css';
 
-import { useContext, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import PlayerContext from '../context/PlayerContext';
 
 import fetchAJAX from '../helpers/fetch';
+import PlaylistContext from '../context/PlaylistContext';
+import Context from '../context/Context';
 
 
 export default function SongBoxLarge({ data, _favorite, displayOptions }) {
 
-  const { id, cover, name, artist, duration, album, created, pathSong } = data
+  const { id, cover, name, artist, duration, album, created, pathSong, favoriteSong } = data
 
   const {
     playPause,
@@ -24,6 +26,10 @@ export default function SongBoxLarge({ data, _favorite, displayOptions }) {
     setFavorite
   } = useContext(PlayerContext)
 
+  const { setAlertVisible, setMsgAlert } = useContext(Context);
+
+
+  const {refetchCachePlaylist} = useContext(PlaylistContext)
 
   const playSong = (e, content) => {
 
@@ -34,7 +40,8 @@ export default function SongBoxLarge({ data, _favorite, displayOptions }) {
       name,
       artist,
       cover: cover,
-      url: pathSong
+      url: pathSong,
+      favorite:favoriteSong
     })
 
     setRunning(false)
@@ -53,6 +60,13 @@ export default function SongBoxLarge({ data, _favorite, displayOptions }) {
 
 
   const addFavorite = (e) => {
+
+    if (favorite) {
+      setFavorite(false)
+    } else {
+      setFavorite(true)
+    }
+
     let dateNow = new Date(Date.now())
     let dateTime = new Date(dateNow.getTime() - dateNow.getTimezoneOffset() * 60000).toISOString()
     let date = dateTime.split('T')[0]
@@ -65,11 +79,6 @@ export default function SongBoxLarge({ data, _favorite, displayOptions }) {
         }
       },
       resSuccess: (res) => {
-        if (res.status) {
-          alert("Added to Favorites")
-        } else {
-          console.log(res.message)
-        }
 
         if (favorite) {
           setFavorite(false)
@@ -77,9 +86,18 @@ export default function SongBoxLarge({ data, _favorite, displayOptions }) {
           setFavorite(true)
         }
 
+        refetchCachePlaylist()
+
       },
       resError: (err) => {
-        console.log(err)
+        
+        setMsgAlert({msg:'Error to Add Song', status:false})
+        setAlertVisible(true)
+
+        setTimeout(()=>{
+          setAlertVisible(false)
+        }, 1800)
+
       }
     }
     )

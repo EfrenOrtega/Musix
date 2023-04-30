@@ -1,4 +1,6 @@
 from Modelo.conexion import Conexion
+from Modelo.model_playlist import ModelPlaylist
+
 from flask_pymongo import PyMongo, ObjectId
 from flask import jsonify, request
 
@@ -6,6 +8,7 @@ import json
 
 class 	ModelSongs():
   db = Conexion.connect()
+  Mod_playlist = ModelPlaylist()
   cSongs = db.songs
   cProfile = db.profile
   artist = ''
@@ -32,7 +35,20 @@ class 	ModelSongs():
     return jsonify({'status':True, 'message':'Songs Added'})
 
   def get_song(self):
+
     song = self.cSongs.find_one({'_id': ObjectId(self.idSong)})
+
+    #Obtain the favorites songs
+    self.Mod_playlist.iduser = self.idUser
+    favorites_playlist = (json.loads(self.Mod_playlist.get_favorites().get_data(as_text=True)))['results'][0]
+    favorite_song_ids = [ObjectId(s['_id']) for s in favorites_playlist['songs']]
+
+    #Verify if the current song is a favorite song
+    if song['_id'] in favorite_song_ids:
+      song['favorite'] = True #Add a attribute called favorite with True if is a favorite song
+    else:
+      song['favorite'] = False #Add a attribute called favorite with False if isn't a favorite song
+
     return jsonify({'status':True, 'message':'Song Found', 
       'data': {
         '_id':str(ObjectId(song['_id'])),
@@ -44,12 +60,14 @@ class 	ModelSongs():
         'duration':song['duration'],
         'url':song['url'],
         'date':song['date'],
-        'lyrics':song['lyrics']
+        'lyrics':song['lyrics'],
+        'favorite':song['favorite']
       }
     })
 
   def get_songs(self):
     songs = []
+    
     for data in self.cSongs.find():
 
       songs.append({
@@ -69,8 +87,20 @@ class 	ModelSongs():
 
   def get_recent_songs(self):
     songs = []
+
+    #Obtain the favorites songs
+    self.Mod_playlist.iduser = self.idUser
+    favorites_playlist = (json.loads(self.Mod_playlist.get_favorites().get_data(as_text=True)))['results'][0]
+    favorite_song_ids = [ObjectId(s['_id']) for s in favorites_playlist['songs']]
+
     #for data in self.cSongs.find({'date':dateutil.parser.parse(self.date)}):
     for data in self.cSongs.find().sort("_id", -1).limit(8):
+      #Verify if the current song is a favorite song
+      if data['_id'] in favorite_song_ids:
+        data['favorite'] = True #Add a attribute called favorite with True if is a favorite song
+      else:
+        data['favorite'] = False #Add a attribute called favorite with False if isn't a favorite song
+
       songs.append({
         '_id':str(ObjectId(data['_id'])),
         'name':data['name'],
@@ -81,8 +111,8 @@ class 	ModelSongs():
         'duration':data['duration'],
         'url':data['url'],
         'date':data['date'],
-        'lyrics':data['lyrics']
-        
+        'lyrics':data['lyrics'],
+        'favorite':data['favorite']
       })
 
 
@@ -90,7 +120,19 @@ class 	ModelSongs():
 
   def get_songsByArtist(self):
     songs = []
+
+    #Obtain the favorites songs
+    self.Mod_playlist.iduser = self.idUser
+    favorites_playlist = (json.loads(self.Mod_playlist.get_favorites().get_data(as_text=True)))['results'][0]
+    favorite_song_ids = [ObjectId(s['_id']) for s in favorites_playlist['songs']]
+
     for data in self.cSongs.find({'artist':self.artist}):
+
+      #Verify if the current song is a favorite song
+      if data['_id'] in favorite_song_ids:
+        data['favorite'] = True #Add a attribute called favorite with True if is a favorite song
+      else:
+        data['favorite'] = False #Add a attribute called favorite with False if isn't a favorite song
 
       songs.append({
         '_id':str(ObjectId(data['_id'])),
@@ -102,7 +144,8 @@ class 	ModelSongs():
         'duration':data['duration'],
         'url':data['url'],
         'date':data['date'],
-        'lyrics':data['lyrics']
+        'lyrics':data['lyrics'],
+        'favorite':data['favorite']
       })
 
     return jsonify(songs)
@@ -115,7 +158,18 @@ class 	ModelSongs():
 
     songs = []
 
+    #Obtain the favorites songs
+    self.Mod_playlist.iduser = self.idUser
+    favorites_playlist = (json.loads(self.Mod_playlist.get_favorites().get_data(as_text=True)))['results'][0]
+    favorite_song_ids = [ObjectId(s['_id']) for s in favorites_playlist['songs']]
+
     for data in self.cSongs.find({'genre':userprofile['favorite_genre']}):
+      #Verify if the current song is a favorite song
+      if data['_id'] in favorite_song_ids:
+        data['favorite'] = True #Add a attribute called favorite with True if is a favorite song
+      else:
+        data['favorite'] = False #Add a attribute called favorite with False if isn't a favorite song
+
       songs.append({
         '_id':str(ObjectId(data['_id'])),
         'name':data['name'],
@@ -126,7 +180,8 @@ class 	ModelSongs():
         'duration':data['duration'],
         'url':data['url'],
         'date':data['date'],
-        'lyrics':data['lyrics']
+        'lyrics':data['lyrics'],
+        'favorite':data['favorite']
       })
 
     return jsonify(songs)
@@ -139,7 +194,19 @@ class 	ModelSongs():
     else:
       songs = []
 
+      #Obtain the favorites songs
+      self.Mod_playlist.iduser = self.idUser
+      favorites_playlist = (json.loads(self.Mod_playlist.get_favorites().get_data(as_text=True)))['results'][0]
+      favorite_song_ids = [ObjectId(s['_id']) for s in favorites_playlist['songs']]
+
+
       for data in self.cSongs.find({'artist':userprofile['favorite_artist']}):
+        #Verify if the current song is a favorite song
+        if data['_id'] in favorite_song_ids:
+          data['favorite'] = True #Add a attribute called favorite with True if is a favorite song
+        else:
+          data['favorite'] = False #Add a attribute called favorite with False if isn't a favorite song
+
         songs.append({
           '_id':str(ObjectId(data['_id'])),
           'name':data['name'],
@@ -150,7 +217,8 @@ class 	ModelSongs():
           'duration':data['duration'],
           'url':data['url'],
           'date':data['date'],
-          'lyrics':data['lyrics']
+          'lyrics':data['lyrics'],
+          'favorite':data['favorite']
         })
 
       return jsonify(songs)

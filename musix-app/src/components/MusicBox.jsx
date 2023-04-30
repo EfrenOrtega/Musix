@@ -6,7 +6,7 @@ import PlaylistContext from '../context/PlaylistContext';
 
 export default function MusicBox({ cover, songInfo, pathSong, nameClass, type, lyrics}) {
 
-  const { id, name, artist} = songInfo
+  const { id, name, artist, favoriteSong} = songInfo
 
   const {
     playPause,
@@ -65,7 +65,8 @@ export default function MusicBox({ cover, songInfo, pathSong, nameClass, type, l
           artist,
           cover: `${cover}`,
           lyrics:`${lyrics}`,
-          url: pathSong
+          url: pathSong,
+          favorite:favoriteSong
         })
       }
     }

@@ -1,32 +1,65 @@
 import { useState, createContext, useEffect } from "react";
 import fetchAJAX from "../helpers/fetch";
+import { useQuery } from "react-query";
+import { queryClient } from "../main";
+
 
 const PlaylistContext = createContext();
 
 const PlaylistProvider = ({ children }) => {
 
   const [Playlists, setPlaylists] = useState()
-  const [favoriteSongs, setFavoriteSongs] = useState()
   const [run, setRun] = useState(false)
   const [dataSongs, setDataSongs] = useState([])
+  const [favorite, setFavorite] = useState(false)
+
+  const [idPlaylist, setIdPlaylist] = useState(null);
 
   useEffect(() => {
-
-    fetchAJAX({
-      url: `http://${window.location.hostname}:5000/getfavorites/${localStorage.getItem('id')}`,
-      resSuccess: (res) => {
-        if (!res.results) return
-        let favorite = []
-        res.results[0].songs.map(el => {
-          favorite.push(el.song_id.$oid)
-        })
-        setFavoriteSongs(favorite)
-      },
-      resError: (err) => {
-        console.error(err)
-      }
-    })
   }, [run])
+
+  const getplaylists = ()=>{
+    if (!idPlaylist) {
+      return  fetchAJAX({
+        url: `http://${window.location.hostname}:5000/getplaylists/${localStorage.getItem('id')}`,
+        resSuccess: (res) => {
+          if (!res.results) return
+          let playlists = res.results
+          return playlists
+        },
+        resError: (err) => {
+          console.error(err)
+        }
+      })
+    }else{
+      return fetchAJAX({
+        url: `http://${window.location.hostname}:5000/getplaylist/${idPlaylist}`,
+        resSuccess:async (res) => {
+          if (!res.results) return
+          let playlists = res.results
+          return playlists
+        },
+        resError: (err) => {
+          console.error(err)
+        }
+      })
+    }
+  }
+
+  const {data:dataPlaylist, refetch:refetchCachePlaylist} = useQuery(['playlist', idPlaylist], getplaylists,
+  {
+    enabled: false,
+    staleTime:Infinity,
+    keepPreviousData:true
+  })
+
+  useEffect(()=>{
+
+    if(idPlaylist){
+      refetchCachePlaylist()
+    }
+
+  },[idPlaylist])
 
 
   const addToPlaylist = (e, dataSong) => {
@@ -41,6 +74,7 @@ const PlaylistProvider = ({ children }) => {
       url: `http://${window.location.hostname}:5000/addtoplaylist/${PlaylistSelected}/${dataSong._id}`,
       resSuccess: (res) => {
         console.log(res.message)
+        localStorage.setItem('addedToPlaylist', true)
       },
       resError: (err) => {
         console.error(err)
@@ -92,13 +126,17 @@ const PlaylistProvider = ({ children }) => {
   let data = {
     setPlaylists,
     Playlists,
-    favoriteSongs,
-    setFavoriteSongs,
     setRun,
     run,
     addToPlaylist,
     dataSongs,
-    getSongsPlaylist
+    getSongsPlaylist,
+    setFavorite,
+    favorite,
+    idPlaylist, 
+    setIdPlaylist,
+    dataPlaylist,
+    refetchCachePlaylist
   }
 
   return (

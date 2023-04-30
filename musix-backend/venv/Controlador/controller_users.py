@@ -32,9 +32,11 @@ def add_song():
 def get_songs():
   return mSongs.get_songs()
 
-def get_recent_songs():
+def get_recent_songs(iduser):
+  mSongs.idUser = iduser
   return mSongs.get_recent_songs()
 
-def get_songsByArtist(artist):
+def get_songsByArtist(artist, iduser):
   mSongs.artist = artist
+  mSongs.idUser = iduser
   return mSongs.get_songsByArtist()

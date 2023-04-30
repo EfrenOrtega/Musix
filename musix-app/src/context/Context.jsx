@@ -7,13 +7,19 @@ const Provider = ({ children }) => {
 
   const [displayFormPlaylist, setDisplayFormPlaylist] = useState(false)
   const [display, setDisplay] = useState(false) //To Display o Hide the Player
+  const [alertVisible, setAlertVisible] = useState(false)
+  const [msgAlert, setMsgAlert] = useState({msg:'', status:false})
 
 
   let data = {
     displayFormPlaylist,
     setDisplayFormPlaylist,
     display,
-    setDisplay
+    setDisplay,
+    alertVisible,
+    setAlertVisible,
+    msgAlert,
+    setMsgAlert
   }
 
   return (

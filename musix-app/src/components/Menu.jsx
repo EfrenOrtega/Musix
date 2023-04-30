@@ -39,9 +39,6 @@ export default function Menu() {
             <img src="/icons/playlists.png" alt="Playlists" />
             <Link to="/playlists">My Playlists</Link>
           </li>
-          <li>
-            <a href="">Coming soon</a>
-          </li>
         </ul>
       </div>
 

@@ -1,5 +1,4 @@
-import * as React from 'react'
-import { useEffect, useState, useContext } from 'react'
+import { useEffect, useState, useCallback } from 'react'
 
 import SongBoxLarge from '../components/SongBoxLarge'
 import OptionsPerSong from '../components/micro/OptionsPerSong'
@@ -8,13 +7,9 @@ import fetchAJAX from '../helpers/fetch'
 import Header from '../components/Header'
 import { useParams } from 'react-router-dom'
 
-import PlaylistContext from '../context/PlaylistContext'
+import { useQuery } from 'react-query'
 
 export default function Artist() {
-
-  const [dataSongs, setDataSongs] = useState()
-  const [dataArtist, setDataArtist] = useState(null)
-  const { favoriteSongs } = useContext(PlaylistContext)
 
   const [visibility, setVisibility] = useState(false)
   const [pointerXY, setPointerXY] = useState({})
@@ -22,36 +17,48 @@ export default function Artist() {
   const [idSong, setIdSong] = useState(null)
   const [displayOptionsSong, setDisplayOptionsSong] = useState()
 
-
-
   let { id } = useParams()
 
-
-  useEffect(() => {
-
-    fetchAJAX({
+  const getArtist = useCallback(()=>{
+    return fetchAJAX({
       url: `http://${window.location.hostname}:5000/getartist/${id}`,
       resSuccess: (res) => {
-        setDataArtist(res)
-
-        fetchAJAX({
-          url: `http://${window.location.hostname}:5000/getsongbyartist/${res.name}`,
-          resSuccess: (res) => {
-            setDataSongs(res)
-          },
-          resError: (err) => {
-            console.error(err)
-          }
-        })
-
-
+        return res
       },
       resError: (err) => {
         console.error(err)
       }
     })
+  })
 
-  }, [])
+  const getSongArtist = useCallback(()=>{
+    return  fetchAJAX({
+      url: `http://${window.location.hostname}:5000/getsongbyartist/${dataArtist.name}/${localStorage.getItem('id')}`,
+      resSuccess: (res) => {
+        //setDataSongs(res)
+        return res
+      },
+      resError: (err) => {
+        console.error(err)
+      }
+    })
+  })
+
+  //CACHENING
+  const { data: dataArtist } = useQuery('artistInfo', getArtist, {
+    staleTime: 60 * 60 * 1000,
+    keepPreviousData: true,
+    cacheTime: 100 * 10000
+  });
+
+  //This a request that depends of 'dataArtist'
+  const {data:dataSongs} = useQuery(['songsArtist', id], getSongArtist,
+  {
+    enabled: !!dataArtist, //Here, we execute it when 'dataArtist' exist
+    staleTime:Infinity,
+    keepPreviousData:true,
+    cacheTime: 100 * 10000
+  })
 
 
   const displayOptions = (e, idsong) => {
@@ -140,9 +147,6 @@ export default function Artist() {
         {
           dataSongs &&
           dataSongs.map((el, index) => {
-            let found = favoriteSongs.find(favorite => favorite == el._id)
-
-            if (!found) {
               return <SongBoxLarge
                 key={index}
                 data={{
@@ -156,27 +160,9 @@ export default function Artist() {
                   pathSong: el.url
                 }
                 }
-                favorite={false}
+                favorite={el.favorite}
                 displayOptions={displayOptions}
               />
-            } else {
-              return <SongBoxLarge
-                key={index}
-                data={{
-                  id: el._id,
-                  cover: el.cover,
-                  name: el.name,
-                  artist: el.artist,
-                  duration: el.duration,
-                  album: el.album,
-                  created: el.created,
-                  pathSong: el.url
-                }
-                }
-                favorite={true}
-                displayOptions={displayOptions}
-              />
-            }
           })
         }
 

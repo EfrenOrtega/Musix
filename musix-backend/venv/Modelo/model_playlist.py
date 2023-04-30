@@ -272,7 +272,30 @@ class ModelPlaylist():
 
   def get_playlists(self):
     playlists = []
+
+    favorites_playlist = (json.loads(self.get_favorites().get_data(as_text=True)))['results'][0]
+    favorite_song_ids = [ObjectId(s['_id']) for s in favorites_playlist['songs']]
+
+    song_ids = []          
+
     for data in self.cPlaylist.find({'user_id':ObjectId(self.iduser)}):
+
+      #This is to create an array but with the song ids, is like the .map() in JS
+      song_ids = [s['song_id'] for s in data['songs']]
+      
+      #This is to aggregate data in a specific document (No update the document in mongo)
+      songs = self.cSongs.aggregate([
+        {'$match': {'_id':{'$in':song_ids}}},#Find the song_ids in cSongs
+        {'$addFields':{
+          '_id':{'$toString':'$_id'},#Convert the _id song to string
+          'favorite': {'$in': ['$_id', favorite_song_ids]}, #Add other field called favorite, this
+          #search if favorite_song_ids has _id song and return a Boolean (true, false)
+        }}
+      ])
+
+      #Load the new list a data['songs']
+      data['songs'] = list(songs)
+
       playlists.append({
         '_id':str(ObjectId(data['_id'])),
         'user_id':str(ObjectId(data['user_id'])),
@@ -280,7 +303,7 @@ class ModelPlaylist():
         'background':data['background'],
         'created':data['created'],
         'createdBy':data['createdBy'],
-        'songs':json.loads(json_util.dumps(data['songs'])),
+        'songs':data['songs'],
         'visibility':data['visibility']
       })
 
@@ -431,8 +454,33 @@ class ModelPlaylist():
 
 
   def get_playlist(self):
+    
     playlist = []
     data = self.cPlaylist.find_one({'_id':ObjectId(self.idPlaylist)})
+
+    self.iduser = str(ObjectId(data['user_id']))
+    favorites_playlist = (json.loads(self.get_favorites().get_data(as_text=True)))['results'][0]
+
+    favorite_song_ids = [ObjectId(s['_id']) for s in favorites_playlist['songs']]
+
+    song_ids = []
+
+    #This is to create an array but with the song ids, is like the .map() in JS
+    song_ids = [s['song_id'] for s in data['songs']]
+      
+    #This is to aggregate data in a specific document (No update the document in mongo)
+    songs = self.cSongs.aggregate([
+      {'$match': {'_id':{'$in':song_ids}}},#Find the song_ids in cSongs
+      {'$addFields':{
+        '_id':{'$toString':'$_id'},#Convert the _id song to string
+        'favorite': {'$in': ['$_id', favorite_song_ids]}, #Add other field called favorite, this
+        #search if favorite_song_ids has _id song and return a Boolean (true, false)
+      }}
+    ])
+
+    #Load the new list a data['songs']
+    data['songs'] = list(songs)
+
     playlist.append({
       '_id':str(ObjectId(data['_id'])),
       'user_id':str(ObjectId(data['user_id'])),
@@ -440,12 +488,11 @@ class ModelPlaylist():
       'background':data['background'],
       'created':data['created'],
       'createdBy':data['createdBy'],
-      'songs':json.loads(json_util.dumps(data['songs'])),
+      'songs':data['songs'],
       'visibility':data['visibility']
     })
 
     return jsonify({'status':True, 'results':playlist})
-
 
 
   def add_to_playlist(self):
@@ -497,9 +544,7 @@ class ModelPlaylist():
   
 
   def get_favorites(self):
-
     try:
-
       favorites = []
       data = self.cPlaylist.find_one({'$and':[
         {
@@ -510,6 +555,23 @@ class ModelPlaylist():
         }
       ]})
 
+      #This is to create an array but with the song ids, is like the .map() in JS
+      song_ids = [s['song_id'] for s in data['songs']]
+
+      ''' 
+        Other way to do this, is with a for:
+
+        song_ids = []
+        for s in data['songs']:
+          song_ids.append(s['song_id'])
+      '''
+
+      songs = self.cSongs.aggregate([
+        {'$match': {'_id':{'$in':song_ids}}},
+        {'$addFields':{'_id':{'$toString':'$_id'}}}
+      ])
+
+      data['songs'] = list(songs)
 
       favorites.append({
         '_id':str(ObjectId(data['_id'])),
@@ -518,10 +580,10 @@ class ModelPlaylist():
         'background':data['background'],
         'created':data['created'],
         'createdBy':data['createdBy'],
-        'songs':json.loads(json_util.dumps(data['songs'])),
+        'songs':data['songs'],
         'visibility':data['visibility']
       })
 
       return jsonify({'status':True, 'results':favorites})
-    except:
-      return jsonify({'status':False, 'message':'Error to get the favorite songs'})
+    except Exception as e:
+      return jsonify({'status':False, 'message':'Error to get the favorite songs', 'err':e})

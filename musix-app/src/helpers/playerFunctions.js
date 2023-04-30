@@ -187,7 +187,8 @@ const play = async (audio, setNextIsDisabled, setPrevIsDisabled, setDataSong, se
       cover: content[currentIdSong].cover,
       url: content[currentIdSong].url,
       lyrics : content[currentIdSong].lyrics,
-      _id: content[currentIdSong]._id
+      _id: content[currentIdSong]._id,
+      favorite:content[currentIdSong].favorite
     })
   }, 400)
 

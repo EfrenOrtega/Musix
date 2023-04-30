@@ -30,6 +30,5 @@ export default function responsiveBoxes(CONTAINERS) {
     console.error("Error in resposiveBoxes.js", error)
   }
 
-  console.log("Resultados Cantidad responsiveBoxes.js", quantityArray)
   return quantityArray;
 }

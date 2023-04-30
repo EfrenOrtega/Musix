@@ -1,3 +1,7 @@
+import { useEffect, useState, useContext,  useRef, useCallback } from 'react'
+import { Link } from 'react-router-dom';
+import { useQuery } from 'react-query'
+
 import '../styles/Home.css'
 
 import Header from "../components/Header"
@@ -7,21 +11,14 @@ import Genres from '../components/Genres'
 import Artist from '../components/Artist'
 
 import responsiveBoxes from '../helpers/responsiveBoxes'
-import { useEffect, useState, useContext, useLayoutEffect, useRef } from 'react'
-import { Link } from 'react-router-dom';
 
 import fetchAJAX from "../helpers/fetch"
 import PlaylistContext from '../context/PlaylistContext'
 
 export default function Home() {
-  const { setPlaylists, Playlists } = useContext(PlaylistContext)
+  const { setPlaylists } = useContext(PlaylistContext)
 
   const [quantity, setQuantity] = useState([4,2,4])
-  const [SongsAddedTest, setSongsAddedTest] = useState(null)
-  const [artists, setArtists] = useState(null)
-  const [likes, setLikes] = useState(null)
-  const [recentlyPlayed, SetRecentlyPlayed] = useState(null)
-
 
   const containers = useRef({
     recentlyAdded:null,
@@ -33,68 +30,114 @@ export default function Home() {
     setQuantity(responsiveBoxes(containers))
   }
 
-  useEffect(() => {
+  const getplaylists = useCallback(()=>{
+    return fetchAJAX({
+      url: `http://${window.location.hostname}:5000/getplaylists/${localStorage.getItem('id')}`,
+      resSuccess: (res) => {
+        if (!res.results) return
+        setPlaylists(res.results)
 
+        return res.results
+      },
+      resError: (err) => {
+        console.error(err)
+      }
+    })
+  })
+
+  const getHistory = useCallback(()=>{
+    return fetchAJAX({
+      url: `http://${window.location.hostname}:5000/getHistory/3/${localStorage.getItem('id')}`,
+      resSuccess: (res) => {
+        return res
+      },
+      resError: (err) => {
+        console.error(err)
+      }
+    })
+  })
+
+  const getRecentlyAdded = useCallback(()=>{
+    return fetchAJAX({
+      url: `http://${window.location.hostname}:5000/getrecentsongs/${localStorage.getItem('id')}`,
+      resSuccess: (res) => {
+        return res
+      },
+      resError: (err) => {
+        console.error(err)
+      }
+    })
+  })
+
+  const getYourLikes = useCallback(()=>{
+    return fetchAJAX({
+      url: `http://${window.location.hostname}:5000/getrecommendedsongs/${localStorage.getItem('id')}`,
+      resSuccess: (res) => {
+        if (res.length == 0) return
+        return res
+      },
+      resError: (err) => {
+        console.error(err)
+      }
+    })
+  })
+
+  const getArtists = useCallback(()=>{
+    return fetchAJAX({
+      url: `http://${window.location.hostname}:5000/getartists`,
+      resSuccess: (res) => {
+        return res
+      },
+      resError: (err) => {
+        console.error(err)
+      }
+    })
+  })
+
+  //CACHENING
+  const {data:Playlists} = useQuery(['playlists'], getplaylists,
+  {
+    staleTime:Infinity,
+    keepPreviousData:true,
+    cacheTime:40 * 40 * 1000
+  })
+
+  const {data:recentlyPlayed} = useQuery(['recentlyPlayed'], getHistory,
+  {
+    staleTime:Infinity,
+    keepPreviousData:true,
+    cacheTime:40 * 40 * 1000
+  })
+
+  const {data:SongsAddedTest} = useQuery(['recentlyAdded'], getRecentlyAdded,
+  {
+    staleTime:Infinity,
+    keepPreviousData:true,
+    cacheTime:40 * 40 * 1000
+  })
+
+  const {data:likes} = useQuery(['likes'], getYourLikes,
+  {
+    staleTime:Infinity,
+    keepPreviousData:true,
+    cacheTime:40 * 40 * 1000
+  })
+
+  const {data:artists} = useQuery(['artists'], getArtists,
+  {
+    staleTime:Infinity,
+    keepPreviousData:true,
+    cacheTime:40 * 40 * 1000
+  })
+
+
+  useEffect(() => {
     window.addEventListener('resize', e=>{
       handleResize(containers)
     })
 
     let quantityArr = responsiveBoxes(containers);
-    console.log("Resultados responsive:", quantityArr)
     setQuantity(quantityArr)
-
-    fetchAJAX({
-      url: `http://${window.location.hostname}:5000/getHistory/3`,
-      resSuccess: (res) => {
-        SetRecentlyPlayed(res)
-      },
-      resError: (err) => {
-        console.error(err)
-      }
-    })
-
-    fetchAJAX({
-      url: `http://${window.location.hostname}:5000/getplaylists/${localStorage.getItem('id')}`,
-      resSuccess: (res) => {
-        if (!res.results) return
-        setPlaylists(res.results)
-      },
-      resError: (err) => {
-        console.error(err)
-      }
-    })
-
-    fetchAJAX({
-      url: `http://${window.location.hostname}:5000/getrecentsongs`,
-      resSuccess: (res) => {
-        setSongsAddedTest(res)
-      },
-      resError: (err) => {
-        console.error(err)
-      }
-    })
-
-    fetchAJAX({
-      url: `http://${window.location.hostname}:5000/getartists`,
-      resSuccess: (res) => {
-        setArtists(res)
-      },
-      resError: (err) => {
-        console.error(err)
-      }
-    })
-
-    fetchAJAX({
-      url: `http://${window.location.hostname}:5000/getrecommendedsongs/${localStorage.getItem('id')}`,
-      resSuccess: (res) => {
-        if (res.length == 0) return
-        setLikes(res)
-      },
-      resError: (err) => {
-        console.error(err)
-      }
-    })
-
   }, [])
 
 
@@ -109,6 +152,7 @@ export default function Home() {
           created: "15/10/2022"
         }}
       />
+
       <main>
         <div className='container-section-1'>
           <section  ref={el=>containers.current.playlist = el}  className='section-playlist'>
@@ -163,7 +207,8 @@ export default function Home() {
                         name: song.name,
                         artist: song.artist,
                         duration: song.duration,
-                        lyrics : song.lyrics
+                        lyrics : song.lyrics,
+                        favoriteSong:song.favorite
                       }
                     }
                     pathSong = {song.url}
@@ -194,6 +239,7 @@ export default function Home() {
                         id: el._id,
                         name: el.name,
                         artist: el.artist,
+                        favoriteSong:el.favorite
                       }
                     }
                     pathSong={el.url}
@@ -230,7 +276,8 @@ export default function Home() {
                         {
                           id: song._id,
                           name: song.name,
-                          artist: song.artist
+                          artist: song.artist,
+                          favoriteSong:song.favorite
                         }
                       }
                       pathSong={song.url}
@@ -279,6 +326,7 @@ export default function Home() {
           </div>
 
           <div className='artist'>
+
             {
               artists &&
               artists.map(artist => {

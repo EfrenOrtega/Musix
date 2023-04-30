@@ -4,10 +4,11 @@ import SettingsUser from './SettingsUser'
 import HeaderBottomPlaylist from './micro/HeaderBottomPlaylist'
 import HeaderBottomHome from './micro/HeaderBottomHome'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { useNavigate } from 'react-router-dom';
 import fetchAJAX from '../helpers/fetch'
 import HeaderBottomArtist from './micro/HeaderBottomArtist'
+import { useQuery } from 'react-query'
 
 export default function Header({ type, data, background, cover, btns }) {
 
@@ -15,32 +16,25 @@ export default function Header({ type, data, background, cover, btns }) {
 
   //Line 12 - 21 is to Display and Hide the user options
   const [displayOptions, setDisplayOptions] = useState(false);
-  const [dataUser, setDataUser] = useState()
 
-  useEffect(() => {
-
-    fetchAJAX({
+  const getFindUser = useCallback(()=>{
+    return fetchAJAX({
       url: `http://${location.hostname}:5000/finduser/${localStorage.getItem('id')}`,
-      settings: {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-      },
       resSuccess: (res) => {
-        if (res.status) {
-          setDataUser(res.data)
-        } else {
-          console.log(res.message)
-        }
-
+        return res.data
       },
       resError: (err) => {
-        console.log(err)
+        console.error(err)
       }
-    }
-    )
-  }, [])
+    })
+  })
+
+  //CACHENING
+  const {data:dataUser} = useQuery(['findUser'], getFindUser,
+  {
+    staleTime:Infinity,
+    keepPreviousData:true,
+  })
 
   const handleClick = (e) => {
     if (displayOptions) {

@@ -6,8 +6,9 @@ def get_recommended_songs(iduser):
   mSongs.idUser = iduser
   return mSongs.get_recommended_songs()
 
-def get_song(idsong):
+def get_song(idsong, iduser):
   mSongs.idSong = idsong
+  mSongs.idUser = iduser
   return mSongs.get_song()
 
 def get_my_likes(iduser):

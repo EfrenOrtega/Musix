@@ -17,15 +17,19 @@ import FormCreatePlaylist from './components/FormCreatePlaylist';
 import Artist from './pages/Artist';
 import Profile from './pages/Profile';
 
+localStorage.setItem('executed', false)
 
 
 export default function App() {
   
   localStorage.setItem('volume', 20)
-  localStorage.setItem('executed', false)
-  const { displayFormPlaylist } = useContext(Context);
+  const { displayFormPlaylist, alertVisible, msgAlert } = useContext(Context);
   return (
     <>
+    <div className={alertVisible ? !msgAlert.status ? 'msg-alert error' : 'msg-alert correct' : 'msg-alert'}>
+      <p>{msgAlert.msg}</p>
+    </div>
+
       {
         localStorage.getItem('login') == 'true' ?
           <Router>
@@ -35,7 +39,7 @@ export default function App() {
                 {displayFormPlaylist &&
                   <FormCreatePlaylist />
                 }
-
+                
                 <Routes>
                   <Route path="/" element={<Home />}></Route>
                   <Route path="/playlist/:id" element={<Playlist />}></Route>
@@ -60,9 +64,10 @@ export default function App() {
             </PlayerProvider>
 
           </Router>
-          :
+          : 
           <Auth />
       }
+    
     </>
   );
 }

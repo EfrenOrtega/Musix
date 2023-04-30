@@ -1,4 +1,4 @@
-export default function fetchAJAX(parametros) {
+export default  async function fetchAJAX(parametros) {
 
   let { url, settings, resSuccess, resError } = parametros;
 
@@ -7,11 +7,11 @@ export default function fetchAJAX(parametros) {
 
   setTimeout(() => controller.abort(), 1000);
 
-  fetch(url, settings)
+  return fetch(url, settings)
     .then(res => { return res.ok ? res.json() : Promise.reject(res) })
     .then(json => {
       if (json.success !== false) {
-        resSuccess(json)
+        return resSuccess(json)
       } else {
         console.error("Huvo un Error:", json.message)
       }

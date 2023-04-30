@@ -5,7 +5,7 @@ import { useContext } from 'react';
 
 //  songInfo contain -> Song Name, Artist and Duration
 export default function SongBox({ cover, songInfo, pathSong}) {
-  const { id, name, artist, duration, lyrics } = songInfo;
+  const { id, name, artist, duration, lyrics, favoriteSong} = songInfo;
 
 
   const {
@@ -46,7 +46,8 @@ export default function SongBox({ cover, songInfo, pathSong}) {
         artist,
         cover: `${cover}`,
         lyrics,
-        url: pathSong
+        url: pathSong,
+        favorite:favoriteSong
       })
     }
 

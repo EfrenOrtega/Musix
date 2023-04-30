@@ -110,3 +110,33 @@ main {
   height: calc(100% - 4.8em);
   width: 100vw;
 }
+
+.msg-alert{
+  position: fixed;
+  z-index: 3;
+  top: 0rem;
+  right: 2rem;
+  
+  border-radius: 1rem;
+
+  padding: 0 2rem;
+
+  font-size: 0.9rem;
+  font-weight: 500;
+
+  opacity: 0;
+
+  transition: all 0.5s ease-in-out;
+}
+
+.msg-alert.correct{
+  top: 2rem;
+  opacity: 1;
+  background-color: rgba(43, 192, 80, 0.623);
+}
+
+.msg-alert.error{
+  top: 2rem;
+  opacity: 1;
+  background-color: rgba(211, 37, 37, 0.623);
+}
