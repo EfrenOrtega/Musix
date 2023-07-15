@@ -25,6 +25,8 @@ export default function MusicBox({ cover, songInfo, pathSong, nameClass, type, l
 
   const playSong = async (e, content) => {
 
+    
+
     if(playPause){
       setRunning(false)
       

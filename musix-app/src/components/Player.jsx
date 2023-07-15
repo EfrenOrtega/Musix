@@ -381,7 +381,7 @@ const Player = ({ cover, songInfo }) => {
                   :
                   <img onClick={(e) => addFavorite(e)} src={'/icons/icon-favorite.png'} alt="Favorite" />
                 :
-                  favorite ?
+                  (dataSong && dataSong.favorite) ?
                   <img onClick={(e) => addFavorite(e)} src={'/icons/icon-favorite-active.png'} alt="Favorite" />
                   :
                   <img onClick={(e) => addFavorite(e)} src={'/icons/icon-favorite.png'} alt="Favorite" />

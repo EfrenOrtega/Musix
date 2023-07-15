@@ -1,4 +1,4 @@
-import { useState, createContext, useEffect } from "react";
+import { useState, createContext, useEffect, useCallback } from "react";
 import fetchAJAX from "../helpers/fetch";
 import { useQuery } from "react-query";
 import { queryClient } from "../main";
@@ -14,6 +14,8 @@ const PlaylistProvider = ({ children }) => {
   const [favorite, setFavorite] = useState(false)
 
   const [idPlaylist, setIdPlaylist] = useState(null);
+  const [idArtist, setIdArtist] = useState(null);
+
 
   useEffect(() => {
   }, [run])
@@ -46,11 +48,53 @@ const PlaylistProvider = ({ children }) => {
     }
   }
 
+  const getArtist = useCallback(()=>{
+    return fetchAJAX({
+      url: `http://${window.location.hostname}:5000/getartist/${idArtist}`,
+      resSuccess: (res) => {
+        return res
+      },
+      resError: (err) => {
+        console.error(err)
+      }
+    })
+  })
+
+  const getSongArtist = useCallback(()=>{
+    return  fetchAJAX({
+      url: `http://${window.location.hostname}:5000/getsongbyartist/${dataArtist.name}/${localStorage.getItem('id')}`,
+      resSuccess: (res) => {
+        return res
+      },
+      resError: (err) => {
+        console.error(err)
+      }
+    })
+  })
+
+
+  //CACHENING
   const {data:dataPlaylist, refetch:refetchCachePlaylist} = useQuery(['playlist', idPlaylist], getplaylists,
   {
     enabled: false,
     staleTime:Infinity,
     keepPreviousData:true
+  })
+
+  const { data: dataArtist, refetch:refetchCacheArtist } = useQuery(['artistInfo', idArtist], getArtist, {
+    enabled: false,
+    staleTime: 60 * 60 * 1000,
+    keepPreviousData: true,
+    cacheTime: 100 * 10000
+  });
+  
+  //This a request that depends of 'dataArtist'
+  const {data:dataSongsArtist, refetch:refetchCacheArtistSongs} = useQuery(['songsArtist', idArtist], getSongArtist,
+    {
+      enabled: !!dataArtist, //Here, we execute it when 'dataArtist' exist
+      staleTime:Infinity,
+      keepPreviousData:true,
+      cacheTime: 100 * 10000
   })
 
   useEffect(()=>{
@@ -59,7 +103,11 @@ const PlaylistProvider = ({ children }) => {
       refetchCachePlaylist()
     }
 
-  },[idPlaylist])
+    if(idArtist){
+      refetchCacheArtist()
+    }
+
+  },[idPlaylist, idArtist])
 
 
   const addToPlaylist = (e, dataSong) => {
@@ -135,8 +183,14 @@ const PlaylistProvider = ({ children }) => {
     favorite,
     idPlaylist, 
     setIdPlaylist,
+    idArtist,
+    refetchCachePlaylist,
+    setIdArtist,
     dataPlaylist,
-    refetchCachePlaylist
+    dataSongsArtist,
+    dataArtist,
+    refetchCacheArtist,
+    refetchCacheArtistSongs
   }
 
   return (

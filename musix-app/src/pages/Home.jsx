@@ -111,7 +111,7 @@ export default function Home() {
 
   const {data:SongsAddedTest} = useQuery(['recentlyAdded'], getRecentlyAdded,
   {
-    staleTime:Infinity,
+    staleTime: 20 * 10000,
     keepPreviousData:true,
     cacheTime:40 * 40 * 1000
   })
@@ -125,7 +125,7 @@ export default function Home() {
 
   const {data:artists} = useQuery(['artists'], getArtists,
   {
-    staleTime:Infinity,
+    staleTime: 200 * 10000,
     keepPreviousData:true,
     cacheTime:40 * 40 * 1000
   })

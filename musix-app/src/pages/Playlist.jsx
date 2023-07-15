@@ -22,7 +22,7 @@ export default function Playlist() {
 
 
   const { favoriteSongs, setRun, run, setRefetchCachePlaylist, refetchPlaylist, setIdPlaylist, dataPlaylist} = useContext(PlaylistContext)
-  const { favorite } = useContext(PlayerContext)
+  const { favorite} = useContext(PlayerContext)
 
   let { id } = useParams()
 
@@ -68,7 +68,6 @@ export default function Playlist() {
       setIdPlaylist(id)
     }
 
-    //refetchPlaylist()
     setDisplayOptionsSong(false)
 
     if (run) {
@@ -167,7 +166,6 @@ export default function Playlist() {
             idSong={idSong}
           />
         }
-
 
 
         {

@@ -19,6 +19,7 @@ export default function SongBoxLarge({ data, _favorite, displayOptions }) {
     setPrevIsDisabled,
     HandlePlayPause,
     audio_ref,
+    dataSong, 
     setDataSong,
     content,
     setRunning,
@@ -29,7 +30,7 @@ export default function SongBoxLarge({ data, _favorite, displayOptions }) {
   const { setAlertVisible, setMsgAlert } = useContext(Context);
 
 
-  const {refetchCachePlaylist} = useContext(PlaylistContext)
+  const {refetchCachePlaylist, refetchCacheArtistSongs} = useContext(PlaylistContext)
 
   const playSong = (e, content) => {
 
@@ -61,6 +62,15 @@ export default function SongBoxLarge({ data, _favorite, displayOptions }) {
 
   const addFavorite = (e) => {
 
+    console.log(e.target.dataset.id)
+
+    if(dataSong && (dataSong._id == e.target.dataset.id)){
+      setDataSong({
+        ...dataSong,
+        favorite:!favorite
+      })
+    }
+
     if (favorite) {
       setFavorite(false)
     } else {
@@ -87,6 +97,7 @@ export default function SongBoxLarge({ data, _favorite, displayOptions }) {
         }
 
         refetchCachePlaylist()
+        refetchCacheArtistSongs()
 
       },
       resError: (err) => {
@@ -149,13 +160,13 @@ export default function SongBoxLarge({ data, _favorite, displayOptions }) {
       </div>
 
       <div className="btn-options">
-        {_favorite ?
-          <img onClick={(e) => addFavorite(e)} src={'/icons/icon-favorite-active.png'} alt="" />
+        {(_favorite) ?
+          <img data-id={id} onClick={(e) => addFavorite(e)} src={'/icons/icon-favorite-active.png'} alt="" />
           :
-          <img onClick={(e) => addFavorite(e)} src={'/icons/icon-favorite.png'} alt="" />
+          <img data-id={id} onClick={(e) => addFavorite(e)} src={'/icons/icon-favorite.png'} alt="" />
         }
 
-        <img onClick={(e) => displayOptions(e, id)} src={'/icons/more-options.png'} alt="" />
+        <img data-id={id} onClick={(e) => displayOptions(e, id)} src={'/icons/more-options.png'} alt="" />
 
 
 

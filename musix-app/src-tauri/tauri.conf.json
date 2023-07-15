@@ -7,7 +7,7 @@
     "withGlobalTauri": false
   },
   "package": {
-    "productName": "tauri-app",
+    "productName": "Musix",
     "version": "0.0.0"
   },
   "tauri": {
@@ -23,11 +23,11 @@
       },
       "externalBin": [],
       "icon": [
-        "icons/logo.png",
-        "icons/logo.png",
-        "icons/logo.png",
-        "icons/logo.png",
-        "icons/logo.png"
+        "./logo.png",
+        "./logo.png",
+        "./logo.png",
+        "./logo.png",
+        "./logo.png"
       ],
       "identifier": "musix",
       "longDescription": "",

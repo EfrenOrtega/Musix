@@ -1,4 +1,4 @@
-import { useEffect, useState, useCallback } from 'react'
+import { useEffect, useState, useCallback, useContext } from 'react'
 
 import SongBoxLarge from '../components/SongBoxLarge'
 import OptionsPerSong from '../components/micro/OptionsPerSong'
@@ -8,6 +8,7 @@ import Header from '../components/Header'
 import { useParams } from 'react-router-dom'
 
 import { useQuery } from 'react-query'
+import PlaylistContext from '../context/PlaylistContext'
 
 export default function Artist() {
 
@@ -17,48 +18,17 @@ export default function Artist() {
   const [idSong, setIdSong] = useState(null)
   const [displayOptionsSong, setDisplayOptionsSong] = useState()
 
+  const {setIdArtist, dataSongsArtist:dataSongs, dataArtist} = useContext(PlaylistContext)
+
   let { id } = useParams()
 
-  const getArtist = useCallback(()=>{
-    return fetchAJAX({
-      url: `http://${window.location.hostname}:5000/getartist/${id}`,
-      resSuccess: (res) => {
-        return res
-      },
-      resError: (err) => {
-        console.error(err)
-      }
-    })
-  })
+  useEffect(()=>{
 
-  const getSongArtist = useCallback(()=>{
-    return  fetchAJAX({
-      url: `http://${window.location.hostname}:5000/getsongbyartist/${dataArtist.name}/${localStorage.getItem('id')}`,
-      resSuccess: (res) => {
-        //setDataSongs(res)
-        return res
-      },
-      resError: (err) => {
-        console.error(err)
-      }
-    })
-  })
+    if(id){
+      setIdArtist(id)
+    }
 
-  //CACHENING
-  const { data: dataArtist } = useQuery('artistInfo', getArtist, {
-    staleTime: 60 * 60 * 1000,
-    keepPreviousData: true,
-    cacheTime: 100 * 10000
-  });
-
-  //This a request that depends of 'dataArtist'
-  const {data:dataSongs} = useQuery(['songsArtist', id], getSongArtist,
-  {
-    enabled: !!dataArtist, //Here, we execute it when 'dataArtist' exist
-    staleTime:Infinity,
-    keepPreviousData:true,
-    cacheTime: 100 * 10000
-  })
+  },[dataSongs, dataArtist])
 
 
   const displayOptions = (e, idsong) => {
@@ -143,6 +113,7 @@ export default function Artist() {
             idSong={idSong}
           />
         }
+        {console.log("JJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJWDW")}
 
         {
           dataSongs &&
@@ -157,10 +128,11 @@ export default function Artist() {
                   duration: el.duration,
                   album: el.album,
                   created: el.created,
-                  pathSong: el.url
+                  pathSong: el.url,
+                  favoriteSong:el.favorite
                 }
                 }
-                favorite={el.favorite}
+                _favorite={el.favorite ? true : false}
                 displayOptions={displayOptions}
               />
           })
