@@ -11,7 +11,6 @@ import ListPlaylist from './micro/ListPlaylist'
 
 import fetchAJAX from '../helpers/fetch'
 import { Link } from 'react-router-dom'
-import { QueryCache } from 'react-query'
 
 
 

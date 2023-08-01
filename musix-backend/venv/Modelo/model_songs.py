@@ -5,6 +5,7 @@ from flask_pymongo import PyMongo, ObjectId
 from flask import jsonify, request
 
 import json
+import re
 
 class 	ModelSongs():
   db = Conexion.connect()
@@ -14,6 +15,7 @@ class 	ModelSongs():
   artist = ''
   idUser = ''
   idSong = ''
+  search_term = ''
 
   def __init__(self):
     pass
@@ -222,3 +224,24 @@ class 	ModelSongs():
         })
 
       return jsonify(songs)
+
+  def search_songs(self):
+    try:
+      
+      regex = re.compile(self.search_term, re.IGNORECASE)
+      songs = self.cSongs.find({
+        '$or':[
+          {'name':regex},
+          {'artist': regex},
+          {'album':regex}
+        ]
+      })
+
+      results = list(songs)
+      for result in results:
+        result['_id'] = str(result['_id'])
+
+      return jsonify({'data':results})
+    except Exception as e:
+      print('Error to find the Song: ', e)
+      return jsonify({'status':False, 'message':'Error to find the Song'})

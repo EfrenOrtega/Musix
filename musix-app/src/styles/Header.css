@@ -12,7 +12,24 @@ header {
   padding: 1.5rem 2rem;
 
   background: linear-gradient(rgba(95, 58, 120, .7) 10%, var(--second) 100%);
+}
 
+header.small{
+  position: relative;
+  overflow: hidden;
+
+  height: 6rem;
+  padding: 1.5rem 2rem;
+
+  background:  var(--second);
+}
+
+header .section-top{
+  width: 100%;
+}
+
+header.small .section-bottom{
+  display: none;
 }
 
 header .background {
@@ -51,8 +68,8 @@ header .section-top {
 }
 
 header .user figure {
-  height: 4rem;
-  width: 4rem;
+  height: 3.5rem;
+  width: 3.5rem;
   overflow: hidden;
   border-radius: 50%;
 }
@@ -79,19 +96,20 @@ header .section-top .search input {
   border-radius: 5rem;
   background: rgba(0, 0, 0, .63);
   outline: none;
-  border: 1px solid var(--extra);
+  border: 1px solid rgba(170, 170, 170, 0.2);
   font-weight: 300;
   width: 29rem;
   height: inherit;
-  padding-left: 1rem;
+  padding-left: 2rem;
   color: white;
+  font-size: 0.84rem;
 }
 
 header .section-top .search img {
   position: absolute;
   z-index: 1;
-  right: 0.5rem;
-  height: 80%;
+  left: 0.6rem;
+  height: 55%
 }
 
 
@@ -150,14 +168,18 @@ header .bottom-playlist p:last-child {
   gap: 1.8rem;
 }
 
+.nav-controls {
+  display: flex;
+  align-items: center;
+}
+
 .nav-controls img {
-  width: 1.5rem;
+  width: 1.2rem;
   cursor: pointer;
 }
 
 .nav-controls img:first-child {
-  width: 1.5rem;
-  margin-right: 1.2rem;
+  margin-right: 1rem;
 }
 
 header .bottom-playlist .generate-cover {

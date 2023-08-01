@@ -16,6 +16,7 @@ import { useContext } from 'react';
 import FormCreatePlaylist from './components/FormCreatePlaylist';
 import Artist from './pages/Artist';
 import Profile from './pages/Profile';
+import Results from './pages/Results';
 
 localStorage.setItem('executed', false)
 
@@ -47,6 +48,7 @@ export default function App() {
                   <Route path="/artist/:id" element={<Artist />}></Route>
                   <Route path="/lyrics/:id" element={<Lyrics/>}></Route>
                   <Route path="/profile" element={<Profile/>}></Route>
+                  <Route path='/results/:search' element={<Results/>}></Route>
                 </Routes>
 
                 <Player

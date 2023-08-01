@@ -33,7 +33,8 @@ export default function OptionsPerSong({ visibility, setVisibility, pointerXY, i
   //So in this function we optain the x & y to display the song options
   const translateElementXY = (x, y, widthIcon, width, height) => {
 
-    if (x && y & widthIcon) {
+    
+    if (x && y && widthIcon) {
       setPositionXY({
         x: (x - width) + (widthIcon / 2),
         y: (y - height),
@@ -47,7 +48,10 @@ export default function OptionsPerSong({ visibility, setVisibility, pointerXY, i
 
       setVisibility(true)//Display this componente "Song's Options"
     }
+
   }
+
+  
 
   return (
     <div ref={optionsSong} className={visibility ? 'container-options-song' : 'container-options-song hide'} style={{ left: `${positionXY.x}px`, top: `${positionXY.y}px` }}>

@@ -14,3 +14,7 @@ def get_song(idsong, iduser):
 def get_my_likes(iduser):
   mSongs.idUser = iduser
   return mSongs.get_my_likes()
+
+def search_songs(search):
+  mSongs.search_term = search
+  return mSongs.search_songs()

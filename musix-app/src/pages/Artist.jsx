@@ -33,63 +33,61 @@ export default function Artist() {
 
   const displayOptions = (e, idsong) => {
 
-    setIdSong(idsong)
+    setIdSong(e.target.dataset.id)
 
+    //Set the x, y, with and the position of the scroll of the icon when user clicked it to see the options of the song
     setPointerXY({
-      'left': e.target.getBoundingClientRect().left,
-      'top': e.target.getBoundingClientRect().top,
+      'x': e.target.getBoundingClientRect().x,
+      'y': e.target.getBoundingClientRect().y,
       'width': e.target.getBoundingClientRect().width,
       'topScroll': document.querySelector('.main-container').scrollTop
     })
 
-    if (pointerXYPrev) {
-      if (pointerXYPrev.top != e.target.getBoundingClientRect().top) {
-        setPointerXY({
-          'left': e.target.getBoundingClientRect().left,
-          'top': e.target.getBoundingClientRect().top,
-          'width': e.target.getBoundingClientRect().width,
-          'topScroll': document.querySelector('.main-container').scrollTop
-        })
+    //Now I need to control de previous options that the user opened
+    if (pointerXYPrev) {//if true means isn't the first time the user open the options of one song
 
+      //so, first verify is the user open a diferent song options or he clicked on the same icon to display the option of the same song
+      if (pointerXYPrev.y != e.target.getBoundingClientRect().y) {
+
+
+        //So save the same data: x, y, with and the position of the scroll of the icon that display the options of the song
         setPointerXYPrev({
-          'left': e.target.getBoundingClientRect().left,
-          'top': e.target.getBoundingClientRect().top,
+          'x': e.target.getBoundingClientRect().x,
+          'y': e.target.getBoundingClientRect().y,
           'width': e.target.getBoundingClientRect().width,
           'topScroll': document.querySelector('.main-container').scrollTop
         })
 
-        setDisplayOptionsSong(false)
         setDisplayOptionsSong(true)
       } else {
+
+        //If the user cliked on the same icon we only have two option display or hide song options.
         if (displayOptionsSong) {
           setDisplayOptionsSong(false)
         } else {
           setDisplayOptionsSong(true)
         }
+
       }
-    } else {
-      setPointerXY({
-        'left': e.target.getBoundingClientRect().left,
-        'top': e.target.getBoundingClientRect().top,
+    } else {//If pointerXYPrev it's false means is the first time the user open the options of one song
+
+      //So save the same data: x, y, with and the position of the scroll of the icon that display the options of the song
+      setPointerXYPrev({
+        'x': e.target.getBoundingClientRect().x,
+        'y': e.target.getBoundingClientRect().y,
         'width': e.target.getBoundingClientRect().width,
         'topScroll': document.querySelector('.main-container').scrollTop
       })
 
-      setPointerXYPrev({
-        'left': e.target.getBoundingClientRect().left,
-        'top': e.target.getBoundingClientRect().top,
-        'width': e.target.getBoundingClientRect().width,
-        'topScroll': document.querySelector('.main-container').scrollTop
-      })
 
       if (displayOptionsSong) {
         setDisplayOptionsSong(false)
       } else {
         setDisplayOptionsSong(true)
       }
+
     }
   }
-
 
   return (
     <div className='main-container'>

@@ -5,17 +5,19 @@ import HeaderBottomPlaylist from './micro/HeaderBottomPlaylist'
 import HeaderBottomHome from './micro/HeaderBottomHome'
 
 import { useState, useEffect, useCallback } from 'react'
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import fetchAJAX from '../helpers/fetch'
 import HeaderBottomArtist from './micro/HeaderBottomArtist'
 import { useQuery } from 'react-query'
 
-export default function Header({ type, data, background, cover, btns }) {
+export default function Header({ type, data, background, cover, btns, evtSearch }) {
 
   let navigate = useNavigate()
 
   //Line 12 - 21 is to Display and Hide the user options
   const [displayOptions, setDisplayOptions] = useState(false);
+  const [search, setSearch] = useState("")
+  const UseLocation = useLocation();
 
   const getFindUser = useCallback(()=>{
     return fetchAJAX({
@@ -52,8 +54,27 @@ export default function Header({ type, data, background, cover, btns }) {
     navigate(-1)
   }
 
+  const handleSearch = (e) =>{
+
+    if(!UseLocation.pathname.match(/results/gm)){
+      if(e.key === 'Enter'){
+        navigate(`/results/${search}`)
+      }
+    }else if(UseLocation.pathname.match(/results/gm).length !== 0){
+      if(e.key === 'Enter'){
+        evtSearch(e, search)
+      }
+    }
+
+    
+  }
+
+  const handleChangeSearch = (e)=>{
+    setSearch(e.target.value)
+  }
+
   return (
-    <header style={{ background: 'linear - gradient(rgba(95, 58, 120, .7) 10%, #0E1026 100%)' }}
+    <header className={`${type == 'small' && 'small'}`} style={{ background: 'linear - gradient(rgba(95, 58, 120, .7) 10%, #0E1026 100%)' }}
     >
       {background &&
         background.includes('https://ipfs') ?
@@ -81,7 +102,7 @@ export default function Header({ type, data, background, cover, btns }) {
 
           <div className="search">
             <img src={'/icons/icon-search.png'} alt="" />
-            <input type="text" placeholder="Search" />
+            <input onChange={handleChangeSearch} value={search} onKeyUp={handleSearch} type="text" placeholder="Search" />
           </div>
         </div>
 

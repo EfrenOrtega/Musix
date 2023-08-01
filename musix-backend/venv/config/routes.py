@@ -6,7 +6,7 @@ from Controlador.controller_users import create_users, update_profile, upload_fi
 
 from Controlador.controller_playlist import add_favorite, get_playlists, get_song_playlists, create_playlist, get_playlist, add_to_playlist, get_favorites, create_playlistFavorite
 
-from Controlador.controller_songs import get_recommended_songs, get_my_likes, get_song
+from Controlador.controller_songs import get_recommended_songs, get_my_likes, get_song, search_songs
 
 from Controlador.controller_history import updateHistory, getHistory
 
@@ -23,6 +23,7 @@ blueprint.route('/findaccount/<id>', methods=['GET'])(find_account)
 
 blueprint.route('/addsong', methods=['POST'])(add_song)
 blueprint.route('/getsongs', methods=['GET'])(get_songs)
+blueprint.route('/search/<search>', methods=['GET'])(search_songs)
 blueprint.route('/getrecentsongs/<iduser>', methods=['GET'])(get_recent_songs)
 blueprint.route('/createPlaylistFavorites/<iduser>/<date>', methods=['GET'])(create_playlistFavorite)
 blueprint.route('/addfavorite/<idsong>/<iduser>/<date>', methods=['GET'])(add_favorite)

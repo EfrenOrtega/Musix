@@ -117,7 +117,11 @@ const keysFunctions = (
 
 const play = async (audio, setNextIsDisabled, setPrevIsDisabled, setDataSong, setRunning) => {
 
-  console.log(content)
+  console.log(content, audio)
+
+  if((currentIdSong + 2) >= content.length){
+    setNextIsDisabled(true)
+  }
 
   if (flag) {
     flag = false;
@@ -268,7 +272,7 @@ const HandlePlayPause = (
 
   if (e && (e.target.matches('a') || e.target.matches('span *'))) {
     e.preventDefault();
-    currentIdSong = 0;
+    currentIdSong = content.length - 1;
     audio_ref.current.src = content[currentIdSong].url
 
     play(audio_ref, setNextIsDisabled, setPrevIsDisabled, setDataSong, setRunning)
