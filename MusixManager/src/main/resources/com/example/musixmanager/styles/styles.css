@@ -1,0 +1,45 @@
+.crud .column-first{
+    -fx-background-radius : 10 0 0 0;
+    -fx-padding : 10 5 10 5;
+    -fx-background-color :  #000000;
+}
+
+.crud .column{
+    -fx-background-radius : 0 0 0 0;
+    -fx-padding : 10 5 10 5;
+    -fx-background-color :  #000000;
+}
+
+.crud .column-end{
+    -fx-background-radius : 0 10 0 0;
+    -fx-padding : 10 5 10 5;
+    -fx-background-color :  #000000;
+}
+
+.crud .column-vBox{
+    -fx-spacing:15;
+}
+
+.crud .row{
+    -fx-padding : 0 5 10 5;
+    -fx-min-height : 70;
+}
+
+.crud .row-actions{
+    -fx-spacing: 10;
+    -fx-min-height : 70;
+}
+
+.crud .row-actions .image-view:hover{
+    -fx-cursor: hand;
+}
+
+.crud .button{
+    -fx-background-color : #000000;
+    -fx-background-radius : 10;
+}
+
+.crud .button:hover {
+    -fx-background-color: #161616;
+    -fx-cursor: hand;
+}

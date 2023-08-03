@@ -67,6 +67,10 @@ const Player = ({ cover, songInfo }) => {
 
 
   useEffect(() => {
+
+    document.addEventListener('click', handleOutsideClick)
+
+
     if (localStorage.getItem('volume')) {
       audio_ref.current.volume = localStorage.getItem('volume') / 100;
     }
@@ -116,6 +120,11 @@ const Player = ({ cover, songInfo }) => {
       setPrevIsDisabled,
       setDataSong,
       setRunning)
+
+      return ()=>{
+        document.removeEventListener('click', handleOutsideClick)
+      }
+
   }, [dataSong])
 
   const handleVolume = (e) => {
@@ -220,6 +229,12 @@ const Player = ({ cover, songInfo }) => {
     }
     let found = favoriteSongs.find(favorite => favorite == dataSong._id)
     return found
+  }
+
+  const handleOutsideClick = (e) =>{
+    if(!e.target.matches('img')){
+      setDisplayListPlaylist(false)
+    }
   }
 
   return (

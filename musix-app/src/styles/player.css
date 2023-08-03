@@ -285,3 +285,14 @@ input[type=range]::-webkit-slider-thumb {
   box-shadow: none;
   cursor: pointer;
 }
+
+
+@media only screen and (max-width: 950px) {
+  .player .btn-options .btn-option:first-child {
+    position: relative;
+    align-items: flex-end;
+    justify-content: center;
+    width: 2rem;
+    margin-right: 0.5em;
+  }
+}

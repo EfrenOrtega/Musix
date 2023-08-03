@@ -32,7 +32,7 @@ export default function Lyrics(){
 
       let lyrics = ''
 
-      fetch(`http://${location.hostname}:5000/getsong/${id}`)
+      fetch(`http://${location.hostname}:5000/getsong/${id}/${localStorage.getItem('id')}`)
       .then(res => res.ok ? res.json() : Promise.reject(res))
       .then(json => {
 

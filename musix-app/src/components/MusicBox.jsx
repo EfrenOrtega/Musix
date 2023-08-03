@@ -60,8 +60,8 @@ export default function MusicBox({ cover, songInfo, pathSong, nameClass, type, l
         })
 
     } else {
-      if (content[0]._id != id){
-        content.unshift({
+      if (content[content.length - 1]._id != id){
+        content.push({
           _id: id,
           name,
           artist,

@@ -19,6 +19,14 @@ export default function Header({ type, data, background, cover, btns, evtSearch 
   const [search, setSearch] = useState("")
   const UseLocation = useLocation();
 
+  useEffect(()=>{
+    document.addEventListener('click', handleOutsideClick)
+
+    return ()=>{
+      document.removeEventListener('click', handleOutsideClick)
+    }
+  },[])
+
   const getFindUser = useCallback(()=>{
     return fetchAJAX({
       url: `http://${location.hostname}:5000/finduser/${localStorage.getItem('id')}`,
@@ -43,6 +51,12 @@ export default function Header({ type, data, background, cover, btns, evtSearch 
       setDisplayOptions(false)
     } else {
       setDisplayOptions(true)
+    }
+  }
+
+  const handleOutsideClick = (e) =>{
+    if(!e.target.matches('img')){
+      setDisplayOptions(false)
     }
   }
 
@@ -107,10 +121,10 @@ export default function Header({ type, data, background, cover, btns, evtSearch 
         </div>
 
 
-        <div className="user" onClick={(e) => handleClick(e)}>
+        <div className="user">
           <figure>
             {dataUser &&
-              <img src={dataUser.avatar} alt="User Avatar" />
+              <img onClick={(e) => handleClick(e)} src={dataUser.avatar} alt="User Avatar" />
             }
 
           </figure>

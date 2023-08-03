@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<VBox fx:id="form_song" minWidth="-Infinity" prefHeight="454.0" prefWidth="711.0" style="-fx-spacing: 20; -fx-background-color: #0C0C0C;" styleClass="songs" stylesheets="@../styles/song.css" xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.musixmanager.songs.SongFormController">
+   <padding>
+      <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+   </padding>
+   <children>
+      <HBox spacing="20.0">
+         <children>
+            <VBox spacing="5.0">
+               <children>
+                  <HBox>
+                     <children>
+                        <ImageView fx:id="imgCover" fitHeight="100.0" fitWidth="100.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../images/radiohead.png" />
+                           </image>
+                        </ImageView>
+                     </children>
+                  </HBox>
+                  <HBox>
+                     <children>
+                        <Button mnemonicParsing="false" onAction="#onUploadImg" prefWidth="100.0" text="Upload">
+                           <font>
+                              <Font size="13.0" />
+                           </font>
+                        </Button>
+                     </children>
+                  </HBox>
+               </children>
+               <HBox.margin>
+                  <Insets />
+               </HBox.margin>
+            </VBox>
+            <VBox styleClass="input-container" HBox.hgrow="ALWAYS">
+               <children>
+                  <Label text="Name" textFill="WHITE" />
+                  <HBox prefWidth="200.0" styleClass="input">
+                     <children>
+                        <TextField promptText="Type Here" HBox.hgrow="ALWAYS" />
+                     </children>
+                  </HBox>
+               </children>
+            </VBox>
+         </children>
+      </HBox>
+      <VBox styleClass="input-container">
+         <children>
+            <Label text="Artist" textFill="WHITE" />
+            <HBox prefWidth="200.0" styleClass="input">
+               <children>
+                  <TextField promptText="Type Here" HBox.hgrow="ALWAYS" />
+               </children>
+            </HBox>
+         </children>
+      </VBox>
+      <VBox styleClass="input-container">
+         <children>
+            <Label text="Album" textFill="WHITE" />
+            <HBox prefWidth="200.0" styleClass="input">
+               <children>
+                  <TextField promptText="Type Here" styleClass="input" HBox.hgrow="ALWAYS" />
+               </children>
+            </HBox>
+         </children>
+      </VBox>
+      <VBox styleClass="input-container">
+         <children>
+            <Label text="Duration" textFill="WHITE" />
+            <HBox prefWidth="200.0" styleClass="input">
+               <children>
+                  <TextField promptText="Type Here" HBox.hgrow="ALWAYS" />
+               </children>
+            </HBox>
+         </children>
+      </VBox>
+      <VBox styleClass="input-container">
+         <children>
+            <Label text="Lyrics" textFill="WHITE" />
+            <HBox prefWidth="200.0" styleClass="input">
+               <children>
+                  <TextArea focusTraversable="false" minHeight="200.0" prefHeight="200.0" prefWidth="200.0" promptText="Paste Here" wrapText="true" HBox.hgrow="ALWAYS" />
+               </children>
+            </HBox>
+         </children>
+      </VBox>
+      <HBox prefHeight="100.0" prefWidth="200.0" spacing="10.0">
+         <children>
+            <Button maxHeight="25.0" minHeight="25.0" mnemonicParsing="false" onAction="#onSave" prefHeight="25.0" prefWidth="70.0" styleClass="Button" text="Save">
+               <padding>
+                  <Insets bottom="10.0" top="10.0" />
+               </padding>
+            </Button>
+            <Button maxHeight="25.0" minHeight="25.0" mnemonicParsing="false" onAction="#onCancel" prefHeight="25.0" prefWidth="70.0" style="-fx-background-color: #FF2C2C; -fx-text-fill: white;" styleClass="Button" text="Cancel" textFill="WHITE">
+               <padding>
+                  <Insets bottom="10.0" top="10.0" />
+               </padding>
+            </Button>
+         </children>
+      </HBox>
+   </children>
+   <opaqueInsets>
+      <Insets />
+   </opaqueInsets>
+</VBox>

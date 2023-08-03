@@ -1,0 +1,66 @@
+.songs .input-container{
+    -fx-spacing: 5;
+}
+
+.songs .input{
+    -fx-border-color: #464646;
+    -fx-border-radius: 5;
+    -fx-border-width: 1.5;
+}
+
+.songs .label{
+    -fx-padding : 0 0 2 5;
+}
+
+.songs .text-field {
+    -fx-border-radius: 5;
+    -fx-border-color: transparent;
+    -fx-border-width: 0;
+    -fx-padding: 8 12;
+    -fx-font-size: 14;
+    -fx-font-family: "Arial";
+    -fx-text-fill: white;
+    -fx-pref-height : 35;
+    -fx-background-color: transparent;
+}
+
+.songs .text-area{
+    -fx-border-radius: 5;
+    -fx-border-color: transparent;
+    -fx-border-width: 0;
+    -fx-font-size: 14;
+    -fx-font-family: "Arial";
+    -fx-text-fill: white;
+    -fx-pref-height : 35;
+    -fx-background-color: transparent;
+}
+
+.songs .text-area .viewport {
+    -fx-background-color: transparent;
+    -fx-control-inner-background:  transparent;
+}
+
+.songs .text-area:focused .content {
+    -fx-background-color: transparent;
+}
+
+.songs .text-field:focused {
+    -fx-border-color: transparent;
+    -fx-border-width: 0;
+}
+
+.songs .input:hover {
+    -fx-border-color: white;
+    -fx-border-radius: 5;
+}
+
+.songs .button{
+    -fx-background-color : white;
+    -fx-background-radius : 5;
+     -fx-text-fill: #000000;
+    -fx-padding: 0;
+}
+
+.songs .button:hover {
+    -fx-background-color: #EBEBEB;
+}
