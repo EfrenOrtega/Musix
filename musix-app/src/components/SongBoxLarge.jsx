@@ -1,12 +1,13 @@
 import '../styles/song-box.css';
 
-import { useContext, useEffect, useState } from 'react';
+import { useContext} from 'react';
 import PlayerContext from '../context/PlayerContext';
 
 import fetchAJAX from '../helpers/fetch';
 import PlaylistContext from '../context/PlaylistContext';
 import Context from '../context/Context';
 
+import { _doublyLinkedList as queue } from "../helpers/doublyLinkedList";
 
 export default function SongBoxLarge({ data, _favorite, displayOptions }) {
 
@@ -21,7 +22,6 @@ export default function SongBoxLarge({ data, _favorite, displayOptions }) {
     audio_ref,
     dataSong, 
     setDataSong,
-    content,
     setRunning,
     favorite,
     setFavorite
@@ -32,17 +32,19 @@ export default function SongBoxLarge({ data, _favorite, displayOptions }) {
 
   const {refetchCachePlaylist, refetchCacheArtistSongs} = useContext(PlaylistContext)
 
-  const playSong = (e, content) => {
+  const playSong = (e) => {
 
-    if (content[content.length - 1]._id == id) return
+    /** Clear the List */
+    queue.clear();
 
-    content.push({
+    /** Add the Song playing in the List */
+    queue.insertion_ending({
       _id: id,
       name,
       artist,
       cover: cover,
       url: pathSong,
-      favorite:favoriteSong
+      favorite: favoriteSong
     })
 
     setRunning(false)
@@ -55,7 +57,8 @@ export default function SongBoxLarge({ data, _favorite, displayOptions }) {
       setNextIsDisabled,
       setPrevIsDisabled,
       setDataSong,
-      setRunning
+      setRunning,
+      id
     )
   }
 
@@ -123,7 +126,7 @@ export default function SongBoxLarge({ data, _favorite, displayOptions }) {
         <div className="cover">
           <span>
             <img
-              onClick={(e) => playSong(e, content)}
+              onClick={(e) => playSong(e)}
               className="play-icon"
               src={'/icons/play-icon.png'}
               alt="Play"

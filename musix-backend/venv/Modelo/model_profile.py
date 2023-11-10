@@ -1,9 +1,6 @@
-from Modelo.conexion import Conexion
-from flask_pymongo import PyMongo, ObjectId
+from Services.mongoDB import Conexion
+from flask_pymongo import ObjectId
 from flask import jsonify, request
-import json
-import dateutil
-from bson import json_util
 
 class ModelProfile():
 

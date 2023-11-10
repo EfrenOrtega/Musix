@@ -1,7 +1,7 @@
-from Modelo.conexion import Conexion
+from Services.mongoDB import Conexion
 from Modelo.model_playlist import ModelPlaylist
 
-from flask_pymongo import PyMongo, ObjectId
+from flask_pymongo import ObjectId
 from flask import jsonify, request
 
 import json

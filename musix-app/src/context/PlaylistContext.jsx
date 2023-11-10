@@ -144,7 +144,7 @@ const PlaylistProvider = ({ children }) => {
           res.results[0].songs.forEach((el, index) => {
 
             fetchAJAX({
-              url: `http://${window.location.hostname}:5000/getsongplaylist/${el.song_id.$oid}`,
+              url: `http://${window.location.hostname}:5000/getsongplaylist/${el._id}`,
               resSuccess: (resSong) => {
                 songs.push(resSong.results)
                 setDataSongs([...dataSongs, ...songs])

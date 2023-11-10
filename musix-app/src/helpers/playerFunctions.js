@@ -1,10 +1,12 @@
 //All functions to the Player (Play, Pause, Next, Prev, Loop, etc.)
 import fetchAJAX from "./fetch";
 
+import { _doublyLinkedList as queue, travese_data as travese_queue} from "./doublyLinkedList";
 
 const content = []
 
 let currentIdSong = 0;
+let currentPositionSong = -1;
 let flag = true;
 
 let durationMils = 0
@@ -16,6 +18,9 @@ let counter = null;
 let loopFlag = false;
 let isLoop = false;
 
+/** This function get all songs and store 'em in the content Array
+ * @deprecated
+ */
 const getSongs = () => {
   fetchAJAX({
     url: `http://${window.location.hostname}:5000/getsongs`,
@@ -29,6 +34,7 @@ const getSongs = () => {
 }
 
 getSongs()
+
 
 const loadSongs = (songs, counter) => {
   if ((currentIdSong + 1) == content.length) {
@@ -66,15 +72,18 @@ const keysFunctions = (
   if ('mediaSession' in navigator) {
 
     navigator.mediaSession.setActionHandler('play', () => {
-      loadMetadata(content[currentIdSong])
-      HandlePlayPause(e,
-        false,
-        setPlayPause,
-        audio_ref,
-        setNextIsDisabled,
-        setPrevIsDisabled,
-        setDataSong,
-        setRunning)
+      if(currentPositionSong >= 0){
+        loadMetadata(queue.getNode(currentPositionSong).data)
+        HandlePlayPause(e,
+          false,
+          setPlayPause,
+          audio_ref,
+          setNextIsDisabled,
+          setPrevIsDisabled,
+          setDataSong,
+          setRunning)
+      }
+      
     })
 
     navigator.mediaSession.setActionHandler('pause', () => {
@@ -117,40 +126,63 @@ const keysFunctions = (
 
 const play = async (audio, setNextIsDisabled, setPrevIsDisabled, setDataSong, setRunning) => {
 
-  console.log(content, audio)
+  console.log(audio, "QUEUE: ", queue)
 
-  if((currentIdSong + 2) >= content.length){
-    setNextIsDisabled(true)
+  if(currentPositionSong >= 0){
+
+    if(queue.size - 1 > currentPositionSong){
+      setNextIsDisabled(false)
+    }else{
+      setNextIsDisabled(true)
+    }
+
   }
 
+  
   if (flag) {
     flag = false;
     nextAutomatically(audio, setNextIsDisabled, setPrevIsDisabled, setDataSong, setRunning)
   }
 
+  /**
+   * @CHECK 
+   * THIS NEED TO BE CHECKING I DON'T REMEMBER ITS FUNCTIONALYTI */
   if (audio.current.src == `http://${window.location.hostname}:1420/`) {
     //The song doesn't exist
 
-    audio.current.src = content[currentIdSong].url
+    if(currentPositionSong >= 0 ){
+      audio.current.src = queue.getNode(currentPositionSong).data.url
+    }
+
     await audio.current.play()
-    loadMetadata(content[currentIdSong])
+
+    if(currentPositionSong >= 0){
+      loadMetadata(queue.getNode(currentPositionSong).data)
+    }
   } else {
     //The song exist
-    await audio.current.play()
-    loadMetadata(content[currentIdSong])
+
+    if(currentPositionSong >= 0){
+      await audio.current.play()
+      loadMetadata(queue.getNode(currentPositionSong).data)
+    }
+    
   }
 
   //UPDATE HISTORY
-  let settings = {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({
-      idUser: localStorage.getItem('id'),
-      idSong: content[currentIdSong]._id,
-      date: new Date()
-    })
+  let settings;
+  if(currentPositionSong >= 0){
+    settings = {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        idUser: localStorage.getItem('id'),
+        idSong: queue.getNode(currentPositionSong).data._id,
+        date: new Date()
+      })
+    }
   }
 
   fetch(`http://${window.location.hostname}:5000/updateHistory`, settings)
@@ -162,7 +194,10 @@ const play = async (audio, setNextIsDisabled, setPrevIsDisabled, setDataSong, se
       console.log(err)
     })
 
-  localStorage.setItem('idSong', content[currentIdSong]._id)
+
+  if(currentPositionSong >= 0){
+    localStorage.setItem('idSong', queue.getNode(currentPositionSong).data._id)
+  }
 
 
   setTimeout(() => {
@@ -182,18 +217,19 @@ const play = async (audio, setNextIsDisabled, setPrevIsDisabled, setDataSong, se
       duration = `${durationMin.toString()}:${durationSec.toString()}`
     }
 
-    console.warn(content)
-
-    setDataSong({
-      name: content[currentIdSong].name,
-      artist: content[currentIdSong].artist,
-      duration: duration,
-      cover: content[currentIdSong].cover,
-      url: content[currentIdSong].url,
-      lyrics : content[currentIdSong].lyrics,
-      _id: content[currentIdSong]._id,
-      favorite:content[currentIdSong].favorite
-    })
+    if(currentPositionSong >= 0){
+      setDataSong({
+        name: queue.getNode(currentPositionSong).data.name,
+        artist: queue.getNode(currentPositionSong).data.artist,
+        duration: duration,
+        cover: queue.getNode(currentPositionSong).data.cover,
+        url: queue.getNode(currentPositionSong).data.url,
+        lyrics: queue.getNode(currentPositionSong).data.lyrics,
+        _id: queue.getNode(currentPositionSong).data._id,
+        favorite: queue.getNode(currentPositionSong).data.favorite
+      })
+    }
+    
   }, 400)
 
 }
@@ -215,45 +251,57 @@ const nextAutomatically = (audio, setNextIsDisabled, setPrevIsDisabled, setDataS
 
 const next = (audio, setNextIsDisabled, setPrevIsDisabled, setDataSong, setRunning) => {
 
-  if (((currentIdSong + 2) == content.length) && !loopFlag) {
-    setNextIsDisabled(true)
-  } else if (isLoop) {
-    setNextIsDisabled(false)
-    currentIdSong = -1;
-    isLoop = false;
+
+  
+  if(currentPositionSong >= 0){
+
+    if(currentPositionSong + 1 == queue.size  && !loopFlag){
+      setNextIsDisabled(true)
+      return
+    }else if (isLoop) {
+      setNextIsDisabled(false)
+      currentPositionSong = -1;
+      isLoop = false;
+    }
+
+    currentPositionSong++
+
+
+    setPrevIsDisabled(false)
+    
+    audio.current.src = queue.getNode(currentPositionSong).data.url
+
+    localStorage.setItem('idSong', queue.getNode(currentPositionSong).data._id)
+    play(audio, setNextIsDisabled, setPrevIsDisabled, setDataSong, setRunning)
+
+    return;
   }
 
-  //No more songs :(
-  if ((currentIdSong + 1) >= content.length) {
-
-    return
-  }
-
-  setPrevIsDisabled(false)
-
-  currentIdSong++
-
-  audio.current.src = content[currentIdSong].url
-  localStorage.setItem('idSong', content[currentIdSong]._id)
-  play(audio, setNextIsDisabled, setPrevIsDisabled, setDataSong, setRunning)
 }
 
+/** @CHECK */
 const prev = (audio, setPrevIsDisabled, setNextIsDisabled, setDataSong) => {
 
-  if ((currentIdSong - 1) == 0) {
-    setPrevIsDisabled(true)
+  if(currentPositionSong>=0){
+    console.log("QUEUE IS CONTROLLING THE BUTTON PREV")
+    if((currentPositionSong - 1) == 0){
+      setPrevIsDisabled(true)
+    }
+
+    if(currentPositionSong == 0){
+      return;
+    }
+    
+    setPrevIsDisabled(false)
+    currentPositionSong--
+    
+    audio.current.src = queue.getNode(currentPositionSong).data.url
+    play(audio, setNextIsDisabled, setPrevIsDisabled, setDataSong)
+
   }
 
-  //No More Songs :(
-  if (currentIdSong == 0) {
-    return
-  }
 
-  setNextIsDisabled(false)
-  currentIdSong--
 
-  audio.current.src = content[currentIdSong].url
-  play(audio, setNextIsDisabled, setPrevIsDisabled, setDataSong)
 }
 
 
@@ -267,14 +315,18 @@ const HandlePlayPause = (
   setNextIsDisabled,
   setPrevIsDisabled,
   setDataSong,
-  setRunning
+  setRunning,
+  idSong
 ) => {
 
   if (e && (e.target.matches('a') || e.target.matches('span *'))) {
     e.preventDefault();
-    currentIdSong = content.length - 1;
-    audio_ref.current.src = content[currentIdSong].url
 
+    if(idSong){
+      currentPositionSong = queue.searchByIdSong(idSong).positionNode    
+      audio_ref.current.src = queue.searchByIdSong(idSong).data.url
+    }
+    
     play(audio_ref, setNextIsDisabled, setPrevIsDisabled, setDataSong, setRunning)
     setPlayPause(true)
 

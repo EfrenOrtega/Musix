@@ -12,6 +12,7 @@ import ListPlaylist from './micro/ListPlaylist'
 import fetchAJAX from '../helpers/fetch'
 import { Link } from 'react-router-dom'
 
+import { _doublyLinkedList as queue } from "../helpers/doublyLinkedList";
 
 
 const Player = ({ cover, songInfo }) => {
@@ -40,10 +41,10 @@ const Player = ({ cover, songInfo }) => {
     content,
     setRunning,
     favorite,
-    setFavorite,
+    setFavorite
   } = useContext(PlayerContext)
 
-  const { favoriteSongs, setRun, run, setFavorite:setFavoritePlaylist, refetchCachePlaylist} = useContext(PlaylistContext)
+  const { favoriteSongs, setRun, run, setFavorite: setFavoritePlaylist, refetchCachePlaylist } = useContext(PlaylistContext)
   const { setAlertVisible, setMsgAlert } = useContext(Context);
 
 
@@ -83,17 +84,23 @@ const Player = ({ cover, songInfo }) => {
       fetch(`http://${location.hostname}:5000/getsong/${id}/${localStorage.getItem('id')}`)
         .then(res => res.ok ? res.json() : Promise.reject(res))
         .then(json => {
-          content.unshift({
+
+          /** Clear the List */
+          queue.clear();
+          /** Add the Song playing in the List */
+          queue.insertion_ending({
             _id: json.data._id,
             name: json.data.name,
             artist: json.data.artist,
             lyrics: json.data.lyrics,
             cover: `${json.data.cover}`,
             url: json.data.url,
-            favorite:json.data.favorite
+            favorite: json.data.favorite
           })
+
+
           setFavorite(json.data.favorite)
-          setData({ name: json.data.name, artist: json.data.artist, cover: json.data.cover, lyrics:json.data.lyrics, favorite:json.data.favorite})
+          setData({ name: json.data.name, artist: json.data.artist, cover: json.data.cover, lyrics: json.data.lyrics, favorite: json.data.favorite })
         })
         .catch(err => {
           console.log(err)
@@ -102,7 +109,6 @@ const Player = ({ cover, songInfo }) => {
       localStorage.setItem('executed', true)
     } else {
       setData(null)
-      console.log(dataSong.favorite, "  ",  favoriteSong)
       setFavorite(favoriteSong)
     }
 
@@ -121,9 +127,9 @@ const Player = ({ cover, songInfo }) => {
       setDataSong,
       setRunning)
 
-      return ()=>{
-        document.removeEventListener('click', handleOutsideClick)
-      }
+    return () => {
+      document.removeEventListener('click', handleOutsideClick)
+    }
 
   }, [dataSong])
 
@@ -144,10 +150,10 @@ const Player = ({ cover, songInfo }) => {
       url: `http://${location.hostname}:5000/addfavorite/${dataSong._id}/${localStorage.getItem('id')}/${date}`,
       resSuccess: (res) => {
 
-        if(((data && data.favorite) || (dataSong && dataSong.favorite)) && favorite ){
+        if (((data && data.favorite) || (dataSong && dataSong.favorite)) && favorite) {
           dataSong.favorite = false;
           setFavorite(false)
-        }else{
+        } else {
           dataSong.favorite = true;
           setFavorite(true)
         }
@@ -163,41 +169,41 @@ const Player = ({ cover, songInfo }) => {
       resError: (err) => {
         console.log("Error to add favorite", err)
 
-        setMsgAlert({msg:'Error to Add Song', status:false})
+        setMsgAlert({ msg: 'Error to Add Song', status: false })
         setAlertVisible(true)
 
-        setTimeout(()=>{
+        setTimeout(() => {
           setAlertVisible(false)
         }, 1800)
 
-        if((data && data.favorite) || (dataSong && dataSong.favorite) && favorite){
+        if ((data && data.favorite) || (dataSong && dataSong.favorite) && favorite) {
           setData({
             ...data,
-            favorite:false
+            favorite: false
           })
           setFavorite(false)
-        }else{
+        } else {
           setData({
             ...data,
-            favorite:true
+            favorite: true
           })
           setFavorite(true)
         }
-        
-        setTimeout(()=>{
-          if(!data.favorite){
+
+        setTimeout(() => {
+          if (!data.favorite) {
             setData({
               ...data,
-              favorite:false
+              favorite: false
             })
             setFavorite(false)
-          }else{
+          } else {
             setData({
               ...data,
-              favorite:true
+              favorite: true
             })
             setFavorite(true)
-          }     
+          }
         }, 300)
       }
     })
@@ -222,7 +228,7 @@ const Player = ({ cover, songInfo }) => {
   }
 
   const foundFavorites = () => {
-    if(favoriteSongs.length == 0){
+    if (favoriteSongs.length == 0) {
       console.log("No favorites", favorite)
       setFavorite(false)
       return
@@ -231,8 +237,8 @@ const Player = ({ cover, songInfo }) => {
     return found
   }
 
-  const handleOutsideClick = (e) =>{
-    if(!e.target.matches('img')){
+  const handleOutsideClick = (e) => {
+    if (!e.target.matches('img')) {
       setDisplayListPlaylist(false)
     }
   }
@@ -391,14 +397,14 @@ const Player = ({ cover, songInfo }) => {
               {
                 data ?
                   data.favorite ?
-                  <img onClick={(e) => addFavorite(e)} src={'/icons/icon-favorite-active.png'} alt="Favorite" />
+                    <img onClick={(e) => addFavorite(e)} src={'/icons/icon-favorite-active.png'} alt="Favorite" />
+                    :
+                    <img onClick={(e) => addFavorite(e)} src={'/icons/icon-favorite.png'} alt="Favorite" />
                   :
-                  <img onClick={(e) => addFavorite(e)} src={'/icons/icon-favorite.png'} alt="Favorite" />
-                :
                   (dataSong && dataSong.favorite) ?
-                  <img onClick={(e) => addFavorite(e)} src={'/icons/icon-favorite-active.png'} alt="Favorite" />
-                  :
-                  <img onClick={(e) => addFavorite(e)} src={'/icons/icon-favorite.png'} alt="Favorite" />
+                    <img onClick={(e) => addFavorite(e)} src={'/icons/icon-favorite-active.png'} alt="Favorite" />
+                    :
+                    <img onClick={(e) => addFavorite(e)} src={'/icons/icon-favorite.png'} alt="Favorite" />
 
               }
 
@@ -406,24 +412,24 @@ const Player = ({ cover, songInfo }) => {
 
             <div className='btn-option'>
               {data ?
-              data.lyrics ?
-                <Link to={`/lyrics/${localStorage.getItem('idSong')}`}>
-                  <img src={'/icons/icon-microphone-active.png'} alt="Microphone" />
-                </Link>
-              :
-                <img src={'/icons/icon-microphone.png'} alt="Microphone" />     
-                :
-                
-                dataSong &&
-                dataSong.lyrics ?
+                data.lyrics ?
                   <Link to={`/lyrics/${localStorage.getItem('idSong')}`}>
                     <img src={'/icons/icon-microphone-active.png'} alt="Microphone" />
                   </Link>
+                  :
+                  <img src={'/icons/icon-microphone.png'} alt="Microphone" />
                 :
-                <img src={'/icons/icon-microphone.png'} alt="Microphone" />
+
+                dataSong &&
+                  dataSong.lyrics ?
+                  <Link to={`/lyrics/${localStorage.getItem('idSong')}`}>
+                    <img src={'/icons/icon-microphone-active.png'} alt="Microphone" />
+                  </Link>
+                  :
+                  <img src={'/icons/icon-microphone.png'} alt="Microphone" />
               }
 
-              
+
             </div>
 
             <div className='btn-option'>

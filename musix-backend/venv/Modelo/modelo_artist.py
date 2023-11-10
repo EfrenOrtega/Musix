@@ -1,4 +1,4 @@
-from Modelo.conexion import Conexion
+from Services.mongoDB import Conexion
 from flask_pymongo import PyMongo, ObjectId
 from flask import jsonify, request
 

@@ -1,13 +1,11 @@
-from Modelo.conexion import Conexion
+from Services.mongoDB import Conexion
 
-from flask_pymongo import PyMongo, ObjectId
+from flask_pymongo import ObjectId
 from flask import jsonify, request
 
 import json
 from botocore.exceptions import ClientError
 
-
-import boto3
 import os
 
 from werkzeug.utils import secure_filename
@@ -101,14 +99,8 @@ class ModelUsers():
 
   def upload_to_filebase(self):
     CDI = None
-
     #Auth to my account of Filebase
-    s3 = boto3.client('s3',
-      endpoint_url = 'https://s3.filebase.com',
-      aws_access_key_id = "B0E0B15155B64920B741",
-      aws_secret_access_key = "cqpvswtXeN5Eit3iZQmEaQtga5Nc1vY3qk5N0kiA"
-    )
-
+    from Services.fileBase import s3;
     image = self.nameImage
     #To upload a new object to the Bucket in this case an imagen 
     currentPath = os.path.join(os.path.dirname(__file__))    
@@ -124,7 +116,7 @@ class ModelUsers():
           Key = 'user_avatar/'+self.nameImage, 
           ContentType = 'imagen/jpeg'
         )
-        
+
         CDI = request['ResponseMetadata']['HTTPHeaders']['x-amz-meta-cid']
 
         #Stored the URL Imagen after it uploaded to https://filebase.com/
@@ -203,7 +195,7 @@ class ModelUsers():
         self.imageFile = request.files['File']
         self.upload_file()
         self.upload_to_filebase()
-        print(self.urlImage)
+        print("This is the Url Image", self.urlImage)
 
         self.cUsers.update_one({'_id': ObjectId(jsonData['idUser'])}, {'$set':{
           'name':jsonData['dataUser']['name'],

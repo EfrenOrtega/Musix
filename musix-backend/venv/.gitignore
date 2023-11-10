@@ -1,2 +1,4 @@
 /images/
 /Lib/
+/Services/
+.env

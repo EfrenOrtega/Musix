@@ -1,5 +1,5 @@
-from Modelo.conexion import Conexion
-from flask_pymongo import PyMongo, ObjectId
+from Services.mongoDB import Conexion
+from flask_pymongo import ObjectId
 from flask import jsonify, request
 import json
 import dateutil
@@ -7,8 +7,6 @@ from bson import json_util
 
 from Modelo.model_profile import ModelProfile
 from botocore.exceptions import ClientError
-
-import boto3
 
 import os
 from werkzeug.utils import secure_filename
@@ -420,12 +418,7 @@ class ModelPlaylist():
   def upload_to_filebase(self):
     CDI = None
 
-    #Credenciales para acceder al Filebase
-    s3 = boto3.client('s3',
-      endpoint_url = 'https://s3.filebase.com',
-      aws_access_key_id = "B0E0B15155B64920B741",
-      aws_secret_access_key = "cqpvswtXeN5Eit3iZQmEaQtga5Nc1vY3qk5N0kiA"
-    )
+    from Services.fileBase import s3;
 
     image = self.nameImage
     #Para Subir un nuevo objeto a un Bucket en este caso una imagen
