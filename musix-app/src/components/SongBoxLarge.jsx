@@ -9,7 +9,8 @@ import Context from '../context/Context';
 
 import { _doublyLinkedList as queue } from "../helpers/doublyLinkedList";
 
-export default function SongBoxLarge({ data, _favorite, displayOptions }) {
+
+export default function SongBoxLarge({ data, _favorite, displayOptions, addFavorite }) {
 
   const { id, cover, name, artist, duration, album, created, pathSong, favoriteSong } = data
 
@@ -125,8 +126,10 @@ export default function SongBoxLarge({ data, _favorite, displayOptions }) {
   }
 
 
-  const addFavorite = (e) => {
+  /*const addFavorite = (e) => {
 
+
+    
     console.log(e.target.dataset.id)
 
     if (dataSong && (dataSong._id == e.target.dataset.id)) {
@@ -178,9 +181,7 @@ export default function SongBoxLarge({ data, _favorite, displayOptions }) {
     }
     )
 
-  }
-
-
+  }*/
 
   return (
     <div className="song-box large">

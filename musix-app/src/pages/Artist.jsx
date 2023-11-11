@@ -9,6 +9,9 @@ import { useParams } from 'react-router-dom'
 
 import { useQuery } from 'react-query'
 import PlaylistContext from '../context/PlaylistContext'
+import { addToFavorites, searchFavoritesSongsIds } from '../helpers/Favorites'
+import Context from '../context/Context'
+import PlayerContext from '../context/PlayerContext'
 
 export default function Artist() {
 
@@ -18,11 +21,18 @@ export default function Artist() {
   const [idSong, setIdSong] = useState(null)
   const [displayOptionsSong, setDisplayOptionsSong] = useState()
 
-  const {setIdArtist, dataSongsArtist:dataSongs, dataArtist} = useContext(PlaylistContext)
+  const {setIdArtist, dataSongsArtist:dataSongs, dataArtist, refetchCacheArtistSongs, refetchCachePlaylist} = useContext(PlaylistContext)
+  const { dataSong, setDataSong} = useContext(PlayerContext)
+  const [favorites, setFavorites] = useState([])
+  const { setAlertVisible, setMsgAlert } = useContext(Context);
 
   let { id } = useParams()
 
   useEffect(()=>{
+
+    if(dataSongs){
+      setFavorites(searchFavoritesSongsIds(dataSongs))
+    }
 
     if(id){
       setIdArtist(id)
@@ -89,6 +99,10 @@ export default function Artist() {
     }
   }
 
+  const addFavorite = (e) =>{
+    addToFavorites(e, favorites, setFavorites, setAlertVisible, setMsgAlert,  refetchCacheArtistSongs, refetchCachePlaylist, dataSong, setDataSong)
+  }
+
   return (
     <div className='main-container'>
       {
@@ -111,7 +125,6 @@ export default function Artist() {
             idSong={idSong}
           />
         }
-        {console.log("JJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJWDW")}
 
         {
           dataSongs &&
@@ -130,8 +143,9 @@ export default function Artist() {
                   favoriteSong:el.favorite
                 }
                 }
-                _favorite={el.favorite ? true : false}
+                _favorite={favorites.includes(el._id)}
                 displayOptions={displayOptions}
+                addFavorite = {addFavorite}
               />
           })
         }

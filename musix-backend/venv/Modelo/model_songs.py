@@ -10,8 +10,13 @@ import re
 class 	ModelSongs():
   db = Conexion.connect()
   Mod_playlist = ModelPlaylist()
+
+  #This are my collections
   cSongs = db.songs
   cProfile = db.profile
+  cPlaylist = db.playlist
+
+
   artist = ''
   idUser = ''
   idSong = ''
@@ -226,8 +231,8 @@ class 	ModelSongs():
       return jsonify(songs)
 
   def search_songs(self):
-    try:
-      
+    try:      
+
       regex = re.compile(self.search_term, re.IGNORECASE)
       songs = self.cSongs.find({
         '$or':[
@@ -237,9 +242,15 @@ class 	ModelSongs():
         ]
       })
 
+      #Get the user's favorite songs to see if the song found is a favorite song 
+      self.Mod_playlist.iduser = self.idUser
+      favoritesSongsId = self.Mod_playlist.get_favorites(True)
+
       results = list(songs)
       for result in results:
         result['_id'] = str(result['_id'])
+        result['favorite'] = ObjectId(result['_id']) in favoritesSongsId #Chech if the songs found are in 'favoritesSongsId' List
+
 
       return jsonify({'data':results})
     except Exception as e:

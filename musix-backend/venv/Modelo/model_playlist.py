@@ -536,7 +536,7 @@ class ModelPlaylist():
 
   
 
-  def get_favorites(self):
+  def get_favorites(self, returnObject=False):
     try:
       favorites = []
       data = self.cPlaylist.find_one({'$and':[
@@ -547,10 +547,13 @@ class ModelPlaylist():
           'name':'Favorites'
         }
       ]})
+      
 
       #This is to create an array but with the song ids, is like the .map() in JS
       song_ids = [s['song_id'] for s in data['songs']]
 
+      if(returnObject):
+        return song_ids
       ''' 
         Other way to do this, is with a for:
 
@@ -577,6 +580,9 @@ class ModelPlaylist():
         'visibility':data['visibility']
       })
 
-      return jsonify({'status':True, 'results':favorites})
+
+      if(not returnObject):
+        return jsonify({'status':True, 'results':favorites})
+      
     except Exception as e:
       return jsonify({'status':False, 'message':'Error to get the favorite songs', 'err':e})

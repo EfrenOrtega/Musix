@@ -10,8 +10,10 @@ import fetchAJAX from "../helpers/fetch";
 
 import PlaylistContext from "../context/PlaylistContext";
 import PlayerContext from "../context/PlayerContext";
+import {addToFavorites,  searchFavoritesSongsIds } from '../helpers/Favorites';
 
 import { queryClient } from "../main";
+import Context from "../context/Context";
 
 export default function Playlist() {
 
@@ -20,9 +22,11 @@ export default function Playlist() {
   const [pointerXYPrev, setPointerXYPrev] = useState(null)
   const [idSong, setIdSong] = useState(null)
 
+  const [favorites, setFavorites] = useState([])
+  const { setAlertVisible, setMsgAlert } = useContext(Context);
 
-  const { favoriteSongs, setRun, run, setRefetchCachePlaylist, refetchPlaylist, setIdPlaylist, dataPlaylist} = useContext(PlaylistContext)
-  const { favorite} = useContext(PlayerContext)
+  const { setRun, run, setIdPlaylist, dataPlaylist, refetchCachePlaylist, refetchCacheArtistSongs} = useContext(PlaylistContext)
+  const { dataSong, setDataSong} = useContext(PlayerContext)
 
   let { id } = useParams()
 
@@ -63,6 +67,10 @@ export default function Playlist() {
   })*/
 
   useEffect(() => {
+
+    if(dataPlaylist){
+      setFavorites(searchFavoritesSongsIds(dataPlaylist[0].songs))
+    }
 
     if(id){
       setIdPlaylist(id)
@@ -147,6 +155,10 @@ export default function Playlist() {
     }
   }
 
+  const addFavorite = (e) =>{
+    addToFavorites(e, favorites, setFavorites, setAlertVisible, setMsgAlert,  refetchCacheArtistSongs, refetchCachePlaylist, dataSong, setDataSong)
+  }
+
   return (
     <div className='main-container'>
 
@@ -196,8 +208,9 @@ export default function Playlist() {
                 favoriteSong:el.favorite
               }
               }
-              _favorite={el.favorite ? true : false}
+              _favorite={favorites.includes(el._id)}
               displayOptions={displayOptions}
+              addFavorite={addFavorite}
             />
           })
         }

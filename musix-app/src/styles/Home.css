@@ -51,7 +51,8 @@ main .container-section-1 {
 
 .section-playlist .playlist {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
+  gap:1.5rem;
   overflow: visible;
 }
 
@@ -62,7 +63,6 @@ main .container-section-1 {
 
 .section-playlist .music-box {
   font-size: 14px;
-  margin-right: 1.25rem !important;
 }
 
 .playlist::-webkit-scrollbar:horizontal {
