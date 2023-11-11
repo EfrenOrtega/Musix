@@ -50,8 +50,8 @@
 
 .auth .left input {
   margin-top: 1.6rem;
-  color: white;
-  border-bottom: 0.5px solid var(--extra);
+  color: black;
+  border-radius: 0.2rem;
   font-weight: 300;
 }
 
@@ -63,6 +63,7 @@
 
 .auth .left .signup-span a {
   text-decoration: underline;
+  margin-left: 0.6rem;
   cursor: pointer;
 }
 

@@ -22,34 +22,35 @@ localStorage.setItem('executed', false)
 
 
 export default function App() {
-  
-  localStorage.setItem('volume', 20)
+
   const { displayFormPlaylist, alertVisible, msgAlert } = useContext(Context);
   return (
     <>
-    <div className={alertVisible ? !msgAlert.status ? 'msg-alert error' : 'msg-alert correct' : 'msg-alert'}>
-      <p>{msgAlert.msg}</p>
-    </div>
+      <div className={alertVisible ? !msgAlert.status ? 'msg-alert error' : 'msg-alert correct' : 'msg-alert'}>
+        <p>{msgAlert.msg}</p>
+      </div>
 
       {
         localStorage.getItem('login') == 'true' ?
           <Router>
             <PlayerProvider>
               <PlaylistProvider>
-            <Menu />
+                <Menu />
                 {displayFormPlaylist &&
                   <FormCreatePlaylist />
                 }
-                
+
                 <Routes>
                   <Route path="/" element={<Home />}></Route>
                   <Route path="/playlist/:id" element={<Playlist />}></Route>
                   <Route path='/playlists' element={<Playlists />}></Route>
                   <Route path="/artist/:id" element={<Artist />}></Route>
-                  <Route path="/lyrics/:id" element={<Lyrics/>}></Route>
-                  <Route path="/profile" element={<Profile/>}></Route>
-                  <Route path='/results/:search' element={<Results/>}></Route>
+                  <Route path="/lyrics/:id" element={<Lyrics />}></Route>
+                  <Route path="/profile" element={<Profile />}></Route>
+                  <Route path='/results/:search' element={<Results />}></Route>
                 </Routes>
+
+
 
                 <Player
                   cover=""
@@ -62,14 +63,16 @@ export default function App() {
                   }
                 />
 
+
+
               </PlaylistProvider>
             </PlayerProvider>
 
           </Router>
-          : 
+          :
           <Auth />
       }
-    
+
     </>
   );
 }

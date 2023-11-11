@@ -339,6 +339,8 @@ const HandlePlayPause = (
 
   let songNode = queue.searchByIdSong(idSong)
 
+  console.log("\n\nThis is the song id that you are trying to play: ", idSong, " \n\n")
+
   /**
    * Update currentPositionSong to handle changes in the QUEUE when playing/pausing the same song from different app sections.
    * 
@@ -378,8 +380,9 @@ const HandlePlayPause = (
     }
   }
 
-
 }
+
+
 
 const HandleNext = (
   e,

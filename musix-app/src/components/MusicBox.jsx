@@ -26,21 +26,8 @@ export default function MusicBox({ cover, songInfo, pathSong, nameClass, type, l
 
   const { setRun, run, getSongsPlaylist } = useContext(PlaylistContext)
 
-  const playSong = async (e, content, idSong) => {  
-    if(playPause){
-      setRunning(false)
-      
-      HandlePlayPause(
-        e,
-        false,
-        setPlayPause,
-        audio_ref,
-        setNextIsDisabled,
-        setPrevIsDisabled,
-        setDataSong,
-        setRunning
-      )
-    }
+  const playSong = async (e, idSong) => {  
+    
 
     if (type === 'playlist') {
 
@@ -83,6 +70,8 @@ export default function MusicBox({ cover, songInfo, pathSong, nameClass, type, l
       
     } else {
 
+      console.warn("Are you trying to play this song: ", idSong)
+
       /** if idSong doens't exist in the List [WORKING]*/
       if(!queue.exist_data(id)){
         queue.clear();
@@ -97,21 +86,6 @@ export default function MusicBox({ cover, songInfo, pathSong, nameClass, type, l
         })
       }
 
-      /** @deprecated */
-      if (content[content.length - 1]._id != id){
-
-        content.push({
-          _id: id,
-          name,
-          artist,
-          cover: `${cover}`,
-          lyrics:`${lyrics}`,
-          url: pathSong,
-          favorite:favoriteSong
-        })
-
-      }
-
       setRunning(false)
 
       HandlePlayPause(
@@ -123,7 +97,7 @@ export default function MusicBox({ cover, songInfo, pathSong, nameClass, type, l
         setPrevIsDisabled,
         setDataSong,
         setRunning,
-        idSong
+        id
       )
     }
 
@@ -137,7 +111,7 @@ export default function MusicBox({ cover, songInfo, pathSong, nameClass, type, l
       <div className="cover">
 
         <span>
-          <div onClick={(e) => playSong(e, content, id)}>
+          <div onClick={(e) => playSong(e, id)}>
             <img className='play-icon' src={"/icons/play-icon.png"} alt="Play" />
           </div>
         </span>

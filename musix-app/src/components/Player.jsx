@@ -58,7 +58,7 @@ const Player = ({ cover, songInfo }) => {
   const [loop, setLoop] = useState(0)
   //=====================================
 
-  const [volume, setVolume] = useState(20);
+  const [volume, setVolume] = useState(localStorage.getItem('volume') || 70);
   const [displayVolume, setDisplayVolume] = useState(false)
   const [displayListPlaylist, setDisplayListPlaylist] = useState(false)
   const [visibility, setVisibility] = useState(false)
@@ -69,12 +69,8 @@ const Player = ({ cover, songInfo }) => {
 
   useEffect(() => {
 
-    document.addEventListener('click', handleOutsideClick)
 
-    
-    if (localStorage.getItem('volume')) {
-      audio_ref.current.volume = localStorage.getItem('volume') / 100;
-    }
+    document.addEventListener('click', handleOutsideClick)
 
     //This only runs when the app starts, to load the last song the user listened to
     if (localStorage.getItem('idSong') && localStorage.getItem('executed') == 'false') {
@@ -84,7 +80,7 @@ const Player = ({ cover, songInfo }) => {
       fetch(`http://${location.hostname}:5000/getsong/${id}/${localStorage.getItem('id')}`)
         .then(res => res.ok ? res.json() : Promise.reject(res))
         .then(json => {
-          
+
           /** Clear the List */
           queue.clear();
           /** Add the Song playing in the List */
@@ -301,72 +297,86 @@ const Player = ({ cover, songInfo }) => {
         <div className='container-controls-options'>
           <div className="controls">
 
-            <img onClick={
-              (e) => {
-                setFavorite(false)
-                HandlePrev(
-                  e,
-                  setPlayPause,
-                  audio_ref,
-                  setPrevIsDisabled,
-                  setNextIsDisabled,
-                  setDataSong,
-                  setRunning
-                )
-              }}
+            {
+              localStorage.getItem('idSong') ?
+                <>
+                  <img onClick={
+                    (e) => {
+                      setFavorite(false)
+                      HandlePrev(
+                        e,
+                        setPlayPause,
+                        audio_ref,
+                        setPrevIsDisabled,
+                        setNextIsDisabled,
+                        setDataSong,
+                        setRunning
+                      )
+                    }}
 
-              src={!prevIsDisabled
-                ? '/icons/icon-controller-previous.png'
-                : '/icons/icon-controller-previous-disabled.png'
-              } alt="Previous"
-            />
+                    src={!prevIsDisabled
+                      ? '/icons/icon-controller-previous.png'
+                      : '/icons/icon-controller-previous-disabled.png'
+                    } alt="Previous"
+                  />
 
-            <img onClick={
-              (e) => HandlePlayPause(
-                e,
-                playPause,
-                setPlayPause,
-                audio_ref,
-                setNextIsDisabled,
-                setPrevIsDisabled,
-                setDataSong,
-                setRunning
-              )}
+                  <img onClick={
+                    (e) => HandlePlayPause(
+                      e,
+                      playPause,
+                      setPlayPause,
+                      audio_ref,
+                      setNextIsDisabled,
+                      setPrevIsDisabled,
+                      setDataSong,
+                      setRunning
+                    )}
 
-              src={!playPause
-                ? '/icons/icon_controller-play.png'
-                : '/icons/icon_controller-pause.png'}
-              alt="Pause"
-            />
+                    src={!playPause
+                      ? '/icons/icon_controller-play.png'
+                      : '/icons/icon_controller-pause.png'}
+                    alt="Pause"
+                  />
 
-            <img onClick={
-              (e) => {
-                setFavorite(false)
-                HandleNext(
-                  e,
-                  setPlayPause,
-                  audio_ref,
-                  setNextIsDisabled,
-                  setPrevIsDisabled,
-                  setDataSong,
-                  setRunning
-                )
 
-              }}
+                  <img onClick={
+                    (e) => {
+                      setFavorite(false)
+                      HandleNext(
+                        e,
+                        setPlayPause,
+                        audio_ref,
+                        setNextIsDisabled,
+                        setPrevIsDisabled,
+                        setDataSong,
+                        setRunning
+                      )
 
-              src={!nextIsDisabled
-                ? '/icons/icon_controller-next.png'
-                : '/icons/icon_controller-next-disabled.png'}
-              alt="Next"
-            />
+                    }}
 
-            <img onClick={
-              (e) => HandleLoop(e, loop, setLoop)} className='icon-loop' src={loop == 0
-                ? '/icons/icon-loop-enabled.png'
-                : (loop == 1)
-                  ? '/icons/icon-loop-1.png'
-                  : '/icons/icon-loop-actived.png'
-              } alt="" />
+                    src={!nextIsDisabled
+                      ? '/icons/icon_controller-next.png'
+                      : '/icons/icon_controller-next-disabled.png'}
+                    alt="Next"
+                  />
+
+
+                  <img onClick={
+                    (e) => HandleLoop(e, loop, setLoop)} className='icon-loop' src={loop == 0
+                      ? '/icons/icon-loop-enabled.png'
+                      : (loop == 1)
+                        ? '/icons/icon-loop-1.png'
+                        : '/icons/icon-loop-actived.png'
+                    } alt="" />
+                </>
+                :
+                <>
+                  <img src={'/icons/icon-controller-previous-disabled.png'} alt="Previous" />
+                  <img src={'/icons/icon_controller-play-disabled.png'} alt="Play" />
+                  <img src={'/icons/icon_controller-next-disabled.png'} alt="Next" />
+
+                </>
+            }
 
           </div>
 
@@ -376,6 +386,7 @@ const Player = ({ cover, songInfo }) => {
             playPause={playPause}
             loop={loop}
           />
+
 
           <div className="btn-options">
 
@@ -402,22 +413,34 @@ const Player = ({ cover, songInfo }) => {
 
             </div>
 
-            <div className='btn-option'>
-              {
-                data ?
-                  data.favorite ?
-                    <img onClick={(e) => addFavorite(e)} src={'/icons/icon-favorite-active.png'} alt="Favorite" />
-                    :
-                    <img onClick={(e) => addFavorite(e)} src={'/icons/icon-favorite.png'} alt="Favorite" />
-                  :
-                  (dataSong && dataSong.favorite) ?
-                    <img onClick={(e) => addFavorite(e)} src={'/icons/icon-favorite-active.png'} alt="Favorite" />
-                    :
-                    <img onClick={(e) => addFavorite(e)} src={'/icons/icon-favorite.png'} alt="Favorite" />
 
-              }
+            {localStorage.getItem('idSong') ?
 
-            </div>
+              <div className='btn-option'>
+                {
+                  data ?
+                    data.favorite ?
+                      <img onClick={(e) => addFavorite(e)} src={'/icons/icon-favorite-active.png'} alt="Favorite" />
+                      :
+                      <img onClick={(e) => addFavorite(e)} src={'/icons/icon-favorite.png'} alt="Favorite" />
+                    :
+                    (dataSong && dataSong.favorite) ?
+                      <img onClick={(e) => addFavorite(e)} src={'/icons/icon-favorite-active.png'} alt="Favorite" />
+                      :
+                      <img onClick={(e) => addFavorite(e)} src={'/icons/icon-favorite.png'} alt="Favorite" />
+
+                }
+
+              </div>
+              :
+
+              <div className='btn-option'>
+                <img onClick={(e) => addFavorite(e)} src={'/icons/icon-favorite-disabled.png'} alt="Favorite" />
+              </div>
+
+            }
+
+
 
             <div className='btn-option'>
               {data ?
@@ -441,9 +464,21 @@ const Player = ({ cover, songInfo }) => {
 
             </div>
 
-            <div className='btn-option'>
-              <img ref={iconAddPlaylist} onClick={(e) => addToPlaylist(e)} src={'/icons/icon-playlist-plus.png'} alt="Add Playlist" />
-            </div>
+
+            {localStorage.getItem('idSong') ?
+
+              <div className='btn-option'>
+                <img ref={iconAddPlaylist} onClick={(e) => addToPlaylist(e)} src={'/icons/icon-playlist-plus.png'} alt="Add Playlist" />
+              </div>
+
+              :
+              
+              <div className='btn-option'>
+                <img src={'/icons/icon-playlist-plus-disabled.png'} alt="Add Playlist" />
+              </div>
+
+            }
+
 
           </div>
         </div>
