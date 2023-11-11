@@ -1,7 +1,7 @@
 //All functions to the Player (Play, Pause, Next, Prev, Loop, etc.)
 import fetchAJAX from "./fetch";
 
-import { _doublyLinkedList as queue, travese_data as travese_queue} from "./doublyLinkedList";
+import { _doublyLinkedList as queue, travese_data as travese_queue } from "./doublyLinkedList";
 
 const content = []
 
@@ -72,7 +72,7 @@ const keysFunctions = (
   if ('mediaSession' in navigator) {
 
     navigator.mediaSession.setActionHandler('play', () => {
-      if(currentPositionSong >= 0){
+      if (currentPositionSong >= 0) {
         loadMetadata(queue.getNode(currentPositionSong).data)
         HandlePlayPause(e,
           false,
@@ -83,7 +83,7 @@ const keysFunctions = (
           setDataSong,
           setRunning)
       }
-      
+
     })
 
     navigator.mediaSession.setActionHandler('pause', () => {
@@ -128,50 +128,58 @@ const play = async (audio, setNextIsDisabled, setPrevIsDisabled, setDataSong, se
 
   console.log(audio, "QUEUE: ", queue)
 
-  if(currentPositionSong >= 0){
+  if (currentPositionSong >= 0) {
 
-    if(queue.size - 1 > currentPositionSong){
+    if (queue.size - 1 > currentPositionSong) {
       setNextIsDisabled(false)
-    }else{
+    } else {
       setNextIsDisabled(true)
     }
 
   }
 
-  
+
   if (flag) {
     flag = false;
     nextAutomatically(audio, setNextIsDisabled, setPrevIsDisabled, setDataSong, setRunning)
   }
 
   /**
-   * @CHECK 
-   * THIS NEED TO BE CHECKING I DON'T REMEMBER ITS FUNCTIONALYTI */
+   *  
+   * This is when a song that is stored in the localStorage is playing, this only happend when the user 
+   * restart or open the app and play the song that is already in the player
+  */
   if (audio.current.src == `http://${window.location.hostname}:1420/`) {
     //The song doesn't exist
 
-    if(currentPositionSong >= 0 ){
+    if (currentPositionSong >= 0) {
       audio.current.src = queue.getNode(currentPositionSong).data.url
+    } else {
+      currentPositionSong = 0;
+      audio.current.src = queue.searchByIdSong(localStorage.getItem('idSong')).data.url
+      setNextIsDisabled(true)
     }
 
     await audio.current.play()
 
-    if(currentPositionSong >= 0){
+
+    if (currentPositionSong >= 0) {
       loadMetadata(queue.getNode(currentPositionSong).data)
     }
   } else {
     //The song exist
-
-    if(currentPositionSong >= 0){
+    if (currentPositionSong >= 0) {
       await audio.current.play()
       loadMetadata(queue.getNode(currentPositionSong).data)
     }
-    
+
   }
+
+
 
   //UPDATE HISTORY
   let settings;
-  if(currentPositionSong >= 0){
+  if (currentPositionSong >= 0) {
     settings = {
       method: "POST",
       headers: {
@@ -195,7 +203,7 @@ const play = async (audio, setNextIsDisabled, setPrevIsDisabled, setDataSong, se
     })
 
 
-  if(currentPositionSong >= 0){
+  if (currentPositionSong >= 0) {
     localStorage.setItem('idSong', queue.getNode(currentPositionSong).data._id)
   }
 
@@ -217,7 +225,7 @@ const play = async (audio, setNextIsDisabled, setPrevIsDisabled, setDataSong, se
       duration = `${durationMin.toString()}:${durationSec.toString()}`
     }
 
-    if(currentPositionSong >= 0){
+    if (currentPositionSong >= 0) {
       setDataSong({
         name: queue.getNode(currentPositionSong).data.name,
         artist: queue.getNode(currentPositionSong).data.artist,
@@ -229,7 +237,7 @@ const play = async (audio, setNextIsDisabled, setPrevIsDisabled, setDataSong, se
         favorite: queue.getNode(currentPositionSong).data.favorite
       })
     }
-    
+
   }, 400)
 
 }
@@ -252,13 +260,13 @@ const nextAutomatically = (audio, setNextIsDisabled, setPrevIsDisabled, setDataS
 const next = (audio, setNextIsDisabled, setPrevIsDisabled, setDataSong, setRunning) => {
 
 
-  
-  if(currentPositionSong >= 0){
 
-    if(currentPositionSong + 1 == queue.size  && !loopFlag){
+  if (currentPositionSong >= 0) {
+
+    if (currentPositionSong + 1 == queue.size && !loopFlag) {
       setNextIsDisabled(true)
       return
-    }else if (isLoop) {
+    } else if (isLoop) {
       setNextIsDisabled(false)
       currentPositionSong = -1;
       isLoop = false;
@@ -268,7 +276,7 @@ const next = (audio, setNextIsDisabled, setPrevIsDisabled, setDataSong, setRunni
 
 
     setPrevIsDisabled(false)
-    
+
     audio.current.src = queue.getNode(currentPositionSong).data.url
 
     localStorage.setItem('idSong', queue.getNode(currentPositionSong).data._id)
@@ -282,19 +290,29 @@ const next = (audio, setNextIsDisabled, setPrevIsDisabled, setDataSong, setRunni
 /** @CHECK */
 const prev = (audio, setPrevIsDisabled, setNextIsDisabled, setDataSong) => {
 
-  if(currentPositionSong>=0){
-    console.log("QUEUE IS CONTROLLING THE BUTTON PREV")
-    if((currentPositionSong - 1) == 0){
+  if (currentPositionSong >= 0) {
+    if ((currentPositionSong - 1) == 0) {
       setPrevIsDisabled(true)
     }
 
-    if(currentPositionSong == 0){
+    /** This conditional allows to restart the song when is the first song of the queue */
+    if (currentPositionSong == 0) {
+
+      /** This is just to give a little animation to the 'prev button' */
+      setPrevIsDisabled(true)
+      setTimeout(() => {
+        setPrevIsDisabled(false)
+      }, 1000)
+
+      audio.current.src = queue.getNode(currentPositionSong).data.url
+      play(audio, setNextIsDisabled, setPrevIsDisabled, setDataSong)
+
       return;
     }
-    
+
     setPrevIsDisabled(false)
     currentPositionSong--
-    
+
     audio.current.src = queue.getNode(currentPositionSong).data.url
     play(audio, setNextIsDisabled, setPrevIsDisabled, setDataSong)
 
@@ -319,18 +337,36 @@ const HandlePlayPause = (
   idSong
 ) => {
 
-  if (e && (e.target.matches('a') || e.target.matches('span *'))) {
+  let songNode = queue.searchByIdSong(idSong)
+
+  /**
+   * Update currentPositionSong to handle changes in the QUEUE when playing/pausing the same song from different app sections.
+   * 
+   * When a song is played, it's assigned position 0 in the QUEUE. However, if the song is played from a playlist, its position changes.
+   * This condition ensures that currentPositionSong is updated when playing/pausing the same song from different app sections,
+   * accommodating changes in the QUEUE due to playlist interactions.
+   * 
+   * Example:
+   * Before: QUEUE = { 0: song_x }
+   * After playlist interaction: QUEUE = { 0: song_y, 1: song_z, 2: song_u, 3: song_x }
+   * currentPositionSong is updated to 3 to reflect the new position of song_x in the updated QUEUE.
+   */
+  if(idSong == localStorage.getItem('idSong')){
+    currentPositionSong = songNode.positionNode
+  }
+
+  /** Play a song when the user isn't trying to play the same song */
+  if (e && (e.target.matches('a') || e.target.matches('span *')) && idSong != localStorage.getItem('idSong')) {
     e.preventDefault();
 
-    if(idSong){
-      currentPositionSong = queue.searchByIdSong(idSong).positionNode    
-      audio_ref.current.src = queue.searchByIdSong(idSong).data.url
-    }
-    
+    currentPositionSong = songNode.positionNode
+    audio_ref.current.src = songNode.data.url
+
     play(audio_ref, setNextIsDisabled, setPrevIsDisabled, setDataSong, setRunning)
     setPlayPause(true)
 
   } else {
+
     if (playPause) {
       pause(audio_ref)
       setRunning(false)

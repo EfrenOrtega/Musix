@@ -1,4 +1,4 @@
-import { useContext } from 'react';
+import { useContext, useEffect } from 'react';
 
 import '../styles/music-box.css'
 import PlayerContext from '../context/PlayerContext';
@@ -26,9 +26,7 @@ export default function MusicBox({ cover, songInfo, pathSong, nameClass, type, l
 
   const { setRun, run, getSongsPlaylist } = useContext(PlaylistContext)
 
-  const playSong = async (e, content, idSong) => {
-
-  
+  const playSong = async (e, content, idSong) => {  
     if(playPause){
       setRunning(false)
       
@@ -82,8 +80,6 @@ export default function MusicBox({ cover, songInfo, pathSong, nameClass, type, l
         .catch(err => {
           console.log(err)
         })
-
-
       
     } else {
 

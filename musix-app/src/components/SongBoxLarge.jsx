@@ -1,6 +1,6 @@
 import '../styles/song-box.css';
 
-import { useContext} from 'react';
+import { useContext } from 'react';
 import PlayerContext from '../context/PlayerContext';
 
 import fetchAJAX from '../helpers/fetch';
@@ -20,7 +20,7 @@ export default function SongBoxLarge({ data, _favorite, displayOptions }) {
     setPrevIsDisabled,
     HandlePlayPause,
     audio_ref,
-    dataSong, 
+    dataSong,
     setDataSong,
     setRunning,
     favorite,
@@ -30,36 +30,98 @@ export default function SongBoxLarge({ data, _favorite, displayOptions }) {
   const { setAlertVisible, setMsgAlert } = useContext(Context);
 
 
-  const {refetchCachePlaylist, refetchCacheArtistSongs} = useContext(PlaylistContext)
+  const { refetchCachePlaylist, refetchCacheArtistSongs, getSongsPlaylist } = useContext(PlaylistContext)
 
-  const playSong = (e) => {
+  const playSong = async (e) => {
 
-    /** Clear the List */
-    queue.clear();
 
-    /** Add the Song playing in the List */
-    queue.insertion_ending({
-      _id: id,
-      name,
-      artist,
-      cover: cover,
-      url: pathSong,
-      favorite: favoriteSong
-    })
 
-    setRunning(false)
+    /** This song is playing from a playlist */
+    if (localStorage.getItem('currentPlaylist')) {
 
-    HandlePlayPause(
-      e,
-      playPause,
-      setPlayPause,
-      audio_ref,
-      setNextIsDisabled,
-      setPrevIsDisabled,
-      setDataSong,
-      setRunning,
-      id
-    )
+      /** If the current playlist is already playing is not necessary to load their songs to the queue */
+      if (localStorage.getItem('currentPlaylist') == 'inQueue') {
+        console.log("Play other song from the playlist")
+        HandlePlayPause(
+          e,
+          playPause,
+          setPlayPause,
+          audio_ref,
+          setNextIsDisabled,
+          setPrevIsDisabled,
+          setDataSong,
+          setRunning,
+          id
+        )
+
+      } else {
+        /** Clear the QUEUE and loads the playlist's songs */
+
+        queue.clear();
+
+        let idPlaylist = localStorage.getItem('currentPlaylist');
+        await getSongsPlaylist(idPlaylist)
+          .then(res => {
+            res.map(song => {
+              queue.insertion_ending(song)
+            })
+
+            /** To know when I playlist is already in the Queue */
+            localStorage.setItem('currentPlaylist', 'inQueue')
+
+            HandlePlayPause(
+              e,
+              playPause,
+              setPlayPause,
+              audio_ref,
+              setNextIsDisabled,
+              setPrevIsDisabled,
+              setDataSong,
+              setRunning,
+              id
+            )
+
+          })
+          .catch(err => {
+            console.log(err)
+          })
+      }
+
+
+
+    } else {
+
+      /** Clear the QUEUE */
+      queue.clear();
+
+      /** Add the Song playing to the QUEUE */
+      queue.insertion_ending({
+        _id: id,
+        name,
+        artist,
+        cover: cover,
+        url: pathSong,
+        favorite: favoriteSong
+      })
+
+      setRunning(false)
+
+      HandlePlayPause(
+        e,
+        playPause,
+        setPlayPause,
+        audio_ref,
+        setNextIsDisabled,
+        setPrevIsDisabled,
+        setDataSong,
+        setRunning,
+        id
+      )
+    }
+
+
+
+
   }
 
 
@@ -67,10 +129,10 @@ export default function SongBoxLarge({ data, _favorite, displayOptions }) {
 
     console.log(e.target.dataset.id)
 
-    if(dataSong && (dataSong._id == e.target.dataset.id)){
+    if (dataSong && (dataSong._id == e.target.dataset.id)) {
       setDataSong({
         ...dataSong,
-        favorite:!favorite
+        favorite: !favorite
       })
     }
 
@@ -104,11 +166,11 @@ export default function SongBoxLarge({ data, _favorite, displayOptions }) {
 
       },
       resError: (err) => {
-        
-        setMsgAlert({msg:'Error to Add Song', status:false})
+
+        setMsgAlert({ msg: 'Error to Add Song', status: false })
         setAlertVisible(true)
 
-        setTimeout(()=>{
+        setTimeout(() => {
           setAlertVisible(false)
         }, 1800)
 

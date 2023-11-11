@@ -71,7 +71,7 @@ const Player = ({ cover, songInfo }) => {
 
     document.addEventListener('click', handleOutsideClick)
 
-
+    
     if (localStorage.getItem('volume')) {
       audio_ref.current.volume = localStorage.getItem('volume') / 100;
     }
@@ -84,7 +84,7 @@ const Player = ({ cover, songInfo }) => {
       fetch(`http://${location.hostname}:5000/getsong/${id}/${localStorage.getItem('id')}`)
         .then(res => res.ok ? res.json() : Promise.reject(res))
         .then(json => {
-
+          
           /** Clear the List */
           queue.clear();
           /** Add the Song playing in the List */
@@ -98,6 +98,15 @@ const Player = ({ cover, songInfo }) => {
             favorite: json.data.favorite
           })
 
+          setDataSong({
+            _id: json.data._id,
+            name: json.data.name,
+            artist: json.data.artist,
+            lyrics: json.data.lyrics,
+            cover: json.data.cover,
+            url: json.data.url,
+            favorite: json.data.favorite
+          })
 
           setFavorite(json.data.favorite)
           setData({ name: json.data.name, artist: json.data.artist, cover: json.data.cover, lyrics: json.data.lyrics, favorite: json.data.favorite })

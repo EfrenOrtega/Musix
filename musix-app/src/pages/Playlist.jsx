@@ -76,6 +76,16 @@ export default function Playlist() {
       setRun(true)
     }
 
+    /** This is to know when the user is inside a playlist 
+     * And with this it is possible to add all playlist's songs to the Queue when the user plays a song of that playlist
+    */
+    localStorage.setItem('currentPlaylist', id)
+
+    /** When the user leave the playlist it's removed 'isPlaylist' of the localstorage*/
+    return ()=>{
+      localStorage.removeItem('currentPlaylist')
+    }
+
   }, [dataPlaylist])
 
 
