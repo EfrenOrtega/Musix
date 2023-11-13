@@ -2,6 +2,8 @@ import { useEffect, useState, useContext,  useRef, useCallback } from 'react'
 import { Link } from 'react-router-dom';
 import { useQuery } from 'react-query'
 
+
+
 import '../styles/Home.css'
 
 import Header from "../components/Header"
@@ -16,7 +18,7 @@ import fetchAJAX from "../helpers/fetch"
 import PlaylistContext from '../context/PlaylistContext'
 
 export default function Home() {
-  const { setPlaylists } = useContext(PlaylistContext)
+  const { setPlaylists, dataPlaylists, refetchCachePlaylists} = useContext(PlaylistContext)
 
   const [quantity, setQuantity] = useState([4,2,4])
 
@@ -95,12 +97,13 @@ export default function Home() {
   })
 
   //CACHENING
-  const {data:Playlists} = useQuery(['playlists'], getplaylists,
+
+  /*const {data:Playlists} = useQuery(['playlists'], getplaylists,
   {
     staleTime:Infinity,
     keepPreviousData:true,
     cacheTime:40 * 40 * 1000
-  })
+  })*/
 
   const {data:recentlyPlayed} = useQuery(['recentlyPlayed'], getHistory,
   {
@@ -132,6 +135,9 @@ export default function Home() {
 
 
   useEffect(() => {
+
+    refetchCachePlaylists()
+
     window.addEventListener('resize', e=>{
       handleResize(containers)
     })
@@ -163,9 +169,10 @@ export default function Home() {
               <img src="/icons/icon-arrow-right.png" alt="" />
             </div>
 
+
             <div className='playlist'>
-              {(quantity && Playlists) &&
-                Playlists.map((el, index) => {
+              {(quantity && dataPlaylists) &&
+                dataPlaylists.map((el, index) => {
                   if (index < quantity[2]) {
                     return (
                       <Link key={el._id} to={`/playlist/${el._id}`}>
@@ -330,7 +337,7 @@ export default function Home() {
             {
               artists &&
               artists.map(artist => {
-                return <Link key={artist.id} to={`/artist/${artist.id}`}>
+                return <Link key={artist.id} to={`/artist/${artist.id}/${artist.name}`}>
                   <Artist
                     cover={artist.profile_image}
                     artist={artist.name}

@@ -32,6 +32,7 @@ const Player = ({ cover, songInfo }) => {
     HandleNext,
     HandlePrev,
     audio_ref,
+    source_ref,
     dataSong,
     setDataSong,
     keysFunctions,
@@ -44,7 +45,7 @@ const Player = ({ cover, songInfo }) => {
     setFavorite
   } = useContext(PlayerContext)
 
-  const { favoriteSongs, setRun, run, setFavorite: setFavoritePlaylist, refetchCachePlaylist } = useContext(PlaylistContext)
+  const { setRun, run, setFavorite: setFavoritePlaylist, refetchCachePlaylist } = useContext(PlaylistContext)
   const { setAlertVisible, setMsgAlert } = useContext(Context);
 
 
@@ -127,6 +128,7 @@ const Player = ({ cover, songInfo }) => {
       undefined,
       setPlayPause,
       audio_ref,
+      source_ref,
       setNextIsDisabled,
       setPrevIsDisabled,
       setDataSong,
@@ -262,10 +264,15 @@ const Player = ({ cover, songInfo }) => {
       }
 
       <audio
+      id='audio'
         onPlaying={(e) => {
           setRunning(true)
         }}
-        ref={audio_ref} src=''></audio>
+        ref={audio_ref}>
+
+          <source ref={source_ref} src='' type='audio/mp3'></source>
+
+        </audio>
 
       <div className='player-container'>
         <div className="song">
@@ -307,6 +314,7 @@ const Player = ({ cover, songInfo }) => {
                         e,
                         setPlayPause,
                         audio_ref,
+                        source_ref,
                         setPrevIsDisabled,
                         setNextIsDisabled,
                         setDataSong,
@@ -326,6 +334,7 @@ const Player = ({ cover, songInfo }) => {
                       playPause,
                       setPlayPause,
                       audio_ref,
+                      source_ref,
                       setNextIsDisabled,
                       setPrevIsDisabled,
                       setDataSong,
@@ -346,6 +355,7 @@ const Player = ({ cover, songInfo }) => {
                         e,
                         setPlayPause,
                         audio_ref,
+                        source_ref,
                         setNextIsDisabled,
                         setPrevIsDisabled,
                         setDataSong,

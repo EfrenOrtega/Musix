@@ -21,22 +21,29 @@ export default function Artist() {
   const [idSong, setIdSong] = useState(null)
   const [displayOptionsSong, setDisplayOptionsSong] = useState()
 
-  const {setIdArtist, dataSongsArtist:dataSongs, dataArtist, refetchCacheArtistSongs, refetchCachePlaylist} = useContext(PlaylistContext)
+  const {setIdArtist, dataSongsArtist:dataSongs, dataArtist, refetchCacheArtistSongs, refetchCachePlaylist, setNameArtist} = useContext(PlaylistContext)
   const { dataSong, setDataSong} = useContext(PlayerContext)
   const [favorites, setFavorites] = useState([])
   const { setAlertVisible, setMsgAlert } = useContext(Context);
 
-  let { id } = useParams()
+  let { id, name } = useParams()
 
   useEffect(()=>{
+
+    console.log(id)
+    setIdArtist(id)
+    setNameArtist(name)
+
+    if(dataSongs){
+      console.log(id)
+      console.log(dataSongs)
+    }
 
     if(dataSongs){
       setFavorites(searchFavoritesSongsIds(dataSongs))
     }
 
-    if(id){
-      setIdArtist(id)
-    }
+    
 
   },[dataSongs, dataArtist])
 

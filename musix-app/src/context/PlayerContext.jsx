@@ -22,6 +22,9 @@ const PlayerProvider = ({ children }) => {
   const [prevIsDisabled, setPrevIsDisabled] = useState(false)
   const [running, setRunning] = useState(false)
   const [favorite, setFavorite] = useState(false)
+  const [secondsSong, setSecondsSong] = useState(0)
+
+  const [isSliderMoving, setIsSliderMoving] = useState(0)
 
 
   const [dataSong, setDataSong] = useState(
@@ -29,6 +32,7 @@ const PlayerProvider = ({ children }) => {
   )
 
   const audio_ref = useRef(null);
+  const source_ref = useRef(null);
   const progress_ref = useRef(null)
 
 
@@ -43,6 +47,7 @@ const PlayerProvider = ({ children }) => {
     HandleNext,
     HandlePrev,
     audio_ref,
+    source_ref,
     dataSong,
     setDataSong,
     content,
@@ -56,7 +61,11 @@ const PlayerProvider = ({ children }) => {
     running,
     setRunning,
     favorite,
-    setFavorite
+    setFavorite,
+    secondsSong,
+    setSecondsSong,
+    isSliderMoving, 
+    setIsSliderMoving
   }
 
   return (

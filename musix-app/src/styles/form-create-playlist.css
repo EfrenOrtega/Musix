@@ -115,3 +115,14 @@
 input[type="file"] {
   display: none;
 }
+
+
+.spinnerContainer{
+  display: flex;
+  justify-content: center;
+  margin: 1.5rem 0 0.5rem 0;
+}
+
+.spinnerContainer .spinner{
+  margin-top: -29px;
+}

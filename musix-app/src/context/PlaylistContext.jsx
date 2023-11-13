@@ -15,7 +15,9 @@ const PlaylistProvider = ({ children }) => {
 
   const [idPlaylist, setIdPlaylist] = useState(null);
   const [idArtist, setIdArtist] = useState(null);
+  const [nameArtist, setNameArtist] = useState(null);
 
+  const [playlistsChange, setPlaylistsChange] = useState(false)
 
   useEffect(() => {
   }, [run])
@@ -62,7 +64,7 @@ const PlaylistProvider = ({ children }) => {
 
   const getSongArtist = useCallback(()=>{
     return  fetchAJAX({
-      url: `http://${window.location.hostname}:5000/getsongbyartist/${dataArtist.name}/${localStorage.getItem('id')}`,
+      url: `http://${window.location.hostname}:5000/getsongbyartist/${nameArtist}/${localStorage.getItem('id')}`,
       resSuccess: (res) => {
         return res
       },
@@ -75,6 +77,29 @@ const PlaylistProvider = ({ children }) => {
 
   //CACHENING
   const {data:dataPlaylist, refetch:refetchCachePlaylist} = useQuery(['playlist', idPlaylist], getplaylists,
+  {
+    enabled: false,
+    staleTime:Infinity,
+    keepPreviousData:true
+  })
+
+
+
+  const getplaylistsToHome = ()=>{
+    return fetchAJAX({
+      url: `http://${window.location.hostname}:5000/getplaylists/${localStorage.getItem('id')}`,
+      resSuccess: (res) => {
+        if (!res.results) return
+        setPlaylists(res.results)
+        return res.results
+      },
+      resError: (err) => {
+        console.error(err)
+      }
+    })
+  }
+
+  const {data:dataPlaylists, refetch:refetchCachePlaylists} = useQuery(['playlists'], getplaylistsToHome,
   {
     enabled: false,
     staleTime:Infinity,
@@ -107,9 +132,18 @@ const PlaylistProvider = ({ children }) => {
       refetchCacheArtist()
     }
 
-  },[idPlaylist, idArtist])
+    if(nameArtist){
+      refetchCacheArtistSongs()
+    }
 
+  },[idPlaylist, idArtist, nameArtist])
 
+  /**
+   * Function to Add a Song to a specific playlist
+   * @param {Event} e - With this can get the PlaylistSelected Id
+   * @param {Object} dataSong - Data about the song
+   *  
+   */
   const addToPlaylist = (e, dataSong) => {
 
     e.preventDefault()
@@ -121,7 +155,7 @@ const PlaylistProvider = ({ children }) => {
     fetchAJAX({
       url: `http://${window.location.hostname}:5000/addtoplaylist/${PlaylistSelected}/${dataSong._id}`,
       resSuccess: (res) => {
-        console.log(res.message)
+        refetchCachePlaylist() // Refresh the Cache to see the playlist update
         localStorage.setItem('addedToPlaylist', true)
       },
       resError: (err) => {
@@ -190,7 +224,12 @@ const PlaylistProvider = ({ children }) => {
     dataSongsArtist,
     dataArtist,
     refetchCacheArtist,
-    refetchCacheArtistSongs
+    refetchCacheArtistSongs,
+    playlistsChange, 
+    setPlaylistsChange,
+    dataPlaylists,
+    refetchCachePlaylists,
+    setNameArtist
   }
 
   return (

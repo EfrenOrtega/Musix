@@ -81,6 +81,10 @@
     stroke-dashoffset: 126;
     animation: dash 2s linear infinite;
   }
+
+  .circle.pause{
+    animation-play-state : paused;
+  }
   
   @keyframes dash {
     to {

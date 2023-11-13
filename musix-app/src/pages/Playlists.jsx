@@ -13,7 +13,7 @@ import Context from '../context/Context'
 export default function Playlists() {
   const [update, setUpdate] = useState(false)
 
-  const { setPlaylists, Playlists } = useContext(PlaylistContext)
+  const { setPlaylists, Playlists, playlistsChange, setPlaylistsChange} = useContext(PlaylistContext)
   const { displayFormPlaylist, setDisplayFormPlaylist } = useContext(Context)
 
   useEffect(() => {
@@ -27,7 +27,12 @@ export default function Playlists() {
         console.error(err)
       }
     })
-  }, [update])
+
+    return ()=>{
+      setPlaylistsChange(false)
+    }
+
+  }, [playlistsChange])
 
   const handleForm = () => {
     if (displayFormPlaylist) {

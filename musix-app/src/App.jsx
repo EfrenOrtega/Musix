@@ -44,7 +44,7 @@ export default function App() {
                   <Route path="/" element={<Home />}></Route>
                   <Route path="/playlist/:id" element={<Playlist />}></Route>
                   <Route path='/playlists' element={<Playlists />}></Route>
-                  <Route path="/artist/:id" element={<Artist />}></Route>
+                  <Route path="/artist/:id/:name" element={<Artist />}></Route>
                   <Route path="/lyrics/:id" element={<Lyrics />}></Route>
                   <Route path="/profile" element={<Profile />}></Route>
                   <Route path='/results/:search' element={<Results />}></Route>

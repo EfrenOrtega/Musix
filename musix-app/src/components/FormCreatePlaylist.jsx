@@ -1,6 +1,6 @@
 import "../styles/form-create-playlist.css"
 
-import { useState, useRef, useContext } from "react"
+import { useState, useRef, useContext, useEffect } from "react"
 
 import Context from "../context/Context"
 
@@ -8,6 +8,9 @@ import Input from "./micro/Input"
 import ButtonToggle from "./micro/ButtonToggle"
 
 import fetchAJAX from "../helpers/fetch"
+import PlaylistContext from "../context/PlaylistContext"
+
+import Spinner from '../assets/animations/spinner/spinner'
 
 export default function FormCreatePlaylist() {
 
@@ -16,6 +19,10 @@ export default function FormCreatePlaylist() {
   const previewImage = useRef(null)
   const file = useRef(null)
   const { displayFormPlaylist, setDisplayFormPlaylist } = useContext(Context)
+  const { refetchCachePlaylists } = useContext(PlaylistContext)
+
+  const { setPlaylistsChange } = useContext(PlaylistContext)
+  const [spinner, setSpinner] = useState(false)
 
   const loadImage = (e) => {
     let src = URL.createObjectURL(e.target.files[0])
@@ -30,6 +37,9 @@ export default function FormCreatePlaylist() {
   }
 
   const createPlaylist = (e) => {
+
+    setSpinner(true)
+
     e.preventDefault()
 
     let dateNow = new Date(Date.now())
@@ -61,14 +71,17 @@ export default function FormCreatePlaylist() {
       },
       resSuccess: (res) => {
         if (res.status) {
-          console.log(res.message)
+          refetchCachePlaylists()
           setDisplayFormPlaylist(false)
+          setPlaylistsChange(true)
+          setSpinner(false)
         } else {
           console.log(res.message)
         }
 
       },
       resError: (err) => {
+        setSpinner(false)
         console.log(err)
       }
     }
@@ -131,6 +144,12 @@ export default function FormCreatePlaylist() {
               }
 
             </div>
+
+            {spinner &&
+              <div className="spinnerContainer">
+                <Spinner></Spinner>
+              </div>
+            }
 
             <button type="submit">Create</button>
 

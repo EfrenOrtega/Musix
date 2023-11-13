@@ -124,18 +124,16 @@ const keysFunctions = (
   }
 }
 
-const play = async (audio, setNextIsDisabled, setPrevIsDisabled, setDataSong, setRunning) => {
+const play = (audio, source_ref, setNextIsDisabled, setPrevIsDisabled, setDataSong, setRunning) => {
 
-  console.log(audio, "QUEUE: ", queue)
 
+  //This is to control the next button
   if (currentPositionSong >= 0) {
-
-    if (queue.size - 1 > currentPositionSong) {
+    if (queue.size - 1 > currentPositionSong) {//If there are other song after active the next button
       setNextIsDisabled(false)
     } else {
       setNextIsDisabled(true)
     }
-
   }
 
 
@@ -149,29 +147,36 @@ const play = async (audio, setNextIsDisabled, setPrevIsDisabled, setDataSong, se
    * This is when a song that is stored in the localStorage is playing, this only happend when the user 
    * restart or open the app and play the song that is already in the player
   */
-  if (audio.current.src == `http://${window.location.hostname}:1420/`) {
-    //The song doesn't exist
+
+  if (source_ref.current.src == `http://${window.location.hostname}:1420/`) {//There isn't a song loaded in the <Audio> Element of HTML
 
     if (currentPositionSong >= 0) {
-      audio.current.src = queue.getNode(currentPositionSong).data.url
+      source_ref.current.src = queue.getNode(currentPositionSong).data.url
     } else {
       currentPositionSong = 0;
-      audio.current.src = queue.searchByIdSong(localStorage.getItem('idSong')).data.url
+      source_ref.current.src = queue.searchByIdSong(localStorage.getItem('idSong')).data.url
       setNextIsDisabled(true)
     }
 
-    await audio.current.play()
+    audio.current.load()
+    audio.current.play()
 
 
     if (currentPositionSong >= 0) {
       loadMetadata(queue.getNode(currentPositionSong).data)
     }
-  } else {
-    //The song exist
-    if (currentPositionSong >= 0) {
-      await audio.current.play()
-      loadMetadata(queue.getNode(currentPositionSong).data)
+  } else { //There is a song loaded in the <Audio> Element of HTML
+
+    let dataSong = queue.getNode(currentPositionSong).data
+    if (dataSong._id != localStorage.getItem('idSong')) {//The song you are trying to play is different to the current song?
+      source_ref.current.src = dataSong.url
+      audio.current.load()
+      audio.current.play()
+    } else {//When the user is trying to play the same song that is currently playing
+      audio.current.play()
     }
+
+    loadMetadata(dataSong)
 
   }
 
@@ -257,7 +262,7 @@ const nextAutomatically = (audio, setNextIsDisabled, setPrevIsDisabled, setDataS
 }
 
 
-const next = (audio, setNextIsDisabled, setPrevIsDisabled, setDataSong, setRunning) => {
+const next = (audio, setNextIsDisabled, setPrevIsDisabled, setDataSong, setRunning, source_ref) => {
 
 
 
@@ -277,10 +282,11 @@ const next = (audio, setNextIsDisabled, setPrevIsDisabled, setDataSong, setRunni
 
     setPrevIsDisabled(false)
 
-    audio.current.src = queue.getNode(currentPositionSong).data.url
+    source_ref.current.src = queue.getNode(currentPositionSong).data.url
 
     localStorage.setItem('idSong', queue.getNode(currentPositionSong).data._id)
-    play(audio, setNextIsDisabled, setPrevIsDisabled, setDataSong, setRunning)
+    audio.current.load()
+    play(audio, source_ref, setNextIsDisabled, setPrevIsDisabled, setDataSong, setRunning)
 
     return;
   }
@@ -288,7 +294,7 @@ const next = (audio, setNextIsDisabled, setPrevIsDisabled, setDataSong, setRunni
 }
 
 /** @CHECK */
-const prev = (audio, setPrevIsDisabled, setNextIsDisabled, setDataSong) => {
+const prev = (audio, setPrevIsDisabled, setNextIsDisabled, setDataSong, source_ref) => {
 
   if (currentPositionSong >= 0) {
     if ((currentPositionSong - 1) == 0) {
@@ -304,8 +310,9 @@ const prev = (audio, setPrevIsDisabled, setNextIsDisabled, setDataSong) => {
         setPrevIsDisabled(false)
       }, 1000)
 
-      audio.current.src = queue.getNode(currentPositionSong).data.url
-      play(audio, setNextIsDisabled, setPrevIsDisabled, setDataSong)
+      source_ref.current.src = queue.getNode(currentPositionSong).data.url
+      audio.current.load()
+      play(audio, source_ref, setNextIsDisabled, setPrevIsDisabled, setDataSong)
 
       return;
     }
@@ -313,8 +320,8 @@ const prev = (audio, setPrevIsDisabled, setNextIsDisabled, setDataSong) => {
     setPrevIsDisabled(false)
     currentPositionSong--
 
-    audio.current.src = queue.getNode(currentPositionSong).data.url
-    play(audio, setNextIsDisabled, setPrevIsDisabled, setDataSong)
+    source_ref.current.src = queue.getNode(currentPositionSong).data.url
+    play(audio, source_ref, setNextIsDisabled, setPrevIsDisabled, setDataSong)
 
   }
 
@@ -330,6 +337,7 @@ const HandlePlayPause = (
   playPause,
   setPlayPause,
   audio_ref,
+  source_ref,
   setNextIsDisabled,
   setPrevIsDisabled,
   setDataSong,
@@ -338,8 +346,6 @@ const HandlePlayPause = (
 ) => {
 
   let songNode = queue.searchByIdSong(idSong)
-
-  console.log("\n\nThis is the song id that you are trying to play: ", idSong, " \n\n")
 
   /**
    * Update currentPositionSong to handle changes in the QUEUE when playing/pausing the same song from different app sections.
@@ -353,7 +359,7 @@ const HandlePlayPause = (
    * After playlist interaction: QUEUE = { 0: song_y, 1: song_z, 2: song_u, 3: song_x }
    * currentPositionSong is updated to 3 to reflect the new position of song_x in the updated QUEUE.
    */
-  if(idSong == localStorage.getItem('idSong')){
+  if (idSong == localStorage.getItem('idSong')) {
     currentPositionSong = songNode.positionNode
   }
 
@@ -362,9 +368,9 @@ const HandlePlayPause = (
     e.preventDefault();
 
     currentPositionSong = songNode.positionNode
-    audio_ref.current.src = songNode.data.url
+    source_ref.current.src = songNode.data.url
 
-    play(audio_ref, setNextIsDisabled, setPrevIsDisabled, setDataSong, setRunning)
+    play(audio_ref, source_ref, setNextIsDisabled, setPrevIsDisabled, setDataSong, setRunning)
     setPlayPause(true)
 
   } else {
@@ -375,7 +381,7 @@ const HandlePlayPause = (
       setPlayPause(false)
 
     } else {
-      play(audio_ref, setNextIsDisabled, setPrevIsDisabled, setDataSong, setRunning)
+      play(audio_ref, source_ref, setNextIsDisabled, setPrevIsDisabled, setDataSong, setRunning)
       setPlayPause(true)
     }
   }
@@ -388,6 +394,7 @@ const HandleNext = (
   e,
   setPlayPause,
   audio_ref,
+  source_ref,
   setNextIsDisabled,
   setPrevIsDisabled,
   setDataSong,
@@ -396,7 +403,7 @@ const HandleNext = (
 
   setRunning(false)
 
-  next(audio_ref, setNextIsDisabled, setPrevIsDisabled, setDataSong, setRunning)
+  next(audio_ref, setNextIsDisabled, setPrevIsDisabled, setDataSong, setRunning, source_ref)
   setPlayPause(true)
 
 }
@@ -405,6 +412,7 @@ const HandlePrev = (
   e,
   setPlayPause,
   audio_ref,
+  source_ref,
   setPrevIsDisabled,
   setNextIsDisabled,
   setDataSong,
@@ -412,7 +420,7 @@ const HandlePrev = (
 ) => {
 
   setRunning(false)
-  prev(audio_ref, setPrevIsDisabled, setNextIsDisabled, setDataSong)
+  prev(audio_ref, setPrevIsDisabled, setNextIsDisabled, setDataSong, source_ref)
   setPlayPause(true)
 }
 
