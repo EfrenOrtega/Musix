@@ -1,0 +1,13 @@
+.queue h1 {
+    text-align: left !important;
+    margin-bottom: 1.5rem;
+}
+
+
+.queue .song-box.large.active-top{
+    border-top: 2px solid white;
+}
+
+.queue .song-box.large.active-bottom{
+    border-bottom: 2px solid white;
+}

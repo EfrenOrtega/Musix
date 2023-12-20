@@ -1,7 +1,6 @@
 import { useState, createContext, useEffect, useCallback } from "react";
 import fetchAJAX from "../helpers/fetch";
 import { useQuery } from "react-query";
-import { queryClient } from "../main";
 
 
 const PlaylistContext = createContext();
@@ -9,36 +8,26 @@ const PlaylistContext = createContext();
 const PlaylistProvider = ({ children }) => {
 
   const [Playlists, setPlaylists] = useState()
-  const [run, setRun] = useState(false)
+  /** Stores the data of the current playing song.*/
   const [dataSongs, setDataSongs] = useState([])
+  /** Store the favorites songs */
   const [favorite, setFavorite] = useState(false)
 
-  const [idPlaylist, setIdPlaylist] = useState(null);
-  const [idArtist, setIdArtist] = useState(null);
+  /** They're used to control the data of Playlist or artist and update the content of the view with their data */
+  const [idPlaylist, setIdPlaylist] = useState(null);//Is used to store the id of a playlist and get that playlist
+  const [idArtist, setIdArtist] = useState(null);//Is used to store the id of artist and get that artis
   const [nameArtist, setNameArtist] = useState(null);
 
+  /** playlistsChange and setPlaylistsChange: Used to know when a playlist was created o edited from "My Playlist" Section [Playlists.jsx] */
   const [playlistsChange, setPlaylistsChange] = useState(false)
 
-  useEffect(() => {
-  }, [run])
 
-  const getplaylists = ()=>{
-    if (!idPlaylist) {
-      return  fetchAJAX({
-        url: `http://${window.location.hostname}:5000/getplaylists/${localStorage.getItem('id')}`,
-        resSuccess: (res) => {
-          if (!res.results) return
-          let playlists = res.results
-          return playlists
-        },
-        resError: (err) => {
-          console.error(err)
-        }
-      })
-    }else{
+  // ====  CACHENING   ==== //
+  const getplaylist = () => {
+    
       return fetchAJAX({
         url: `http://${window.location.hostname}:5000/getplaylist/${idPlaylist}`,
-        resSuccess:async (res) => {
+        resSuccess: async (res) => {
           if (!res.results) return
           let playlists = res.results
           return playlists
@@ -47,45 +36,17 @@ const PlaylistProvider = ({ children }) => {
           console.error(err)
         }
       })
-    }
+    
   }
 
-  const getArtist = useCallback(()=>{
-    return fetchAJAX({
-      url: `http://${window.location.hostname}:5000/getartist/${idArtist}`,
-      resSuccess: (res) => {
-        return res
-      },
-      resError: (err) => {
-        console.error(err)
-      }
+  const {data: dataPlaylist, refetch: refetchCachePlaylist } = useQuery(['playlist', idPlaylist], getplaylist,
+    {
+      enabled: false,
+      staleTime: Infinity,
+      keepPreviousData: true
     })
-  })
 
-  const getSongArtist = useCallback(()=>{
-    return  fetchAJAX({
-      url: `http://${window.location.hostname}:5000/getsongbyartist/${nameArtist}/${localStorage.getItem('id')}`,
-      resSuccess: (res) => {
-        return res
-      },
-      resError: (err) => {
-        console.error(err)
-      }
-    })
-  })
-
-
-  //CACHENING
-  const {data:dataPlaylist, refetch:refetchCachePlaylist} = useQuery(['playlist', idPlaylist], getplaylists,
-  {
-    enabled: false,
-    staleTime:Infinity,
-    keepPreviousData:true
-  })
-
-
-
-  const getplaylistsToHome = ()=>{
+  const getplaylistsToHome = () => {
     return fetchAJAX({
       url: `http://${window.location.hostname}:5000/getplaylists/${localStorage.getItem('id')}`,
       resSuccess: (res) => {
@@ -99,44 +60,73 @@ const PlaylistProvider = ({ children }) => {
     })
   }
 
-  const {data:dataPlaylists, refetch:refetchCachePlaylists} = useQuery(['playlists'], getplaylistsToHome,
-  {
-    enabled: false,
-    staleTime:Infinity,
-    keepPreviousData:true
+  const { data: dataPlaylists, refetch: refetchCachePlaylists } = useQuery(['playlists'], getplaylistsToHome,
+    {
+      enabled: false,
+      staleTime: Infinity,
+      keepPreviousData: true
+    })
+
+  const getArtist = useCallback(() => {
+    return fetchAJAX({
+      url: `http://${window.location.hostname}:5000/getartist/${idArtist}`,
+      resSuccess: (res) => {
+        return res
+      },
+      resError: (err) => {
+        console.error(err)
+      }
+    })
   })
 
-  const { data: dataArtist, refetch:refetchCacheArtist } = useQuery(['artistInfo', idArtist], getArtist, {
+  const { data: dataArtist, refetch: refetchCacheArtist } = useQuery(['artistInfo', idArtist], getArtist, {
     enabled: false,
     staleTime: 60 * 60 * 1000,
     keepPreviousData: true,
     cacheTime: 100 * 10000
   });
-  
-  //This a request that depends of 'dataArtist'
-  const {data:dataSongsArtist, refetch:refetchCacheArtistSongs} = useQuery(['songsArtist', idArtist], getSongArtist,
-    {
-      enabled: !!dataArtist, //Here, we execute it when 'dataArtist' exist
-      staleTime:Infinity,
-      keepPreviousData:true,
-      cacheTime: 100 * 10000
+
+
+  /**
+  * Function to get the Song of an Artist for that it's necessary the Artist name and the User ID
+  */
+  const getSongArtist = useCallback(() => {
+    return fetchAJAX({
+      url: `http://${window.location.hostname}:5000/getsongbyartist/${nameArtist}/${localStorage.getItem('id')}`,
+      resSuccess: (res) => {
+        return res
+      },
+      resError: (err) => {
+        console.error(err)
+      }
+    })
   })
 
-  useEffect(()=>{
+  //This a request that depends of 'dataArtist'
+  const { data: dataSongsArtist, refetch: refetchCacheArtistSongs } = useQuery(['songsArtist', idArtist], getSongArtist,
+    {
+      enabled: !!dataArtist, //Here, we execute it when 'dataArtist' exist
+      staleTime: Infinity,
+      keepPreviousData: true,
+      cacheTime: 100 * 10000
+    })
 
-    if(idPlaylist){
+  //Refresh the cache when idPlaylist, idArtist, nameArtist change
+  useEffect(() => {
+
+    if (idPlaylist) {
       refetchCachePlaylist()
     }
 
-    if(idArtist){
+    if (idArtist) {
       refetchCacheArtist()
     }
 
-    if(nameArtist){
+    if (nameArtist) {
       refetchCacheArtistSongs()
     }
 
-  },[idPlaylist, idArtist, nameArtist])
+  }, [idPlaylist, idArtist, nameArtist])
 
   /**
    * Function to Add a Song to a specific playlist
@@ -164,7 +154,12 @@ const PlaylistProvider = ({ children }) => {
     })
   }
 
-
+  /**
+   * Function to get the songs of a specific playlist
+   * 
+   * @param {String} idPlaylist - Playlist ID
+   * @returns {Promise} - With this Promise I can manage the songs of the playlist in other parts of the project
+   */
   const getSongsPlaylist = (idPlaylist) => {
 
     let songs = []
@@ -208,14 +203,12 @@ const PlaylistProvider = ({ children }) => {
   let data = {
     setPlaylists,
     Playlists,
-    setRun,
-    run,
     addToPlaylist,
     dataSongs,
     getSongsPlaylist,
     setFavorite,
     favorite,
-    idPlaylist, 
+    idPlaylist,
     setIdPlaylist,
     idArtist,
     refetchCachePlaylist,
@@ -225,7 +218,7 @@ const PlaylistProvider = ({ children }) => {
     dataArtist,
     refetchCacheArtist,
     refetchCacheArtistSongs,
-    playlistsChange, 
+    playlistsChange,
     setPlaylistsChange,
     dataPlaylists,
     refetchCachePlaylists,

@@ -9,11 +9,11 @@ export default function HeaderBottomHome() {
       <div>
         <p className='title'><strong>Daily Recomendation</strong></p>
         <SongBox
-          cover="willOfThePeople.png"
+          cover=""
           songInfo={{
-            name: "Will Of The People",
-            artist: "Muse",
-            duration: "03:00",
+            name: "",
+            artist: "",
+            duration: "",
           }}
         />
       </div>

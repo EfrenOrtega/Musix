@@ -11,7 +11,7 @@ header {
   height: 20rem;
   padding: 1.5rem 2rem;
 
-  background: linear-gradient(rgba(95, 58, 120, .7) 10%, var(--second) 100%);
+  background: linear-gradient(rgba(0, 0, 0, 1) 20%,  var(--main) 100%);
 }
 
 header.small{
@@ -20,8 +20,7 @@ header.small{
 
   height: 6rem;
   padding: 1.5rem 2rem;
-
-  background:  var(--second);
+  
 }
 
 header .section-top{
@@ -48,8 +47,6 @@ header::after {
   left: 0;
   right: 0;
   bottom: 0;
-
-  background: rgba(0, 0, 0, .30);
 }
 
 header .section-top {

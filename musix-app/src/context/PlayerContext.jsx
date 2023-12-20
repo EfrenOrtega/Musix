@@ -4,14 +4,12 @@ import {
   HandlePlayPause,
   HandleNext,
   HandlePrev,
-  content,
-  HandleProgress,
   durationMils,
   keysFunctions,
   HandleLoop,
-  loadSongs,
   HandleVolumeApp
 } from '../helpers/playerFunctions'
+import { _doublyLinkedList } from "../helpers/doublyLinkedList";
 
 const PlayerContext = createContext();
 
@@ -24,16 +22,41 @@ const PlayerProvider = ({ children }) => {
   const [favorite, setFavorite] = useState(false)
   const [secondsSong, setSecondsSong] = useState(0)
 
+  const [QUEUE, setQUEUE] = useState(_doublyLinkedList);
+
+
+  /** This is to know when a new Song is trying to play.
+   * If it is, then initialize the Progress Silder to 0
+   */
+  const [loadedAudio, setLoadedAudio] = useState(null)
+
+
   const [isSliderMoving, setIsSliderMoving] = useState(0)
 
 
   const [dataSong, setDataSong] = useState(
-    { name: "", artist: "", duration: "", cover: "", url: "", lyrics:"", _id: "" }
+    { name: "", artist: "", duration: "", cover: "", url: "", lyrics: "", _id: "" }
   )
 
   const audio_ref = useRef(null);
   const source_ref = useRef(null);
   const progress_ref = useRef(null)
+
+
+  const handlePlayPause = (
+    e,
+    playPause,
+    setPlayPause,
+    audio_ref,
+    source_ref,
+    setNextIsDisabled,
+    setPrevIsDisabled,
+    setDataSong,
+    setRunning,
+    idSong
+  ) => {
+    HandlePlayPause(QUEUE, setQUEUE, e, playPause, setPlayPause, audio_ref, source_ref, setNextIsDisabled, setPrevIsDisabled, setDataSong, setRunning, idSong);
+  }
 
 
   let data = {
@@ -43,20 +66,17 @@ const PlayerProvider = ({ children }) => {
     setNextIsDisabled,
     prevIsDisabled,
     setPrevIsDisabled,
-    HandlePlayPause,
+    handlePlayPause,
     HandleNext,
     HandlePrev,
     audio_ref,
     source_ref,
     dataSong,
     setDataSong,
-    content,
     progress_ref,
-    HandleProgress,
     durationMils,
     keysFunctions,
     HandleLoop,
-    loadSongs,
     HandleVolumeApp,
     running,
     setRunning,
@@ -64,8 +84,12 @@ const PlayerProvider = ({ children }) => {
     setFavorite,
     secondsSong,
     setSecondsSong,
-    isSliderMoving, 
-    setIsSliderMoving
+    isSliderMoving,
+    setIsSliderMoving,
+    loadedAudio,
+    setLoadedAudio,
+    QUEUE,
+    setQUEUE
   }
 
   return (

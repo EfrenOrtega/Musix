@@ -10,7 +10,7 @@ import fetchAJAX from '../helpers/fetch'
 import HeaderBottomArtist from './micro/HeaderBottomArtist'
 import { useQuery } from 'react-query'
 
-export default function Header({ type, data, background, cover, btns, evtSearch }) {
+export default function Header({ type, data, background, cover, btns, evtSearch, title}) {
 
   let navigate = useNavigate()
 
@@ -80,7 +80,6 @@ export default function Header({ type, data, background, cover, btns, evtSearch 
       }
     }
 
-    
   }
 
   const handleChangeSearch = (e)=>{
@@ -88,8 +87,7 @@ export default function Header({ type, data, background, cover, btns, evtSearch 
   }
 
   return (
-    <header className={`${type == 'small' && 'small'}`} style={{ background: 'linear - gradient(rgba(95, 58, 120, .7) 10%, #0E1026 100%)' }}
-    >
+    <header className={`${type}`}>
       {background &&
         background.includes('https://ipfs') ?
         <img className='background' src={background} alt="" />
@@ -144,7 +142,7 @@ export default function Header({ type, data, background, cover, btns, evtSearch 
             ? <HeaderBottomPlaylist data={data} cover={cover} btns={btns} />
             : type == "artist"
               ? <HeaderBottomArtist data={data} cover={cover} />
-              : undefined
+              : <h2>{title}</h2>
         }
 
 

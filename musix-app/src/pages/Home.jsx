@@ -8,6 +8,7 @@ import '../styles/Home.css'
 
 import Header from "../components/Header"
 import MusicBox from "../components/MusicBox"
+
 import SongBox from '../components/SongBox'
 import Genres from '../components/Genres'
 import Artist from '../components/Artist'
@@ -16,9 +17,12 @@ import responsiveBoxes from '../helpers/responsiveBoxes'
 
 import fetchAJAX from "../helpers/fetch"
 import PlaylistContext from '../context/PlaylistContext'
+import Context from '../context/Context';
 
 export default function Home() {
-  const { setPlaylists, dataPlaylists, refetchCachePlaylists} = useContext(PlaylistContext)
+  const { dataPlaylists, refetchCachePlaylists} = useContext(PlaylistContext)
+  const { setRisize} = useContext(Context)
+
 
   const [quantity, setQuantity] = useState([4,2,4])
 
@@ -31,21 +35,6 @@ export default function Home() {
   const handleResize = (containers) => {
     setQuantity(responsiveBoxes(containers))
   }
-
-  const getplaylists = useCallback(()=>{
-    return fetchAJAX({
-      url: `http://${window.location.hostname}:5000/getplaylists/${localStorage.getItem('id')}`,
-      resSuccess: (res) => {
-        if (!res.results) return
-        setPlaylists(res.results)
-
-        return res.results
-      },
-      resError: (err) => {
-        console.error(err)
-      }
-    })
-  })
 
   const getHistory = useCallback(()=>{
     return fetchAJAX({
@@ -63,6 +52,7 @@ export default function Home() {
     return fetchAJAX({
       url: `http://${window.location.hostname}:5000/getrecentsongs/${localStorage.getItem('id')}`,
       resSuccess: (res) => {
+        console.log(res)
         return res
       },
       resError: (err) => {
@@ -97,14 +87,6 @@ export default function Home() {
   })
 
   //CACHENING
-
-  /*const {data:Playlists} = useQuery(['playlists'], getplaylists,
-  {
-    staleTime:Infinity,
-    keepPreviousData:true,
-    cacheTime:40 * 40 * 1000
-  })*/
-
   const {data:recentlyPlayed} = useQuery(['recentlyPlayed'], getHistory,
   {
     staleTime:Infinity,
@@ -139,6 +121,7 @@ export default function Home() {
     refetchCachePlaylists()
 
     window.addEventListener('resize', e=>{
+      setRisize(e)
       handleResize(containers)
     })
 
@@ -246,7 +229,8 @@ export default function Home() {
                         id: el._id,
                         name: el.name,
                         artist: el.artist,
-                        favoriteSong:el.favorite
+                        favoriteSong:el.favorite,
+                        duration : el.duration
                       }
                     }
                     pathSong={el.url}
@@ -284,7 +268,8 @@ export default function Home() {
                           id: song._id,
                           name: song.name,
                           artist: song.artist,
-                          favoriteSong:song.favorite
+                          favoriteSong:song.favorite,
+                          duration : song.duration
                         }
                       }
                       pathSong={song.url}

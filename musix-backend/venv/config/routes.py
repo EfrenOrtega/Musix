@@ -6,15 +6,21 @@ from Controlador.controller_users import create_users, update_profile, upload_fi
 
 from Controlador.controller_playlist import add_favorite, get_playlists, get_song_playlists, create_playlist, get_playlist, add_to_playlist, get_favorites, create_playlistFavorite
 
-from Controlador.controller_songs import get_recommended_songs, get_my_likes, get_song, search_songs
+from Controlador.controller_songs import get_recommended_songs, get_my_likes, get_song, search_songs, upload_image
 
 from Controlador.controller_history import updateHistory, getHistory
+
+import Services.uploadAudio as uploadAudio;
 
 blueprint = Blueprint('blueprint', __name__)
 
 
 blueprint.route('/createaccount', methods=['POST'])(create_users)
 blueprint.route('/uploadFile', methods=['POST'])(upload_file)
+blueprint.route('/uploadAudio', methods=['POST'])(uploadAudio.upload_audio)
+
+blueprint.route('/uploadImage', methods=['POST'])(upload_image)
+
 blueprint.route('/updateProfile', methods=['POST'])(update_profile)
 
 blueprint.route('/auth', methods=['POST'])(auth_user)

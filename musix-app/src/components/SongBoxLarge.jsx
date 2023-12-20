@@ -10,7 +10,7 @@ import Context from '../context/Context';
 import { _doublyLinkedList as queue } from "../helpers/doublyLinkedList";
 
 
-export default function SongBoxLarge({ data, _favorite, displayOptions, addFavorite }) {
+export default function SongBoxLarge({ data, _favorite, displayOptions, addFavorite, moveSong, isInQueue = false }) {
 
   const { id, cover, name, artist, duration, album, created, pathSong, favoriteSong } = data
 
@@ -21,33 +21,28 @@ export default function SongBoxLarge({ data, _favorite, displayOptions, addFavor
     setPrevIsDisabled,
     HandlePlayPause,
     audio_ref,
-    dataSong,
+    source_ref,
     setDataSong,
     setRunning,
-    favorite,
-    setFavorite
   } = useContext(PlayerContext)
 
   const { setAlertVisible, setMsgAlert } = useContext(Context);
 
-
-  const { refetchCachePlaylist, refetchCacheArtistSongs, getSongsPlaylist } = useContext(PlaylistContext)
+  const { getSongsPlaylist } = useContext(PlaylistContext)
 
   const playSong = async (e) => {
 
-
-
-    /** This song is playing from a playlist */
-    if (localStorage.getItem('currentPlaylist')) {
+    /** This song is playing from a playlist or from the Queue?*/
+    if (localStorage.getItem('currentPlaylist') || isInQueue) {
 
       /** If the current playlist is already playing is not necessary to load their songs to the queue */
-      if (localStorage.getItem('currentPlaylist') == 'inQueue') {
-        console.log("Play other song from the playlist")
+      if (localStorage.getItem('currentPlaylist') == 'inQueue' || isInQueue) {
         HandlePlayPause(
           e,
           playPause,
           setPlayPause,
           audio_ref,
+          source_ref,
           setNextIsDisabled,
           setPrevIsDisabled,
           setDataSong,
@@ -57,7 +52,6 @@ export default function SongBoxLarge({ data, _favorite, displayOptions, addFavor
 
       } else {
         /** Clear the QUEUE and loads the playlist's songs */
-
         queue.clear();
 
         let idPlaylist = localStorage.getItem('currentPlaylist');
@@ -67,7 +61,7 @@ export default function SongBoxLarge({ data, _favorite, displayOptions, addFavor
               queue.insertion_ending(song)
             })
 
-            /** To know when I playlist is already in the Queue */
+            /** To know when a playlist is already in the Queue */
             localStorage.setItem('currentPlaylist', 'inQueue')
 
             HandlePlayPause(
@@ -75,6 +69,7 @@ export default function SongBoxLarge({ data, _favorite, displayOptions, addFavor
               playPause,
               setPlayPause,
               audio_ref,
+              source_ref,
               setNextIsDisabled,
               setPrevIsDisabled,
               setDataSong,
@@ -91,7 +86,6 @@ export default function SongBoxLarge({ data, _favorite, displayOptions, addFavor
 
 
     } else {
-
       /** Clear the QUEUE */
       queue.clear();
 
@@ -102,7 +96,8 @@ export default function SongBoxLarge({ data, _favorite, displayOptions, addFavor
         artist,
         cover: cover,
         url: pathSong,
-        favorite: favoriteSong
+        favorite: favoriteSong,
+        duration: duration
       })
 
       setRunning(false)
@@ -112,6 +107,7 @@ export default function SongBoxLarge({ data, _favorite, displayOptions, addFavor
         playPause,
         setPlayPause,
         audio_ref,
+        source_ref,
         setNextIsDisabled,
         setPrevIsDisabled,
         setDataSong,
@@ -120,71 +116,10 @@ export default function SongBoxLarge({ data, _favorite, displayOptions, addFavor
       )
     }
 
-
-
-
   }
 
-
-  /*const addFavorite = (e) => {
-
-
-    
-    console.log(e.target.dataset.id)
-
-    if (dataSong && (dataSong._id == e.target.dataset.id)) {
-      setDataSong({
-        ...dataSong,
-        favorite: !favorite
-      })
-    }
-
-    if (favorite) {
-      setFavorite(false)
-    } else {
-      setFavorite(true)
-    }
-
-    let dateNow = new Date(Date.now())
-    let dateTime = new Date(dateNow.getTime() - dateNow.getTimezoneOffset() * 60000).toISOString()
-    let date = dateTime.split('T')[0]
-
-    fetchAJAX({
-      url: `http://${location.hostname}:5000/addfavorite/${id}/${localStorage.getItem('id')}/${date}`,
-      settings: {
-        headers: {
-          'Content-Type': 'application/json'
-        }
-      },
-      resSuccess: (res) => {
-
-        if (favorite) {
-          setFavorite(false)
-        } else {
-          setFavorite(true)
-        }
-
-        refetchCachePlaylist()
-        refetchCacheArtistSongs()
-
-      },
-      resError: (err) => {
-
-        setMsgAlert({ msg: 'Error to Add Song', status: false })
-        setAlertVisible(true)
-
-        setTimeout(() => {
-          setAlertVisible(false)
-        }, 1800)
-
-      }
-    }
-    )
-
-  }*/
-
   return (
-    <div className="song-box large">
+    <div className="song-box large" draggable={`${moveSong && 'true'}`} onDragStart = {(e) => moveSong(e, id)} data-id = {id}>
       <div className='container-cover-data'>
         <div className="cover">
           <span>
@@ -232,8 +167,18 @@ export default function SongBoxLarge({ data, _favorite, displayOptions, addFavor
           <img data-id={id} onClick={(e) => addFavorite(e)} src={'/icons/icon-favorite.png'} alt="" />
         }
 
-        <img data-id={id} onClick={(e) => displayOptions(e, id)} src={'/icons/more-options.png'} alt="" />
+        {displayOptions
+          &&
+          <img data-id={id} onClick={(e) => displayOptions(e, id)} src={'/icons/more-options.png'} alt="" />
+        }
 
+
+        {
+          moveSong &&
+
+          <img data-id={id} onClick={(e) => moveSong(e, id)} src={'/icons/select.svg'} alt="" />
+
+        }
 
 
 

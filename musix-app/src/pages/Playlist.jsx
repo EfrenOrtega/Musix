@@ -1,88 +1,53 @@
-import { useEffect, useState, useContext, useCallback} from "react";
-import { useQuery } from 'react-query'
+import { useEffect, useState, useContext, useRef, Suspense, lazy } from "react";
 
 import { useParams } from "react-router-dom";
 import Header from "../components/Header";
-import SongBoxLarge from "../components/SongBoxLarge";
 import OptionsPerSong from "../components/micro/OptionsPerSong";
-
-import fetchAJAX from "../helpers/fetch";
+const SongBoxLarge = lazy(() => import("../components/SongBoxLarge"));
 
 import PlaylistContext from "../context/PlaylistContext";
 import PlayerContext from "../context/PlayerContext";
-import {addToFavorites,  searchFavoritesSongsIds } from '../helpers/Favorites';
+import { addToFavorites, searchFavoritesSongsIds } from '../helpers/Favorites';
 
-import { queryClient } from "../main";
 import Context from "../context/Context";
 
 export default function Playlist() {
 
+  /** States to manage(visible/hidden) the song options */
   const [visibility, setVisibility] = useState(false)
   const [pointerXY, setPointerXY] = useState({})
   const [pointerXYPrev, setPointerXYPrev] = useState(null)
   const [idSong, setIdSong] = useState(null)
+  const [displayOptionsSong, setDisplayOptionsSong] = useState()
+  const optionsSong = useRef(null);
 
+  /** This is to store the favorite songs of the playlist and handle(enabled/disabled) their Favorite Icon */
   const [favorites, setFavorites] = useState([])
+
+  //To display a floating message in the view
   const { setAlertVisible, setMsgAlert } = useContext(Context);
 
-  const { setRun, run, setIdPlaylist, dataPlaylist, refetchCachePlaylist, refetchCacheArtistSongs} = useContext(PlaylistContext)
-  const { dataSong, setDataSong} = useContext(PlayerContext)
+  const { setIdPlaylist, dataPlaylist, refetchCachePlaylist, refetchCacheArtistSongs } = useContext(PlaylistContext)
+  const { dataSong, setDataSong } = useContext(PlayerContext)
 
+  //Id of the current Playlist
   let { id } = useParams()
-
-  const [displayOptionsSong, setDisplayOptionsSong] = useState()
-  
-  /*const getplaylists = ()=>{
-    if (!id) {
-      return  fetchAJAX({
-        url: `http://${window.location.hostname}:5000/getplaylists/${localStorage.getItem('id')}`,
-        resSuccess: (res) => {
-          if (!res.results) return
-          let playlists = res.results
-          return playlists
-        },
-        resError: (err) => {
-          console.error(err)
-        }
-      })
-    }else{
-      return fetchAJAX({
-        url: `http://${window.location.hostname}:5000/getplaylist/${id}`,
-        resSuccess:async (res) => {
-          if (!res.results) return
-          let playlists = res.results
-          return playlists
-        },
-        resError: (err) => {
-          console.error(err)
-        }
-      })
-    }
-  }
-
-  const {data:dataPlaylist} = useQuery(['playlist', id], getplaylists,
-  {
-    staleTime:Infinity,
-    keepPreviousData:true
-  })*/
 
   useEffect(() => {
 
-    if(dataPlaylist){
+
+    //Searches and Stores only the favorites songs of the playlist
+    if (dataPlaylist) {
+      console.log(dataPlaylist)
       setFavorites(searchFavoritesSongsIds(dataPlaylist[0].songs))
     }
 
-    if(id){
+    //Stores the current playlist ID
+    if (id) {
       setIdPlaylist(id)
     }
 
     setDisplayOptionsSong(false)
-
-    if (run) {
-      setRun(false)
-    } else {
-      setRun(true)
-    }
 
     /** This is to know when the user is inside a playlist 
      * And with this it is possible to add all playlist's songs to the Queue when the user plays a song of that playlist
@@ -90,11 +55,28 @@ export default function Playlist() {
     localStorage.setItem('currentPlaylist', id)
 
     /** When the user leave the playlist it's removed 'isPlaylist' of the localstorage*/
-    return ()=>{
+    return () => {
       localStorage.removeItem('currentPlaylist')
     }
 
   }, [dataPlaylist])
+
+
+  useEffect(() => {
+    document.addEventListener('click', handleOutsideClick)
+
+    return () => {
+      document.removeEventListener('click', handleOutsideClick)
+    }
+  }, [])
+
+  const handleOutsideClick = (e) => {
+    let targetElement = e.target;
+    if (!optionsSong.current) return
+    if (!optionsSong.current.contains(targetElement) && !targetElement.matches('img')) {
+      setVisibility(false)
+    }
+  }
 
 
   const displayOptions = (e, idsong) => {
@@ -128,10 +110,12 @@ export default function Playlist() {
       } else {
 
         //If the user cliked on the same icon we only have two option display or hide song options.
-        if (displayOptionsSong) {
+        if (visibility) {
           setDisplayOptionsSong(false)
+          setVisibility(false)
         } else {
           setDisplayOptionsSong(true)
+          setVisibility(true)
         }
 
       }
@@ -155,8 +139,9 @@ export default function Playlist() {
     }
   }
 
-  const addFavorite = (e) =>{
-    addToFavorites(e, favorites, setFavorites, setAlertVisible, setMsgAlert,  refetchCacheArtistSongs, refetchCachePlaylist, dataSong, setDataSong)
+
+  const addFavorite = (e) => {
+    addToFavorites(e, favorites, setFavorites, setAlertVisible, setMsgAlert, refetchCacheArtistSongs, refetchCachePlaylist, dataSong, setDataSong)
   }
 
   return (
@@ -178,42 +163,48 @@ export default function Playlist() {
       <main>
         {
           //This is to display option for each song of the playlist
-          displayOptionsSong &&
           <OptionsPerSong
             setDisplayOptionsSong={setDisplayOptionsSong}
+            displayOptionsSong={displayOptionsSong}
             visibility={visibility}
             setVisibility={setVisibility}
             pointerXY={pointerXY}
             setPointerXY={setPointerXY}
             idSong={idSong}
+            refProp={optionsSong}
+            setPointerXYPrev={setPointerXYPrev}
           />
         }
 
 
-        {
-          //LOAD PLAYLIST SONG
-          ((dataPlaylist && dataPlaylist.length > 0)) &&
-          dataPlaylist[0].songs.map((el, index) => {
-            return <SongBoxLarge
-              key={index}
-              data={{
-                id: el._id,
-                cover: el.cover,
-                name: el.name,
-                artist: el.artist,
-                duration: el.duration,
-                album: el.album,
-                created: el.created,
-                pathSong: el.url,
-                favoriteSong:el.favorite
-              }
-              }
-              _favorite={favorites.includes(el._id)}
-              displayOptions={displayOptions}
-              addFavorite={addFavorite}
-            />
-          })
-        }
+        <Suspense fallback={<div>Cargando canciones...</div>}>
+          {
+            //LOAD PLAYLIST SONG
+            ((dataPlaylist && dataPlaylist.length > 0)) &&
+
+            dataPlaylist[0].songs.map((el, index) => {
+              return <SongBoxLarge
+                key={index}
+                data={{
+                  id: el._id,
+                  cover: el.cover,
+                  name: el.name,
+                  artist: el.artist,
+                  duration: el.duration,
+                  album: el.album,
+                  created: el.created,
+                  pathSong: el.url,
+                  favoriteSong: el.favorite
+                }
+                }
+                _favorite={favorites.includes(el._id)}
+                displayOptions={displayOptions}
+                addFavorite={addFavorite}
+              />
+            })
+
+          }
+        </Suspense>
 
       </main>
     </div>

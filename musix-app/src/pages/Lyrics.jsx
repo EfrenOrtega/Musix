@@ -16,7 +16,7 @@ let prevRange = 0;
 
 export default function Lyrics() {
 
-  const { audio_ref, dataSong, secondsSong, running, isSliderMoving} = React.useContext(PlayerContext);
+  const { audio_ref, dataSong, secondsSong, running, isSliderMoving } = React.useContext(PlayerContext);
 
   const [animationDuration, setAnimationDuration] = React.useState(null)
   const [data, setData] = React.useState(null)
@@ -28,12 +28,12 @@ export default function Lyrics() {
   let { id } = useParams()
   const navigate = useNavigate();
 
-  const [dataManageLyric, setDataManageLyric] = React.useState({currentLine:0, prevLine:-1})
+  const [dataManageLyric, setDataManageLyric] = React.useState({ currentLine: 0, prevLine: -1 })
 
 
-  React.useEffect(()=>{  
+  React.useEffect(() => {
 
-    if(lyric){
+    if (lyric) {
       setAnimationDuration(Math.abs(((lyric.lines[0].time - audio_ref.current.currentTime * 1000) / 1000)) + 0.69)
     }
 
@@ -53,10 +53,10 @@ export default function Lyrics() {
 
     lyrics = data.lyrics
     setData(data)
-    
+
     lyric = new Lyric(lyrics)
-    
-    if(running){
+
+    if (running) {
       setAnimationDuration(Math.abs(((lyric.lines[0].time - audio_ref.current.currentTime * 1000) / 1000)) + 0.15)
       isAnimationNull = false
     }
@@ -67,102 +67,95 @@ export default function Lyrics() {
 
   React.useEffect(() => {
 
-    if(running){
-      if(animationRef.current){
+    if (running) {
+      if (animationRef.current) {
         animationRef.current.style.animationPlayState = 'running'
       }
-    }else{
+    } else {
       setAnimationDuration(null)
-      if(animationRef.current){
+      if (animationRef.current) {
         animationRef.current.style.animationPlayState = 'paused'
       }
       return
     }
 
-        
-    const handleTimeUpdate = (e)=>{
-      
-      if(!lyricsRef.current) return;
+
+    const handleTimeUpdate = (e) => {
+
+      if (!lyricsRef.current) return;
 
       let lyricsParagraph = lyricsRef.current.querySelectorAll('p')
 
       let currentTimeSong = audio_ref.current.currentTime * 1000
-      let lyricLines = lyric.lines      
+      let lyricLines = lyric.lines
 
-            
-      if(currentTimeSong < lyricLines[0].time && isFirstTime === false && isAnimationNull === true){
+      //This disables previous song lyrics before the progress of song changed
+      if (currentTimeSong < lyricLines[0].time && isFirstTime === false && isAnimationNull === true) {
         lyricsParagraph[prevLyric].classList.remove('active')
       }
 
+      lyricLines.map((song, index) => {
 
-      lyricLines.map((song, index)=>{
-        if((currentTimeSong >= song.time && currentTimeSong < lyricLines[index + 1].time)){
-          setAnimationDuration(null)
-          isAnimationNull = true;            
+        try {
+          if ((currentTimeSong >= song.time && currentTimeSong < lyricLines[index + 1].time)) {
+            setAnimationDuration(null)
+            isAnimationNull = true;
 
-          if (index == 0) {
-            /** With this I get the time of the first lyric's verse in Seconds, this is to know how much time is gonna take to finish the animation*/
-            flagStartSinging = true;
-            isFirstTime = false;
-            lyricsParagraph[index].classList.add('active')
+            if (index == 0) {
+              flagStartSinging = true;
+              isFirstTime = false;
+              lyricsParagraph[index].classList.add('active')
 
+              //This leave the songs verses always visible. (Move the Scroll to leave the verse into the view)
+              lyricsParagraph[index].scrollIntoView({
+                behavior: 'smooth',
+                block: 'center'
+              })
 
+              if (prevLyric > 0) {
+                lyricsParagraph[prevLyric].classList.remove('active')
+              }
 
-            if(prevLyric > 0){
-              lyricsParagraph[prevLyric].classList.remove('active')
+              prevLyric = 0;
+              setDataManageLyric({ ...dataManageLyric, currentLine: index++ })
+              return
             }
 
-            prevLyric = 0;
-            setDataManageLyric({...dataManageLyric, currentLine:index++})
-            return
+            if (index < lyricLines.length - 4) {
+              //This leave the songs verses always visible. (Move the Scroll to leave the verse into the view)
+              lyricsParagraph[index].scrollIntoView({
+                behavior: 'smooth',
+                block: 'center'
+              })
+            }
+
+
+            lyricsParagraph[prevLyric].classList.remove('active')
+            lyricsParagraph[index].classList.add('active')
+            prevLyric = index;
+            setDataManageLyric({ ...dataManageLyric, currentLine: index++, prevLine: index - 1 })
           }
-          
+        } catch (error) {
+          //When is the last verse of the lyrics
+          setAnimationDuration(null)
+          isAnimationNull = true;
           lyricsParagraph[prevLyric].classList.remove('active')
           lyricsParagraph[index].classList.add('active')
           prevLyric = index;
-          setDataManageLyric({...dataManageLyric, currentLine:index++, prevLine:index - 1})
+          setDataManageLyric({ ...dataManageLyric, currentLine: index++, prevLine: index - 1 })
         }
+
+
       })
 
-      /*if(lyricLines[counter + 1]){
-
-        if((currentTimeSong >= lyricLines[counter].time && currentTimeSong < lyricLines[counter + 1].time)){
-
-          console.log(counter)
-
-          if (counter == 0) {
-            /** With this I get the time of the first lyric's verse in Seconds, this is to know how much time is gonna take to finish the animation
-            flagStartSinging = true;
-            setAnimationDuration(null)
-            lyricsParagraph[counter].classList.add('active')
-            prevLyric = 0;
-            setDataManageLyric({...dataManageLyric, currentLine:counter++})
-            return
-          }
-          
-          lyricsParagraph[prevLyric].classList.remove('active')
-          lyricsParagraph[counter].classList.add('active')
-          prevLyric = counter;
-  
-          setDataManageLyric({...dataManageLyric, currentLine:counter++, prevLine:counter - 1})
-        }
-      }else if((currentTimeSong >= lyricLines[counter].time && currentTimeSong < dataSong.duration)){  
-        lyricsParagraph[prevLyric].classList.remove('active')
-        lyricsParagraph[counter].classList.add('active')
-        prevLyric = counter;
-
-        setDataManageLyric({...dataManageLyric, prevLine:counter - 1})
-      } */ 
-
-      
     }
-    
-    audio_ref.current.addEventListener('timeupdate', (e)=>handleTimeUpdate(e));
+
+    audio_ref.current.addEventListener('timeupdate', (e) => handleTimeUpdate(e));
 
 
-    return ()=>  {
+    return () => {
       audio_ref.current.addEventListener('timeupdate', handleTimeUpdate)
-    } 
+    }
 
 
   }, [running]);

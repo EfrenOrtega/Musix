@@ -17,6 +17,7 @@ import FormCreatePlaylist from './components/FormCreatePlaylist';
 import Artist from './pages/Artist';
 import Profile from './pages/Profile';
 import Results from './pages/Results';
+import Queue from './pages/Queue';
 
 localStorage.setItem('executed', false)
 
@@ -48,6 +49,7 @@ export default function App() {
                   <Route path="/lyrics/:id" element={<Lyrics />}></Route>
                   <Route path="/profile" element={<Profile />}></Route>
                   <Route path='/results/:search' element={<Results />}></Route>
+                  <Route path='/queue' element={<Queue/>}></Route>
                 </Routes>
 
 

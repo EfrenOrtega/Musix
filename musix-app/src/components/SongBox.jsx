@@ -44,22 +44,6 @@ export default function SongBox({ cover, songInfo, pathSong }) {
   
   const playSong = async (e, content) => {
 
-    //MAYBE THIS CAN BE ELIMITED, WE NEED TO TEST THE APP
-    /** If song is playing then restart the song
-    if (playPause) {
-      setRunning(false)
-      HandlePlayPause( //This function is in helpers/playerFunction.js
-        e,
-        playPause, // To `playPause` i send a (false) because I need to pause the song to play it again
-        setPlayPause,
-        audio_ref,
-        setNextIsDisabled,
-        setPrevIsDisabled,
-        setDataSong,
-        setRunning
-      )
-    }*/
-
     /** If the song's id is not in the content array then add it */
     if (content[content.length - 1]._id != id) {
       content.push({

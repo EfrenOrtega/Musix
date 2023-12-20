@@ -28,7 +28,7 @@ const Player = ({ cover, songInfo }) => {
     setNextIsDisabled,
     prevIsDisabled,
     setPrevIsDisabled,
-    HandlePlayPause,
+    handlePlayPause,
     HandleNext,
     HandlePrev,
     audio_ref,
@@ -39,13 +39,16 @@ const Player = ({ cover, songInfo }) => {
     HandleLoop,
     HandleVolumeApp,
     running,
-    content,
     setRunning,
     favorite,
-    setFavorite
+    setFavorite,
+    setLoadedAudio, 
+
+    QUEUE, 
+    setQUEUE,
   } = useContext(PlayerContext)
 
-  const { setRun, run, setFavorite: setFavoritePlaylist, refetchCachePlaylist } = useContext(PlaylistContext)
+  const { setFavorite: setFavoritePlaylist, refetchCachePlaylist } = useContext(PlaylistContext)
   const { setAlertVisible, setMsgAlert } = useContext(Context);
 
 
@@ -70,7 +73,6 @@ const Player = ({ cover, songInfo }) => {
 
   useEffect(() => {
 
-
     document.addEventListener('click', handleOutsideClick)
 
     //This only runs when the app starts, to load the last song the user listened to
@@ -83,27 +85,19 @@ const Player = ({ cover, songInfo }) => {
         .then(json => {
 
           /** Clear the List */
-          queue.clear();
-          /** Add the Song playing in the List */
-          queue.insertion_ending({
+          _doublyLinkedList.clear()
+          /** Add the Song playing, to the List */
+          _doublyLinkedList.insertion_ending({
             _id: json.data._id,
             name: json.data.name,
             artist: json.data.artist,
             lyrics: json.data.lyrics,
             cover: `${json.data.cover}`,
             url: json.data.url,
-            favorite: json.data.favorite
+            favorite: json.data.favorite,
+            duration: json.data.duraction
           })
-
-          setDataSong({
-            _id: json.data._id,
-            name: json.data.name,
-            artist: json.data.artist,
-            lyrics: json.data.lyrics,
-            cover: json.data.cover,
-            url: json.data.url,
-            favorite: json.data.favorite
-          })
+          setQUEUE(_doublyLinkedList)          
 
           setFavorite(json.data.favorite)
           setData({ name: json.data.name, artist: json.data.artist, cover: json.data.cover, lyrics: json.data.lyrics, favorite: json.data.favorite })
@@ -116,12 +110,6 @@ const Player = ({ cover, songInfo }) => {
     } else {
       setData(null)
       setFavorite(favoriteSong)
-    }
-
-    if (run) {
-      setRun(false)
-    } else {
-      setRun(true)
     }
 
     keysFunctions(
@@ -234,20 +222,23 @@ const Player = ({ cover, songInfo }) => {
 
   }
 
-  const foundFavorites = () => {
-    if (favoriteSongs.length == 0) {
-      console.log("No favorites", favorite)
-      setFavorite(false)
-      return
-    }
-    let found = favoriteSongs.find(favorite => favorite == dataSong._id)
-    return found
-  }
 
   const handleOutsideClick = (e) => {
     if (!e.target.matches('img')) {
       setDisplayListPlaylist(false)
     }
+  }
+
+
+  /** Function to know when a new song is load in the player */
+  const HandleLoadedData = (e) => {
+    setLoadedAudio(dataSong._id)
+  }
+
+  /** Function to know when the current song ends
+  */
+  const HandleEndSong = (e) => {
+    setLoadedAudio(null)
   }
 
   return (
@@ -264,15 +255,17 @@ const Player = ({ cover, songInfo }) => {
       }
 
       <audio
-      id='audio'
+        onLoadedData={HandleLoadedData}
+        onEnded={HandleEndSong}
+        id='audio'
         onPlaying={(e) => {
           setRunning(true)
         }}
         ref={audio_ref}>
 
-          <source ref={source_ref} src='' type='audio/mp3'></source>
+        <source ref={source_ref} src='' type='audio/mp3'></source>
 
-        </audio>
+      </audio>
 
       <div className='player-container'>
         <div className="song">
@@ -329,7 +322,7 @@ const Player = ({ cover, songInfo }) => {
                   />
 
                   <img onClick={
-                    (e) => HandlePlayPause(
+                    (e) => handlePlayPause(
                       e,
                       playPause,
                       setPlayPause,
@@ -451,17 +444,17 @@ const Player = ({ cover, songInfo }) => {
             }
 
 
+            <div className='btn-option'>
+              <Link to={"/queue"}>
+                <img src={'/icons/queue.svg'} alt="" />
+              </Link>
+            </div>
+
 
             <div className='btn-option'>
-              {data ?
-                data.lyrics ?
-                  <Link to={`/lyrics/${localStorage.getItem('idSong')}`}>
-                    <img src={'/icons/icon-microphone-active.png'} alt="Microphone" />
-                  </Link>
-                  :
-                  <img src={'/icons/icon-microphone.png'} alt="Microphone" />
-                :
+              {/*Check if there are a lyrics for the current song, to display one of two icons*/}
 
+              {
                 dataSong &&
                   dataSong.lyrics ?
                   <Link to={`/lyrics/${localStorage.getItem('idSong')}`}>
@@ -470,7 +463,6 @@ const Player = ({ cover, songInfo }) => {
                   :
                   <img src={'/icons/icon-microphone.png'} alt="Microphone" />
               }
-
 
             </div>
 
@@ -482,7 +474,7 @@ const Player = ({ cover, songInfo }) => {
               </div>
 
               :
-              
+
               <div className='btn-option'>
                 <img src={'/icons/icon-playlist-plus-disabled.png'} alt="Add Playlist" />
               </div>

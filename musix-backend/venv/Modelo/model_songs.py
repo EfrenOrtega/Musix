@@ -6,6 +6,11 @@ from flask import jsonify, request
 
 import json
 import re
+import os
+from botocore.exceptions import ClientError
+from werkzeug.utils import secure_filename
+import uuid
+
 
 class 	ModelSongs():
   db = Conexion.connect()
@@ -21,6 +26,7 @@ class 	ModelSongs():
   idUser = ''
   idSong = ''
   search_term = ''
+  urlImage = ''
 
   def __init__(self):
     pass
@@ -256,3 +262,61 @@ class 	ModelSongs():
     except Exception as e:
       print('Error to find the Song: ', e)
       return jsonify({'status':False, 'message':'Error to find the Song'})
+    
+
+  def upload_image(self):
+    try:
+      #Upload Imagen to this flask server
+      file = request.files['file']
+      Path = os.path.join(os.path.dirname(__file__))    
+      UPLOAD_FOLDER = os.path.join(os.path.dirname(Path), 'images')
+
+      filename = secure_filename(file.filename)
+      extension = os.path.splitext(filename)[1]
+
+      newName = str(uuid.uuid4()) + extension
+
+      upload_path = os.path.join(UPLOAD_FOLDER, newName)
+      
+      file.save(upload_path)
+      self.upload_to_filebase(newName)
+
+      return jsonify({'status':True, 'message':'Image uploaded to the Flask Server', 'url':self.urlImage})
+    except ClientError as e:
+      print('error: %s') % e
+      return jsonify({'status':False, 'message':'Error to upload the image to the Flask Server'})
+
+  
+    
+
+
+  def upload_to_filebase(self, nameImage):
+    CDI = None
+    #Auth to my account of Filebase
+    from Services.fileBase import s3;
+    from decouple import config
+
+    image = nameImage
+    #To upload a new object to the Bucket in this case an imagen 
+    currentPath = os.path.join(os.path.dirname(__file__))    
+    pathImage = os.path.join(os.path.dirname(currentPath), 'images', image)
+
+    with open(pathImage, 'rb') as data:
+      try:    
+
+        #Insert object to the Bucket
+        request = s3.put_object(
+          Body=data,
+          Bucket= config('BUCKET_NAME'),
+          Key = config('IMAGES_FOLDER_1') + '/' + nameImage, 
+          ContentType = 'imagen/jpeg'
+        )
+
+        CDI = request['ResponseMetadata']['HTTPHeaders']['x-amz-meta-cid']
+
+        #Stored the URL Imagen after it uploaded to https://filebase.com/
+        self.urlImage = 'https://ipfs.filebase.io/ipfs/' + CDI
+
+      except ClientError as e:
+        print('error: %s') % e
+        return 'error'

@@ -10,11 +10,14 @@
   font-weight: 400;
   font-size: 0.85rem;
   font-family: 'Roboto', sans-serif;
-}
 
-.container-options-song.hide {
   visibility: hidden;
   opacity: 0;
+}
+
+.container-options-song.visible {
+  visibility: visible;
+  opacity: 1;
 }
 
 .container-options-song a {

@@ -10,6 +10,8 @@ const Provider = ({ children }) => {
   const [alertVisible, setAlertVisible] = useState(false)
   const [msgAlert, setMsgAlert] = useState({msg:'', status:false})
 
+  //This is to know the data of the view when it is risized
+  const [risize, setRisize] = useState({})
 
   let data = {
     displayFormPlaylist,
@@ -19,7 +21,9 @@ const Provider = ({ children }) => {
     alertVisible,
     setAlertVisible,
     msgAlert,
-    setMsgAlert
+    setMsgAlert,
+    risize, 
+    setRisize
   }
 
   return (

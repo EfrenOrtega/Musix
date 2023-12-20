@@ -4,27 +4,35 @@ import '../../styles/options-songs.css'
 
 import { useContext } from 'react'
 import PlaylistContext from '../../context/PlaylistContext'
-import { useEffect, useState, useRef } from 'react'
+import { useEffect, useState} from 'react'
+import Context from '../../context/Context'
 
-export default function OptionsPerSong({ visibility, setVisibility, pointerXY, idSong, setDisplayOptionsSong }) {
+export default function OptionsPerSong({ visibility, setVisibility, pointerXY, idSong, setDisplayOptionsSong,displayOptionsSong,  refProp, setPointerXYPrev}) {
 
   const { Playlists, addToPlaylist } = useContext(PlaylistContext)
+  const {risize} =useContext(Context)
   const [positionXY, setPositionXY] = useState({})
 
-  const optionsSong = useRef(null);
+  //When the view is resized, the song options hide and initialize their previous position to null.
+  useEffect(()=>{
+    setVisibility(false)
+    setDisplayOptionsSong(false)
+    setPointerXYPrev(null)
+  }, [risize])
 
+  /** When pointerXY changes and displayOptionsSong is true, display the song options at the correct position*/
   useEffect(() => {
 
-    const translateElement = () => {
+    if(!displayOptionsSong) return
 
+    const translateElement = () => {
       translateElementXY(
         null,
         null,
         null,
-        optionsSong.current.getBoundingClientRect().width,
-        optionsSong.current.getBoundingClientRect().height
+        refProp.current.getBoundingClientRect().width,
+        refProp.current.getBoundingClientRect().height
       )
-
     }
     translateElement()
   }, [pointerXY])
@@ -54,7 +62,7 @@ export default function OptionsPerSong({ visibility, setVisibility, pointerXY, i
   
 
   return (
-    <div ref={optionsSong} className={visibility ? 'container-options-song' : 'container-options-song hide'} style={{ left: `${positionXY.x}px`, top: `${positionXY.y}px` }}>
+    <div ref={refProp} className={visibility === true ? 'container-options-song visible' : 'container-options-song'} style={{ left: `${positionXY.x}px`, top: `${positionXY.y}px` }}>
       <ul>
         <li><a>Add to Playlist</a>
           <ul>

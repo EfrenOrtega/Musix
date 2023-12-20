@@ -3,7 +3,6 @@ from flask_pymongo import ObjectId
 from flask import jsonify, request
 import json
 import dateutil
-from bson import json_util
 
 from Modelo.model_profile import ModelProfile
 from botocore.exceptions import ClientError
@@ -13,7 +12,6 @@ from werkzeug.utils import secure_filename
 
 import uuid
 
-#=================================================== START
 class ModelPlaylist():
 
   db = Conexion.connect()
@@ -321,6 +319,7 @@ class ModelPlaylist():
         'genre':song['genre'],
         'cover':song['cover'],
         'duration':song['duration'],
+        'lyrics' : song['lyrics'],
         'url':song['url'],
         'date':song['date']
       }

@@ -18,3 +18,6 @@ def get_my_likes(iduser):
 def search_songs(search):
   mSongs.search_term = search
   return mSongs.search_songs()
+
+def upload_image():
+  return mSongs.upload_image()

@@ -21,7 +21,7 @@ body {
   position: relative;
   color: white;
   height: 100vh;
-  background-color: var(--main);
+  background-color: var(--main) !important;
   font-family: 'Roboto', sans-serif;
   width: 100%;
   min-width: 40rem;
@@ -82,10 +82,6 @@ main {
 ::-webkit-scrollbar {
   -webkit-appearance: none;
 }
-
-/*::-webkit-scrollbar:horizontal {
-  display: none;
-}*/
 
 ::-webkit-scrollbar:vertical {
   width: 10px;
