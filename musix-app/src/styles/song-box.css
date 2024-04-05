@@ -28,6 +28,15 @@
   width: 25em;
 }
 
+.song-box .licence-container{
+  display: flex;
+}
+
+.song-box .copyright-info{
+  width: 1.4rem;
+  cursor: pointer;
+}
+
 .song-box figure {
   display: block;
   height: 4.5em;

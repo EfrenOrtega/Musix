@@ -170,6 +170,7 @@ const Results = () => {
                 album: el.album,
                 created: el.created,
                 pathSong: el.url,
+                licence : el.licence,
                 favoriteSong: el.favorite
               }
               }

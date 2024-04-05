@@ -9,6 +9,8 @@ from botocore.exceptions import ClientError
 
 import os
 from werkzeug.utils import secure_filename
+from decouple import config
+
 
 import uuid
 
@@ -430,8 +432,8 @@ class ModelPlaylist():
         #Insertar objeto al bucket "movies-3077"
         request = s3.put_object(
           Body=data,
-          Bucket="musix-3066",
-          Key = 'covers-playlists/' + self.nameImage, 
+          Bucket= config('BUCKET_NAME'),
+          Key = config('IMAGES_FOLDER_3') + '/' + image, 
           ContentType = 'imagen/jpeg'
         )
         

@@ -42,7 +42,8 @@ class 	ModelSongs():
         'duration':request.json['duration'],
         'url':request.json['url'],
         'date':request.json['date'],
-        'lyrics':request.json['lyrics']
+        'lyrics':request.json['lyrics'],
+        'licence':request.json['licence']
       })
 
     return jsonify({'status':True, 'message':'Songs Added'})
@@ -74,7 +75,8 @@ class 	ModelSongs():
         'url':song['url'],
         'date':song['date'],
         'lyrics':song['lyrics'],
-        'favorite':song['favorite']
+        'favorite':song['favorite'],
+        'licence':song['licence']
       }
     })
 
@@ -93,7 +95,8 @@ class 	ModelSongs():
         'duration':data['duration'],
         'url':data['url'],
         'date':data['date'],
-        'lyrics':data['lyrics']
+        'lyrics':data['lyrics'],
+        'licence':data['licence']
       })
 
     return jsonify(songs)
@@ -125,7 +128,8 @@ class 	ModelSongs():
         'url':data['url'],
         'date':data['date'],
         'lyrics':data['lyrics'],
-        'favorite':data['favorite']
+        'favorite':data['favorite'],
+        'licence':data['licence']
       })
 
 
@@ -158,7 +162,8 @@ class 	ModelSongs():
         'url':data['url'],
         'date':data['date'],
         'lyrics':data['lyrics'],
-        'favorite':data['favorite']
+        'favorite':data['favorite'],
+        'licence':data['licence']
       })
 
     return jsonify(songs)
@@ -194,7 +199,8 @@ class 	ModelSongs():
         'url':data['url'],
         'date':data['date'],
         'lyrics':data['lyrics'],
-        'favorite':data['favorite']
+        'favorite':data['favorite'],
+        'licence':data['licence']
       })
 
     return jsonify(songs)
@@ -231,7 +237,8 @@ class 	ModelSongs():
           'url':data['url'],
           'date':data['date'],
           'lyrics':data['lyrics'],
-          'favorite':data['favorite']
+          'favorite':data['favorite'],
+          'licence':data['licence']
         })
 
       return jsonify(songs)

@@ -1,15 +1,16 @@
-import { useContext } from 'react';
+import { useContext, useState } from 'react';
 
 import '../styles/music-box.css'
 import PlayerContext from '../context/PlayerContext';
 import PlaylistContext from '../context/PlaylistContext';
 
 import { _doublyLinkedList as queue } from "../helpers/doublyLinkedList";
+import ModalInfo from './micro/ModalInfo';
 
 
 export default function MusicBox({ cover, songInfo, pathSong, nameClass, type, lyrics }) {
 
-  const { id, name, artist, favoriteSong, duration } = songInfo
+  const { id, name, artist, favoriteSong, duration, licence} = songInfo
 
   const {
     playPause,
@@ -24,6 +25,9 @@ export default function MusicBox({ cover, songInfo, pathSong, nameClass, type, l
   } = useContext(PlayerContext)
 
   const { getSongsPlaylist } = useContext(PlaylistContext)
+
+  const [showInfo, setShowInfo] = useState(false)
+
 
   const playSong = async (e, idSong) => {
 
@@ -97,6 +101,18 @@ export default function MusicBox({ cover, songInfo, pathSong, nameClass, type, l
     <div className={!nameClass ? "music-box" : `music-box ${nameClass}`}>
 
       <div className="cover">
+
+        {
+          type !== 'playlist' &&
+          <>
+            <img onClick={() => { setShowInfo(true) }} className='copyright-info' src="./icons/copyright.svg" alt="Licence" />
+          </>
+        }
+
+        {
+          showInfo &&
+          <ModalInfo setShowInfo={setShowInfo} info={[licence]}></ModalInfo>
+        }
 
         <span>
           <div onClick={(e) => playSong(e, id)}>

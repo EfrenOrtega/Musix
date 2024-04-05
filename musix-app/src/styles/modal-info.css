@@ -1,0 +1,53 @@
+.modal-info {
+    position: absolute;
+    background-color: rgba(1, 1, 15, 0.89);
+
+    height: 100%;
+    z-index: 1;
+
+    display: flex;
+    align-items: end;
+    flex-direction: column;
+
+    overflow: auto;
+}
+
+
+::-webkit-scrollbar:horizontal {
+    height: 3px;
+}
+
+.modal-info.fixed {
+    position: fixed;
+    height: auto;
+
+    display: block;
+    padding: 0.2rem 0.5rem;
+    border-radius: 0.5rem;
+}
+
+.modal-info .close {
+    height: 0.7rem;
+    width: 0.7rem;
+    margin-top: 0.5rem;
+    margin-right: 0.3rem;
+    cursor: pointer;
+}
+
+.license-info {
+    color: rgb(255, 255, 255);
+    font-weight: 600;
+}
+
+.modal-info.fixed .license-info {
+    min-width: max-content;
+    color: rgb(255, 255, 255);
+    font-weight: 600;
+}
+
+
+.license-info a {
+    text-wrap: wrap;
+    text-decoration: none;
+    color: rgb(255, 255, 255) !important;
+}

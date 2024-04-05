@@ -11,6 +11,7 @@ import os
 from werkzeug.utils import secure_filename
 
 import uuid
+from decouple import config
 
 
 class ModelUsers():
@@ -112,8 +113,8 @@ class ModelUsers():
         #Insert objecto to the Bucket "musix-3066"
         request = s3.put_object(
           Body=data,
-          Bucket="musix-3066",
-          Key = 'user_avatar/'+self.nameImage, 
+          Bucket=config('BUCKET_NAME'),
+          Key = config('IMAGES_FOLDER_4')+'/'+self.nameImage, 
           ContentType = 'imagen/jpeg'
         )
 

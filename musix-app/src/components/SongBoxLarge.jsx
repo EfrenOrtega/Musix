@@ -1,18 +1,19 @@
 import '../styles/song-box.css';
 
-import { useContext } from 'react';
+import { useContext, useState } from 'react';
 import PlayerContext from '../context/PlayerContext';
 
-import fetchAJAX from '../helpers/fetch';
 import PlaylistContext from '../context/PlaylistContext';
 import Context from '../context/Context';
 
+
 import { _doublyLinkedList as queue } from "../helpers/doublyLinkedList";
+import ModalInfo from './micro/ModalInfo';
 
 
 export default function SongBoxLarge({ data, _favorite, displayOptions, addFavorite, moveSong, isInQueue = false }) {
 
-  const { id, cover, name, artist, duration, album, created, pathSong, favoriteSong } = data
+  const { id, cover, name, artist, duration, album, created, pathSong, favoriteSong, licence} = data
 
   const {
     playPause,
@@ -118,8 +119,11 @@ export default function SongBoxLarge({ data, _favorite, displayOptions, addFavor
 
   }
 
+  const [showInfo, setShowInfo] = useState(false)
+
+
   return (
-    <div className="song-box large" draggable={`${moveSong && 'true'}`} onDragStart = {(e) => moveSong(e, id)} data-id = {id}>
+    <div className="song-box large" draggable={`${moveSong && 'true'}`} onDragStart={(e) => moveSong(e, id)} data-id={id}>
       <div className='container-cover-data'>
         <div className="cover">
           <span>
@@ -159,6 +163,18 @@ export default function SongBoxLarge({ data, _favorite, displayOptions, addFavor
       <div>
         <p>{created}</p>
       </div>
+
+
+      <div className='licence-container'>
+        <img onClick={() => { setShowInfo(true) }} className='copyright-info' src="./icons/copyright.svg" alt="Licence" />
+
+        {
+          showInfo &&
+          <ModalInfo setShowInfo={setShowInfo} info={[licence]} style={'fixed'}></ModalInfo>
+
+        }
+      </div>
+
 
       <div className="btn-options">
         {(_favorite) ?

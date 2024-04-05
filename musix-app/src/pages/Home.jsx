@@ -198,7 +198,8 @@ export default function Home() {
                         artist: song.artist,
                         duration: song.duration,
                         lyrics : song.lyrics,
-                        favoriteSong:song.favorite
+                        favoriteSong:song.favorite,
+                        licence : song.licence
                       }
                     }
                     pathSong = {song.url}
@@ -230,7 +231,8 @@ export default function Home() {
                         name: el.name,
                         artist: el.artist,
                         favoriteSong:el.favorite,
-                        duration : el.duration
+                        duration : el.duration,
+                        licence : el.licence
                       }
                     }
                     pathSong={el.url}
@@ -269,7 +271,8 @@ export default function Home() {
                           name: song.name,
                           artist: song.artist,
                           favoriteSong:song.favorite,
-                          duration : song.duration
+                          duration : song.duration,
+                          licence : song.licence
                         }
                       }
                       pathSong={song.url}

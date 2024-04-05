@@ -137,10 +137,10 @@ const Profile = ()=>{
                                 <input name="last" type="text" value={dataUser.last} onChange={(e)=>handleChangeInputUser(e)}/>
                             </article>
 
-                            <article>
+                            {/*<article>
                                 <label htmlFor="">Date Birth</label>
                                 <input name="dateBirth" type="date" value={dataUser.dateBirth} onChange={(e)=>handleChangeInputUser(e)}/>
-                            </article>
+                            </article>*/}
                         </div>
 
                         <div className='data-user-2'>
