@@ -43,22 +43,7 @@ const PlayerProvider = ({ children }) => {
   const progress_ref = useRef(null)
 
 
-  const handlePlayPause = (
-    e,
-    playPause,
-    setPlayPause,
-    audio_ref,
-    source_ref,
-    setNextIsDisabled,
-    setPrevIsDisabled,
-    setDataSong,
-    setRunning,
-    idSong
-  ) => {
-    HandlePlayPause(QUEUE, setQUEUE, e, playPause, setPlayPause, audio_ref, source_ref, setNextIsDisabled, setPrevIsDisabled, setDataSong, setRunning, idSong);
-  }
-
-
+  
   let data = {
     playPause,
     setPlayPause,
@@ -66,7 +51,7 @@ const PlayerProvider = ({ children }) => {
     setNextIsDisabled,
     prevIsDisabled,
     setPrevIsDisabled,
-    handlePlayPause,
+    HandlePlayPause,
     HandleNext,
     HandlePrev,
     audio_ref,

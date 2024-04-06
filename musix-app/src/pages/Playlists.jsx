@@ -18,7 +18,7 @@ export default function Playlists() {
 
   useEffect(() => {
     fetchAJAX({
-      url: `http://${window.location.hostname}:5000/getplaylists/${localStorage.getItem('id')}`,
+      url: `getplaylists/${localStorage.getItem('id')}`,
       resSuccess: (res) => {
         if (!res.results) return
         setPlaylists(res.results)

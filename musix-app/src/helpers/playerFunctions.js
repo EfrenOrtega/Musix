@@ -5,7 +5,6 @@ import { _doublyLinkedList as queue, travese_data as travese_queue } from "./dou
 
 let currentIdSong = 0;
 let currentPositionSong = -1;
-let flag = true;
 
 let durationMils = 0
 let durationMin = 0
@@ -13,8 +12,9 @@ let durationSec = 0
 let duration = ""
 let counter = null;
 
-let loopFlag = false;
-let isLoop = false;
+let loopFlag = 'active';
+//let isLoop = false;
+let nextAutomatically_isActive = false;
 
 
 const loadMetadata = (dataSong) => {
@@ -45,7 +45,7 @@ const keysFunctions = (
 
     navigator.mediaSession.setActionHandler('play', () => {
       if (currentPositionSong >= 0) {
-        loadMetadata(queue.getNode(currentPositionSong).data)
+        loadMetadata(QUEUE.getNode(currentPositionSong).data)
         HandlePlayPause(e,
           false,
           setPlayPause,
@@ -96,22 +96,22 @@ const keysFunctions = (
   }
 }
 
-const play = (audio, source_ref, setNextIsDisabled, setPrevIsDisabled, setDataSong, setRunning) => {
+const play = (audio, source_ref, setNextIsDisabled, setPrevIsDisabled, setDataSong, setRunning,  QUEUE, setQUEUE) => {
 
 
   //This is to control the next button
   if (currentPositionSong >= 0) {
-    if (queue.size - 1 > currentPositionSong) {//If there are other song after active the next button
+    if (QUEUE.size - 1 > currentPositionSong) {//If there are other song after active the next button
       setNextIsDisabled(false)
-    } else {
+    } else if (loopFlag !== 'active'){
       setNextIsDisabled(true)
     }
   }
 
-
-  if (flag) {
-    flag = false;
-    nextAutomatically(audio, source_ref, setNextIsDisabled, setPrevIsDisabled, setDataSong, setRunning)
+  //If loopFlag is 'loop one' means that is not necessary to play the next song.
+  if (!nextAutomatically_isActive) {
+    nextAutomatically_isActive = true
+    nextAutomatically(audio, source_ref, setNextIsDisabled, setPrevIsDisabled, setDataSong, setRunning,  QUEUE, setQUEUE)
   }
 
   /**
@@ -123,10 +123,12 @@ const play = (audio, source_ref, setNextIsDisabled, setPrevIsDisabled, setDataSo
   if (source_ref.current.src == `http://${window.location.hostname}:1420/`) {//There isn't a song loaded in the <Audio> Element of HTML
 
     if (currentPositionSong >= 0) {
-      source_ref.current.src = queue.getNode(currentPositionSong).data.url
+      let data = QUEUE.getNode(currentPositionSong).data;
+      source_ref.current.src = data.url
     } else {
       currentPositionSong = 0;
-      source_ref.current.src = queue.searchByIdSong(localStorage.getItem('idSong')).data.url
+      let data = QUEUE.searchByIdSong(localStorage.getItem('idSong')).data;
+      source_ref.current.src = data.url
       setNextIsDisabled(true)
     }
 
@@ -135,11 +137,11 @@ const play = (audio, source_ref, setNextIsDisabled, setPrevIsDisabled, setDataSo
 
 
     if (currentPositionSong >= 0) {
-      loadMetadata(queue.getNode(currentPositionSong).data)
+      loadMetadata(QUEUE.getNode(currentPositionSong).data)
     }
   } else { //There is a song loaded in the <Audio> Element of HTML
 
-    let dataSong = queue.getNode(currentPositionSong).data
+    let dataSong = QUEUE.getNode(currentPositionSong).data
 
     if (dataSong._id != localStorage.getItem('idSong')) {//The song you are trying to play is different to the current song?
       source_ref.current.src = dataSong.url
@@ -165,7 +167,7 @@ const play = (audio, source_ref, setNextIsDisabled, setPrevIsDisabled, setDataSo
       },
       body: JSON.stringify({
         idUser: localStorage.getItem('id'),
-        idSong: queue.getNode(currentPositionSong).data._id,
+        idSong: QUEUE.getNode(currentPositionSong).data._id,
         date: new Date()
       })
     }
@@ -180,10 +182,10 @@ const play = (audio, source_ref, setNextIsDisabled, setPrevIsDisabled, setDataSo
 
 
   if (currentPositionSong >= 0) {
-    localStorage.setItem('idSong', queue.getNode(currentPositionSong).data._id)
+    localStorage.setItem('idSong', QUEUE.getNode(currentPositionSong).data._id)
   }
 
-  let songNode = queue.getNode(currentPositionSong);
+  let songNode = QUEUE.getNode(currentPositionSong);
   setDataSong({
     name: songNode.data.name,
     artist: songNode.data.artist,
@@ -202,55 +204,48 @@ const pause = (audio) => {
   audio.current.pause()
 }
 
-const nextAutomatically = (audio, source_ref, setNextIsDisabled, setPrevIsDisabled, setDataSong, setRunning) => {
+const nextAutomatically = (audio, source_ref, setNextIsDisabled, setPrevIsDisabled, setDataSong, setRunning, QUEUE, setQUEUE) => {
   audio.current.addEventListener('ended', e => {
 
-    setRunning(false)
-    next(audio, source_ref, setNextIsDisabled, setPrevIsDisabled, setDataSong, setRunning)
+    //Check the type of loop
+    if (loopFlag === "loop one") {//Resume the current song      
+      source_ref.current.src = QUEUE.getNode(currentPositionSong).data.url
+      localStorage.setItem('idSong', QUEUE.getNode(currentPositionSong).data._id)
+      audio.current.pause()
+      audio.current.load()
+      audio.current.play()
+    } else {//Play the next song 
+      next(audio, source_ref, setNextIsDisabled, setPrevIsDisabled, setDataSong, setRunning, QUEUE, setQUEUE)
+    }
 
   })
 }
 
 
-const next = (audio, source_ref, setNextIsDisabled, setPrevIsDisabled, setDataSong, setRunning) => {
+const next = (audio, source_ref, setNextIsDisabled, setPrevIsDisabled, setDataSong, setRunning, QUEUE, setQUEUE) => {
 
 
-  if (currentPositionSong + 1 == queue.size && !loopFlag) {
+  if (currentPositionSong + 1 == QUEUE.size && loopFlag !== 'active') {
     setNextIsDisabled(true)
     return
-  } else if (isLoop) {
+  } else if (loopFlag === 'active' && currentPositionSong + 1 == QUEUE.size) {
     setNextIsDisabled(false)
     currentPositionSong = -1;
-    isLoop = false;
-  }
-
-  //If the current Song is in LOOP
-  if (loopFlag) {
-    source_ref.current.src = queue.getNode(currentPositionSong).data.url
-
-    localStorage.setItem('idSong', queue.getNode(currentPositionSong).data._id)
-    audio.current.load()
-    play(audio, source_ref, setNextIsDisabled, setPrevIsDisabled, setDataSong, setRunning)
-
-    return
   }
 
   currentPositionSong++
-
   setPrevIsDisabled(false)
 
-  source_ref.current.src = queue.getNode(currentPositionSong).data.url
+  source_ref.current.src = QUEUE.getNode(currentPositionSong).data.url
 
-  localStorage.setItem('idSong', queue.getNode(currentPositionSong).data._id)
+
+  localStorage.setItem('idSong', QUEUE.getNode(currentPositionSong).data._id)
   audio.current.load()
-  play(audio, source_ref, setNextIsDisabled, setPrevIsDisabled, setDataSong, setRunning)
-
-  return;
-
+  play(audio, source_ref, setNextIsDisabled, setPrevIsDisabled, setDataSong, setRunning, QUEUE, setQUEUE)
 
 }
 
-const prev = (audio, setPrevIsDisabled, setNextIsDisabled, setDataSong, source_ref) => {
+const prev = (audio, setPrevIsDisabled, setNextIsDisabled, setDataSong, source_ref, QUEUE, setQUEUE) => {
 
   if (currentPositionSong >= 0) {
     if ((currentPositionSong - 1) == 0) {
@@ -266,9 +261,9 @@ const prev = (audio, setPrevIsDisabled, setNextIsDisabled, setDataSong, source_r
         setPrevIsDisabled(false)
       }, 1000)
 
-      source_ref.current.src = queue.getNode(currentPositionSong).data.url
+      source_ref.current.src = QUEUE.getNode(currentPositionSong).data.url
       audio.current.load()
-      play(audio, source_ref, setNextIsDisabled, setPrevIsDisabled, setDataSong)
+      play(audio, source_ref, setNextIsDisabled, setPrevIsDisabled, setDataSong, null, QUEUE, setQUEUE)
 
       return;
     }
@@ -276,8 +271,8 @@ const prev = (audio, setPrevIsDisabled, setNextIsDisabled, setDataSong, source_r
     setPrevIsDisabled(false)
     currentPositionSong--
 
-    source_ref.current.src = queue.getNode(currentPositionSong).data.url
-    play(audio, source_ref, setNextIsDisabled, setPrevIsDisabled, setDataSong)
+    source_ref.current.src = QUEUE.getNode(currentPositionSong).data.url
+    play(audio, source_ref, setNextIsDisabled, setPrevIsDisabled, setDataSong, null, QUEUE, setQUEUE)
 
   }
 
@@ -289,6 +284,8 @@ const prev = (audio, setPrevIsDisabled, setNextIsDisabled, setDataSong, source_r
 /*Handle Controls*/
 
 const HandlePlayPause = (
+  QUEUE,
+  setQUEUE,
   e,
   playPause,
   setPlayPause,
@@ -301,8 +298,7 @@ const HandlePlayPause = (
   idSong
 ) => {
 
-  let songNode = queue.searchByIdSong(idSong)
-
+  let songNode = QUEUE.searchByIdSong(idSong)
   /**
    * Condition to Update currentPositionSong to handle changes in the QUEUE when playing/pausing the same song from different app sections.
    * 
@@ -326,7 +322,7 @@ const HandlePlayPause = (
     currentPositionSong = songNode.positionNode
     source_ref.current.src = songNode.data.url
 
-    play(audio_ref, source_ref, setNextIsDisabled, setPrevIsDisabled, setDataSong, setRunning)
+    play(audio_ref, source_ref, setNextIsDisabled, setPrevIsDisabled, setDataSong, setRunning, QUEUE, setQUEUE)
     setPlayPause(true)
 
   } else {
@@ -337,7 +333,7 @@ const HandlePlayPause = (
       setPlayPause(false)
 
     } else {
-      play(audio_ref, source_ref, setNextIsDisabled, setPrevIsDisabled, setDataSong, setRunning)
+      play(audio_ref, source_ref, setNextIsDisabled, setPrevIsDisabled, setDataSong, setRunning, QUEUE, setQUEUE)
       setPlayPause(true)
     }
   }
@@ -347,6 +343,8 @@ const HandlePlayPause = (
 
 
 const HandleNext = (
+  QUEUE,
+  setQUEUE,
   e,
   setPlayPause,
   audio_ref,
@@ -359,12 +357,14 @@ const HandleNext = (
 
   setRunning(false)
 
-  next(audio_ref, source_ref, setNextIsDisabled, setPrevIsDisabled, setDataSong, setRunning)
+  next(audio_ref, source_ref, setNextIsDisabled, setPrevIsDisabled, setDataSong, setRunning, QUEUE, setQUEUE)
   setPlayPause(true)
 
 }
 
 const HandlePrev = (
+  QUEUE,
+  setQUEUE,
   e,
   setPlayPause,
   audio_ref,
@@ -376,72 +376,32 @@ const HandlePrev = (
 ) => {
 
   setRunning(false)
-  prev(audio_ref, setPrevIsDisabled, setNextIsDisabled, setDataSong, source_ref)
+  prev(audio_ref, setPrevIsDisabled, setNextIsDisabled, setDataSong, source_ref, QUEUE, setQUEUE)
   setPlayPause(true)
 }
-
-const HandleProgress = (e, slider_ref, duration, setRange, range) => {
-
-  let sec = 0;
-  let min = 0;
-
-  let timerState = range;
-
-  let timer = "";
-
-  if (durationMin == min && durationSec == sec) {
-    window.clearInterval(counter)
-    setRange(0)
-  } else {
-    timerState = timerState + 1;
-
-    setRange(timerState.toString())
-
-    if (sec.toString().length != 1) {
-      if (min.toString().length != 1) {
-        timer = `${min}:${sec++}`
-      } else {
-        timer = `0${min}:${sec++}`
-      }
-    } else {
-      if (min.toString().length != 1) {
-        timer = `${min}:0${sec++}`
-      } else {
-        timer = `0${min}:0${sec++}`
-      }
-    }
-
-    if (sec == 60) {
-      sec = 0;
-      min++
-    }
-
-    slider_ref.current.style.width = `${timerState * (100 / durationMils)}%`;
-  }
-
-
-}
-
 
 const HandleLoop = (e, loop, setLoop) => {
   switch (loop) {
 
-    //Loop Enabled
-    case 0:
+    //If Loop is Enable - 0
+    case 'enable':
+      //Set Loop Actived
       loopFlag = true;
-      setLoop(null) //Set Loop Actived
+      setLoop('active')
 
       break;
 
-    //Loop 1
-    case 1:
-      loopFlag = false;
-      setLoop(0) //Set Loop Enabled
+    //If Loop is Active by One - 1 
+    case 'loop one':
+      //Set Loop Enabled
+      loopFlag = 'enable';
+      setLoop('enable')
       break;
 
-    //Loop Actived
+    //If Loop is Actived
     default:
-      setLoop(1) //Set Loop 1
+      loopFlag = 'loop one'
+      setLoop('loop one') //Set Loop by one
       break;
   }
 }

@@ -83,7 +83,7 @@ const Profile = ()=>{
     useEffect(()=>{
        
         fetchAJAX({
-            url:`http://${window.location.hostname}:5000/finduser/${localStorage.getItem('id')}`,
+            url:`finduser/${localStorage.getItem('id')}`,
             resSuccess: (res) => {
                 setDataUser(res.data)
             },
@@ -93,7 +93,7 @@ const Profile = ()=>{
         })
 
         fetchAJAX({
-            url:`http://${window.location.hostname}:5000/findaccount/${localStorage.getItem('id')}`,
+            url:`findaccount/${localStorage.getItem('id')}`,
             resSuccess: (res) => {
                 setDataAccount(res.data)
             },

@@ -4,13 +4,13 @@ import '../styles/music-box.css'
 import PlayerContext from '../context/PlayerContext';
 import PlaylistContext from '../context/PlaylistContext';
 
-import { _doublyLinkedList as queue } from "../helpers/doublyLinkedList";
+import { DoublyLinkedList, _doublyLinkedList, _doublyLinkedList as queue } from "../helpers/doublyLinkedList";
 import ModalInfo from './micro/ModalInfo';
 
 
 export default function MusicBox({ cover, songInfo, pathSong, nameClass, type, lyrics }) {
 
-  const { id, name, artist, favoriteSong, duration, licence} = songInfo
+  const { id, name, artist, favoriteSong, duration, licence } = songInfo
 
   const {
     playPause,
@@ -21,7 +21,9 @@ export default function MusicBox({ cover, songInfo, pathSong, nameClass, type, l
     audio_ref,
     source_ref,
     setDataSong,
-    setRunning
+    setRunning,
+    QUEUE,
+    setQUEUE
   } = useContext(PlayerContext)
 
   const { getSongsPlaylist } = useContext(PlaylistContext)
@@ -33,17 +35,22 @@ export default function MusicBox({ cover, songInfo, pathSong, nameClass, type, l
 
     if (type === 'playlist') {
 
+      //Get the songs from the playlist with its id
       await getSongsPlaylist(id)
         .then(res => {
-          queue.clear();
 
-          res.map(song => {
-            queue.insertion_ending(song)
+          let newQueue = new DoublyLinkedList()//Create a new QUEUE
+
+          res.map(song => {//Add the songs to the QUEUE
+            newQueue.insertion_ending(song)
           })
 
           localStorage.setItem('currentPlaylist', 'inQueue')
+          setQUEUE(newQueue)//Update the QUEUE State with the newQUEUE
 
           HandlePlayPause(
+            newQueue,
+            setQUEUE,
             e,
             playPause,
             setPlayPause,
@@ -53,7 +60,7 @@ export default function MusicBox({ cover, songInfo, pathSong, nameClass, type, l
             setPrevIsDisabled,
             setDataSong,
             setRunning,
-            queue.getNode(0).data._id
+            newQueue.getNode(0).data._id
           )
 
         })
@@ -63,23 +70,27 @@ export default function MusicBox({ cover, songInfo, pathSong, nameClass, type, l
 
     } else {
 
-      /** if idSong doens't exist in the List*/
-      if (!queue.hasSong(id)) {
-        queue.clear();
-        queue.insertion_ending({
-          _id: id,
-          name,
-          artist,
-          cover: `${cover}`,
-          lyrics: `${lyrics}`,
-          url: pathSong,
-          favorite: favoriteSong,
-          duration: duration
-        })
-      }
+      let newQueue = QUEUE.clone()
+
+      newQueue.clear()
+      newQueue.insertion_ending({
+        _id: id,
+        name,
+        artist,
+        cover: `${cover}`,
+        lyrics: `${lyrics}`,
+        url: pathSong,
+        licence: licence,
+        favorite: favoriteSong,
+        duration: duration
+      })
+
+      setQUEUE(newQueue)
       setRunning(false)
 
       HandlePlayPause(
+        newQueue,
+        setQUEUE,
         e,
         playPause,
         setPlayPause,

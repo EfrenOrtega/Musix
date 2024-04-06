@@ -29,7 +29,7 @@ export default function Header({ type, data, background, cover, btns, evtSearch,
 
   const getFindUser = useCallback(()=>{
     return fetchAJAX({
-      url: `http://${location.hostname}:5000/finduser/${localStorage.getItem('id')}`,
+      url: `finduser/${localStorage.getItem('id')}`,
       resSuccess: (res) => {
         return res.data
       },

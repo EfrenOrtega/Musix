@@ -12,7 +12,7 @@ import ListPlaylist from './micro/ListPlaylist'
 import fetchAJAX from '../helpers/fetch'
 import { Link } from 'react-router-dom'
 
-import { _doublyLinkedList as queue } from "../helpers/doublyLinkedList";
+import { _doublyLinkedList, _doublyLinkedList as queue } from "../helpers/doublyLinkedList";
 
 
 const Player = ({ cover, songInfo }) => {
@@ -28,7 +28,7 @@ const Player = ({ cover, songInfo }) => {
     setNextIsDisabled,
     prevIsDisabled,
     setPrevIsDisabled,
-    handlePlayPause,
+    HandlePlayPause,
     HandleNext,
     HandlePrev,
     audio_ref,
@@ -42,9 +42,9 @@ const Player = ({ cover, songInfo }) => {
     setRunning,
     favorite,
     setFavorite,
-    setLoadedAudio, 
+    setLoadedAudio,
 
-    QUEUE, 
+    QUEUE,
     setQUEUE,
   } = useContext(PlayerContext)
 
@@ -59,7 +59,7 @@ const Player = ({ cover, songInfo }) => {
   favoriteSong = dataSong.favorite || favoriteSong;
 
   //=====================================
-  const [loop, setLoop] = useState(0)
+  const [loop, setLoop] = useState('active')
   //=====================================
 
   const [volume, setVolume] = useState(localStorage.getItem('volume') || 70);
@@ -97,7 +97,7 @@ const Player = ({ cover, songInfo }) => {
             favorite: json.data.favorite,
             duration: json.data.duraction
           })
-          setQUEUE(_doublyLinkedList)          
+          setQUEUE(_doublyLinkedList)
 
           setFavorite(json.data.favorite)
           setData({ name: json.data.name, artist: json.data.artist, cover: json.data.cover, lyrics: json.data.lyrics, favorite: json.data.favorite })
@@ -304,6 +304,8 @@ const Player = ({ cover, songInfo }) => {
                     (e) => {
                       setFavorite(false)
                       HandlePrev(
+                        QUEUE,
+                        setQUEUE,
                         e,
                         setPlayPause,
                         audio_ref,
@@ -322,7 +324,9 @@ const Player = ({ cover, songInfo }) => {
                   />
 
                   <img onClick={
-                    (e) => handlePlayPause(
+                    (e) => HandlePlayPause(
+                      QUEUE,
+                      setQUEUE,
                       e,
                       playPause,
                       setPlayPause,
@@ -345,6 +349,8 @@ const Player = ({ cover, songInfo }) => {
                     (e) => {
                       setFavorite(false)
                       HandleNext(
+                        QUEUE,
+                        setQUEUE,
                         e,
                         setPlayPause,
                         audio_ref,
@@ -364,13 +370,15 @@ const Player = ({ cover, songInfo }) => {
                   />
 
 
-                  <img onClick={
-                    (e) => HandleLoop(e, loop, setLoop)} className='icon-loop' src={loop == 0
+                  <img onClick={(e) => HandleLoop(e, loop, setLoop)} className='icon-loop'
+                    src={(loop == 'enable')
                       ? '/icons/icon-loop-enabled.png'
-                      : (loop == 1)
+                      : (loop == 'loop one')
                         ? '/icons/icon-loop-1.png'
-                        : '/icons/icon-loop-actived.png'
-                    } alt="" />
+                        : (loop == 'active') &&
+                        '/icons/icon-loop-actived.png'
+                    }
+                    alt="" />
                 </>
                 :
                 <>

@@ -26,7 +26,7 @@ const PlaylistProvider = ({ children }) => {
   const getplaylist = () => {
     
       return fetchAJAX({
-        url: `http://${window.location.hostname}:5000/getplaylist/${idPlaylist}`,
+        url: `getplaylist/${idPlaylist}`,
         resSuccess: async (res) => {
           if (!res.results) return
           let playlists = res.results
@@ -48,7 +48,7 @@ const PlaylistProvider = ({ children }) => {
 
   const getplaylistsToHome = () => {
     return fetchAJAX({
-      url: `http://${window.location.hostname}:5000/getplaylists/${localStorage.getItem('id')}`,
+      url: `getplaylists/${localStorage.getItem('id')}`,
       resSuccess: (res) => {
         if (!res.results) return
         setPlaylists(res.results)
@@ -69,7 +69,7 @@ const PlaylistProvider = ({ children }) => {
 
   const getArtist = useCallback(() => {
     return fetchAJAX({
-      url: `http://${window.location.hostname}:5000/getartist/${idArtist}`,
+      url: `getartist/${idArtist}`,
       resSuccess: (res) => {
         return res
       },
@@ -92,7 +92,7 @@ const PlaylistProvider = ({ children }) => {
   */
   const getSongArtist = useCallback(() => {
     return fetchAJAX({
-      url: `http://${window.location.hostname}:5000/getsongbyartist/${nameArtist}/${localStorage.getItem('id')}`,
+      url: `getsongbyartist/${nameArtist}/${localStorage.getItem('id')}`,
       resSuccess: (res) => {
         return res
       },
@@ -143,7 +143,7 @@ const PlaylistProvider = ({ children }) => {
     let PlaylistSelected = e.target.dataset.id
 
     fetchAJAX({
-      url: `http://${window.location.hostname}:5000/addtoplaylist/${PlaylistSelected}/${dataSong._id}`,
+      url: `addtoplaylist/${PlaylistSelected}/${dataSong._id}`,
       resSuccess: (res) => {
         refetchCachePlaylist() // Refresh the Cache to see the playlist update
         localStorage.setItem('addedToPlaylist', true)
@@ -162,33 +162,13 @@ const PlaylistProvider = ({ children }) => {
    */
   const getSongsPlaylist = (idPlaylist) => {
 
-    let songs = []
-
     return new Promise((resolve, reject) => {
 
       fetchAJAX({
-        url: `http://${window.location.hostname}:5000/getplaylist/${idPlaylist}`,
+        url: `getplaylist/${idPlaylist}`,
         resSuccess: (res) => {
-          if (!res.results) return
-          res.results[0].songs.forEach((el, index) => {
-
-            fetchAJAX({
-              url: `http://${window.location.hostname}:5000/getsongplaylist/${el._id}`,
-              resSuccess: (resSong) => {
-                songs.push(resSong.results)
-                setDataSongs([...dataSongs, ...songs])
-
-                if (index + 1 == res.results[0].songs.length) {
-                  return resolve(songs)
-                }
-              },
-              resError: (err) => {
-                console.error(err)
-              }
-            })
-
-          })
-
+          if (!res.results) return         
+          return resolve([...res.results[0].songs])
         },
         resError: (err) => {
           console.error(err)

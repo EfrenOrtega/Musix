@@ -4,10 +4,9 @@ import { useContext, useState } from 'react';
 import PlayerContext from '../context/PlayerContext';
 
 import PlaylistContext from '../context/PlaylistContext';
-import Context from '../context/Context';
 
 
-import { _doublyLinkedList as queue } from "../helpers/doublyLinkedList";
+import { _doublyLinkedList } from "../helpers/doublyLinkedList";
 import ModalInfo from './micro/ModalInfo';
 
 
@@ -25,20 +24,25 @@ export default function SongBoxLarge({ data, _favorite, displayOptions, addFavor
     source_ref,
     setDataSong,
     setRunning,
+    QUEUE,
+    setQUEUE
   } = useContext(PlayerContext)
-
-  const { setAlertVisible, setMsgAlert } = useContext(Context);
 
   const { getSongsPlaylist } = useContext(PlaylistContext)
 
   const playSong = async (e) => {
 
+
     /** This song is playing from a playlist or from the Queue?*/
     if (localStorage.getItem('currentPlaylist') || isInQueue) {
 
       /** If the current playlist is already playing is not necessary to load their songs to the queue */
-      if (localStorage.getItem('currentPlaylist') == 'inQueue' || isInQueue) {
+      if ((localStorage.getItem('currentPlaylist') == 'inQueue' || isInQueue) && _doublyLinkedList.hasSong(id)) {
+        console.log("Song play from a playlist")
+
         HandlePlayPause(
+          QUEUE,
+          setQUEUE,
           e,
           playPause,
           setPlayPause,
@@ -53,19 +57,23 @@ export default function SongBoxLarge({ data, _favorite, displayOptions, addFavor
 
       } else {
         /** Clear the QUEUE and loads the playlist's songs */
-        queue.clear();
+        _doublyLinkedList.clear()
 
         let idPlaylist = localStorage.getItem('currentPlaylist');
         await getSongsPlaylist(idPlaylist)
           .then(res => {
             res.map(song => {
-              queue.insertion_ending(song)
+              _doublyLinkedList.insertion_ending(song)
             })
+
+            setQUEUE(_doublyLinkedList)
 
             /** To know when a playlist is already in the Queue */
             localStorage.setItem('currentPlaylist', 'inQueue')
 
             HandlePlayPause(
+              _doublyLinkedList,
+              setQUEUE,
               e,
               playPause,
               setPlayPause,
@@ -88,22 +96,27 @@ export default function SongBoxLarge({ data, _favorite, displayOptions, addFavor
 
     } else {
       /** Clear the QUEUE */
-      queue.clear();
+      _doublyLinkedList.clear();
 
       /** Add the Song playing to the QUEUE */
-      queue.insertion_ending({
+      _doublyLinkedList.insertion_ending({
         _id: id,
         name,
         artist,
         cover: cover,
         url: pathSong,
+        licence: licence,
         favorite: favoriteSong,
         duration: duration
       })
 
+      setQUEUE(_doublyLinkedList)
+
       setRunning(false)
 
       HandlePlayPause(
+        _doublyLinkedList,
+        setQUEUE,
         e,
         playPause,
         setPlayPause,
@@ -189,12 +202,7 @@ export default function SongBoxLarge({ data, _favorite, displayOptions, addFavor
         }
 
 
-        {
-          moveSong &&
-
-          <img data-id={id} onClick={(e) => moveSong(e, id)} src={'/icons/select.svg'} alt="" />
-
-        }
+        
 
 
 

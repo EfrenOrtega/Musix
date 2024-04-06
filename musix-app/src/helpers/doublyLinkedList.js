@@ -317,6 +317,8 @@ class DoublyLinkedList {
     clone(){
         let newQueue = new DoublyLinkedList();
 
+        console.log(this)
+
         this.forEach((node, index)=>{
             newQueue.insertion_ending(node.data)
         })
@@ -342,4 +344,4 @@ const travese_data = (list) => {
  */
 let _doublyLinkedList = new DoublyLinkedList();
 
-export { _doublyLinkedList, travese_data }
+export { _doublyLinkedList, travese_data, DoublyLinkedList}

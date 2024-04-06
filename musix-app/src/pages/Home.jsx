@@ -38,7 +38,7 @@ export default function Home() {
 
   const getHistory = useCallback(()=>{
     return fetchAJAX({
-      url: `http://${window.location.hostname}:5000/getHistory/3/${localStorage.getItem('id')}`,
+      url: `getHistory/3/${localStorage.getItem('id')}`,
       resSuccess: (res) => {
         return res
       },
@@ -50,7 +50,7 @@ export default function Home() {
 
   const getRecentlyAdded = useCallback(()=>{
     return fetchAJAX({
-      url: `http://${window.location.hostname}:5000/getrecentsongs/${localStorage.getItem('id')}`,
+      url: `getrecentsongs/${localStorage.getItem('id')}`,
       resSuccess: (res) => {
         console.log(res)
         return res
@@ -63,7 +63,7 @@ export default function Home() {
 
   const getYourLikes = useCallback(()=>{
     return fetchAJAX({
-      url: `http://${window.location.hostname}:5000/getrecommendedsongs/${localStorage.getItem('id')}`,
+      url: `getrecommendedsongs/${localStorage.getItem('id')}`,
       resSuccess: (res) => {
         if (res.length == 0) return
         return res
@@ -76,7 +76,7 @@ export default function Home() {
 
   const getArtists = useCallback(()=>{
     return fetchAJAX({
-      url: `http://${window.location.hostname}:5000/getartists`,
+      url: `getartists`,
       resSuccess: (res) => {
         return res
       },

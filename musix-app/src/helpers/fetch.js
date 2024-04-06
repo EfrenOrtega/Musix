@@ -7,7 +7,7 @@ export default  async function fetchAJAX(parametros) {
 
   setTimeout(() => controller.abort(), 1000);
 
-  return fetch(url, settings)
+  return fetch(`http://192.168.1.69:5000/${url}`, settings)
     .then(res => { return res.ok ? res.json() : Promise.reject(res) })
     .then(json => {
       if (json.success !== false) {

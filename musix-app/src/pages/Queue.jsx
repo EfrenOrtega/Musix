@@ -5,6 +5,7 @@ import SongBoxLarge from "../components/SongBoxLarge";
 import { addToFavorites } from "../helpers/Favorites";
 import Context from "../context/Context";
 import PlayerContext from "../context/PlayerContext";
+import PlaylistContext from '../context/PlaylistContext';
 
 
 const Queue = () => {
@@ -16,7 +17,8 @@ const Queue = () => {
     //To display a floating message in the view
     const { setAlertVisible, setMsgAlert } = useContext(Context);
 
-    const {QUEUE, setQUEUE} = useContext(PlayerContext)
+    const {QUEUE, setQUEUE, dataSong, setDataSong} = useContext(PlayerContext)
+    const { refetchCachePlaylist, refetchCacheArtistSongs } = useContext(PlaylistContext)
 
     //I use this to store the parent element with the clase 'active-...', to display a 
     //line where the user can drop the song of the queue and to know where the user drop it 
@@ -32,12 +34,22 @@ const Queue = () => {
             songs.push(node.data)
         })
 
+        console.log(songs)
+        setFavorites(songs.map(song => {
+            
+            if (song.favorite == true) {
+                return song._id;
+            }
+        }))
+
         setSongs(songs)
 
-    }, [QUEUE.idPosition])
+    }, [QUEUE])
+    
 
     const addFavorite = (e) => {
-        addToFavorites(e, favorites, setFavorites, setAlertVisible, setMsgAlert, null, null, null, null)
+        QUEUE.searchByIdSong(e.target.dataset.id).data.favorite = !favorites.includes(e.target.dataset.id)
+        addToFavorites(e, favorites, setFavorites, setAlertVisible, setMsgAlert, refetchCacheArtistSongs, refetchCachePlaylist, dataSong, setDataSong)
     }
 
     const handleDragStart = (e, idSong) => {
@@ -158,9 +170,10 @@ const Queue = () => {
                                     album: el.album,
                                     created: el.created,
                                     pathSong: el.url,
+                                    licence : el.licence,
                                     favoriteSong: el.favorite
                                 }}
-                                _favorite={el.favorite}
+                                _favorite={favorites.includes(el._id)}
                                 addFavorite={addFavorite}
                                 moveSong={handleDragStart}
                             />

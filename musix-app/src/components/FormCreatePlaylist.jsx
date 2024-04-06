@@ -61,7 +61,7 @@ export default function FormCreatePlaylist() {
     }))
 
     fetchAJAX({
-      url: `http://${location.hostname}:5000/createplaylist`,
+      url: `createplaylist`,
       settings: {
         method: 'POST',
         header: {
